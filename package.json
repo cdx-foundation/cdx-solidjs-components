@@ -24,7 +24,7 @@
       "import": "./lib/ui/*.tsx"
     },
     "./hooks": {
-      "types": "./dist/types/lib/hooks/index.d.ts",
+      "types": "./dist/types/hooks/index.d.ts",
       "development": "./lib/hooks/index.ts",
       "import": "./dist/hooks.esm.js"
     },
@@ -33,7 +33,7 @@
   "files": ["dist", "lib", "README.md"],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -p tsconfig.prod.json && vite build",
+    "build": "vite build && tsc -p tsconfig.prod.json",
     "lint": "biome check .",
     "fmt": "biome format --write .",
     "typecheck": "tsc --noEmit",

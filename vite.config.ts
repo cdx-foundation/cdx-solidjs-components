@@ -19,13 +19,7 @@ export default defineConfig(({ command, mode }) => {
   }
 
   return {
-    plugins: [
-      solidPlugin(),
-      dts({
-        include: ['lib/index.ts', 'lib/ui/**/*.tsx', 'lib/hooks/**/*.ts'],
-        outDir: 'dist/types',
-      }),
-    ],
+    plugins: [solidPlugin()],
     build: {
       lib: {
         entry: {
