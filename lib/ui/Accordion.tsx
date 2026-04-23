@@ -161,7 +161,7 @@ export const AccordionContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
         aria-labelledby={`${ctx.id}-trigger`}
         data-state={ctx.isOpen() ? 'open' : 'closed'}
         class={twMerge(
-          'overflow-hidden text-sm transition-all animate-in fade-in slide-in-from-top-1 text-muted',
+          'overflow-hidden text-sm transition-all animate-in fade-in text-muted',
           local.class,
         )}
         {...others}

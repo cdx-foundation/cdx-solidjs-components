@@ -197,7 +197,8 @@ export const Command = (props: CommandProps) => {
 
           <div
             class={twMerge(
-              'clean-panel relative z-101 flex w-full max-w-xl flex-col overflow-hidden rounded-xl border border-stroke bg-panel shadow-2xl animate-in fade-in zoom-in-95 duration-200',
+              'clean-panel relative z-101 flex w-full max-w-xl flex-col overflow-hidden rounded-xl border border-stroke bg-panel shadow-2xl animate-in fade-in duration-200',
+
               local.class,
             )}
             {...others}

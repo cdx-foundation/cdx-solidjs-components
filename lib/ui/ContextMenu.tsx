@@ -89,7 +89,7 @@ export const ContextMenu = (props: ContextMenuProps) => {
       <Show when={isOpen()}>
         <Portal>
           <div
-            class="fixed z-100 min-w-48 border border-stroke bg-panel p-1 shadow-md animate-in fade-in zoom-in-95 duration-100"
+            class="fixed z-100 min-w-48 border border-stroke bg-panel p-1 shadow-md animate-in fade-in duration-100"
             style={{ left: `${pos().x}px`, top: `${pos().y}px` }}
             onClick={(e) => e.stopPropagation()}
           >

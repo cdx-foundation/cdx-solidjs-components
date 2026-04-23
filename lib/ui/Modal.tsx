@@ -93,7 +93,7 @@ export const Modal = (props: ModalProps) => {
             role="dialog"
             aria-modal="true"
             class={twMerge(
-              'clean-panel relative z-10 w-full max-w-md p-6 animate-in zoom-in-95 fade-in duration-200 focus:outline-none',
+              'clean-panel relative z-10 w-full max-w-md p-6 animate-in fade-in duration-200 focus:outline-none',
               local.class,
             )}
             {...others}

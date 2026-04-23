@@ -139,7 +139,7 @@ export const ColorPicker = (props: ColorPickerProps) => {
 
         {/* Dropdown */}
         <Show when={isOpen()}>
-          <div class="absolute z-50 mt-1 w-full border border-stroke bg-panel rounded-card overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
+          <div class="absolute z-50 mt-1 w-full border border-stroke bg-panel rounded-card overflow-hidden animate-in fade-in duration-100">
             <div class="p-3">
               <div class="grid grid-cols-6 gap-2">
                 <For each={PRESET_COLORS}>

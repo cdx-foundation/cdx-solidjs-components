@@ -58,7 +58,7 @@ export const Collapsible = (props: CollapsibleProps) => {
         {local.trigger}
       </div>
       <Show when={isOpen()}>
-        <div class="overflow-hidden animate-in fade-in slide-in-from-top-1">{local.children}</div>
+        <div class="overflow-hidden animate-in fade-in">{local.children}</div>
       </Show>
     </div>
   );

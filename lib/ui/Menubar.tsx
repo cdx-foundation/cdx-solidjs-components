@@ -93,7 +93,7 @@ export const MenubarMenu = (props: {
       </button>
       <Show when={isOpen()}>
         <div
-          class="absolute left-0 top-full z-50 mt-1 min-w-48 border border-stroke bg-panel p-1 shadow-md animate-in fade-in slide-in-from-top-1"
+          class="absolute left-0 top-full z-50 mt-1 min-w-48 border border-stroke bg-panel p-1 shadow-md animate-in fade-in"
           onClick={() => setIsOpen(false)}
         >
           {props.children}

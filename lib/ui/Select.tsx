@@ -159,7 +159,7 @@ export const Select = (props: SelectProps) => {
         align="bottom"
         sideOffset={4}
         matchTriggerWidth
-        class="border border-stroke bg-panel rounded-card overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150 shadow-xl"
+        class="border border-stroke bg-panel rounded-card overflow-hidden animate-in fade-in duration-100 shadow-xl"
         id={`${id}-listbox`}
         trigger={(ref) => (
           <button

@@ -73,7 +73,7 @@ export const DropdownMenu = (props: DropdownMenuProps) => {
       <Show when={isOpen()}>
         <div
           class={twMerge(
-            'absolute right-0 z-50 mt-2 w-48 border border-stroke bg-panel p-1 shadow-md animate-in fade-in slide-in-from-top-2 duration-150',
+            'absolute right-0 z-50 mt-2 w-48 border border-stroke bg-panel p-1 shadow-md animate-in fade-in duration-100',
             props.class,
           )}
           onClick={() => setIsOpen(false)}

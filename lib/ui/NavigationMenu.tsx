@@ -99,7 +99,7 @@ export const NavigationMenuItem = (props: {
         />
       </button>
       <Show when={isOpen()}>
-        <div class="absolute left-0 top-full flex justify-center w-max animate-in fade-in slide-in-from-top-2 duration-150 pt-2">
+        <div class="absolute left-0 top-full flex justify-center w-max animate-in fade-in duration-100 pt-2">
           <div class="overflow-hidden border border-stroke bg-panel shadow-lg">
             {props.children}
           </div>
