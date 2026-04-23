@@ -4,7 +4,7 @@ import { twMerge } from 'tailwind-merge';
 /**
  * Configuration and behavior properties for the Badge component.
  */
-interface BadgeProps extends JSX.HTMLAttributes<HTMLSpanElement> {
+interface BadgeProps extends JSX.OutputHTMLAttributes<HTMLOutputElement> {
   /**
    * The visual style variant of the badge.
    * - `default`: Subtle gray style for secondary metadata or tags.

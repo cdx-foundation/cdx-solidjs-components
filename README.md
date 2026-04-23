@@ -14,9 +14,9 @@ An elegant and feature-rich UI component library for Solid.js, meticulously craf
 ## Installation
 
 ```bash
-npm install startling-components
+npm install starling-components
 # or
-bun add startling-components
+bun add starling-components
 ```
 
 ### Peer Dependencies
@@ -36,23 +36,11 @@ Ensure you have the following installed in your project:
 
 ### 1. Tailwind CSS v4 Configuration
 
-To ensure styles are computed correctly, import the library's theme in your main CSS file. This automatically configures Tailwind to scan the library's components for utility classes and provides default design tokens.
+To ensure styles are computed correctly, import the library in your main CSS file. This automatically configures Tailwind to scan the library's components for utility classes and provides default design tokens.
 
 ```css
 @import "tailwindcss";
-@import "startling-components/theme";
-```
-
-### 2. TypeScript Paths (Optional)
-
-If you are using TypeScript, you can add path aliases for cleaner imports:
-
-```json
-"paths": {
-  "@startling": ["./node_modules/startling-components/index.ts"],
-  "@startling/hooks": ["./node_modules/startling-components/lib/hooks/index.ts"],
-  "@startling/*": ["./node_modules/startling-components/*"]
-}
+@import "starling-components";
 ```
 
 ## Component List
@@ -104,9 +92,9 @@ The library includes 41 high-fidelity components:
 ## Usage Example
 
 ```tsx
-import { createSignal } from 'solid-js';
-import { Button, Modal } from 'startling-components';
-import { useTheme } from 'startling-components/hooks';
+import { createSignal } from "solid-js";
+import { Button, Modal } from "starling-components";
+import { useTheme } from "starling-components/hooks";
 
 export const MyComponent = () => {
   const [isOpen, setIsOpen] = createSignal(false);
@@ -114,19 +102,17 @@ export const MyComponent = () => {
 
   return (
     <div class="p-8">
-      <Button onClick={() => setIsOpen(true)}>
-        Open Modal
-      </Button>
+      <Button onClick={() => setIsOpen(true)}>Open Modal</Button>
 
-      <Modal 
-        isOpen={isOpen()} 
+      <Modal
+        isOpen={isOpen()}
         onClose={() => setIsOpen(false)}
         title="Settings"
       >
         <div class="p-4 space-y-4">
           <p>Configure your application preferences here.</p>
           <Button onClick={toggleTheme}>
-            Switch to {isDark() ? 'Light' : 'Dark'} Mode
+            Switch to {isDark() ? "Light" : "Dark"} Mode
           </Button>
         </div>
       </Modal>

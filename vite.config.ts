@@ -24,7 +24,6 @@ export default defineConfig({
         'solid-js',
         'solid-js/web',
         'solid-js/store',
-        'lucide-solid',
         'tailwind-merge',
         'clsx',
         'class-variance-authority',
