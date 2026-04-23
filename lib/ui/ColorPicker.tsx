@@ -2,7 +2,7 @@ import { createShortcut } from '@solid-primitives/keyboard';
 import { Check } from 'lucide-solid';
 import { For, Show, createSignal } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
-import { clickOutside } from '../lib/directives';
+import { clickOutside } from '../directives';
 
 // Suppress unused warning for directive
 false && clickOutside;

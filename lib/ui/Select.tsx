@@ -2,7 +2,7 @@ import { makeEventListener } from '@solid-primitives/event-listener';
 import { Check, ChevronDown } from 'lucide-solid';
 import { For, Show, createEffect, createSignal, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
-import { uid } from '../lib/uid';
+import { uid } from '../uid';
 
 /**
  * Represents an individual choice within the Select dropdown.

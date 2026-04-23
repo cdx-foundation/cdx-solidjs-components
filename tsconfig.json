@@ -17,6 +17,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["ui", "lib", "index.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["lib", "demo"],
+  "exclude": ["node_modules", "dist", "dist-demo"]
 }

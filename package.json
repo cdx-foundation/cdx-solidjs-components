@@ -6,34 +6,34 @@
   "sideEffects": ["*.css"],
   "main": "./dist/index.cjs.js",
   "module": "./dist/index.esm.js",
-  "solid": "./index.ts",
-  "style": "./theme.css",
+  "solid": "./lib/index.ts",
+  "style": "./lib/theme.css",
   "types": "./dist/types/index.d.ts",
-  "source": "index.ts",
+  "source": "lib/index.ts",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
-      "style": "./theme.css",
-      "solid": "./index.ts",
-      "development": "./index.ts",
+      "style": "./lib/theme.css",
+      "solid": "./lib/index.ts",
+      "development": "./lib/index.ts",
       "import": "./dist/index.esm.js",
       "require": "./dist/index.cjs.js"
     },
     "./ui/*": {
       "types": "./dist/types/ui/*.d.ts",
-      "import": "./ui/*.tsx"
+      "import": "./lib/ui/*.tsx"
     },
     "./hooks": {
       "types": "./dist/types/lib/hooks/index.d.ts",
       "development": "./lib/hooks/index.ts",
       "import": "./dist/hooks.esm.js"
     },
-    "./theme": "./theme.css"
+    "./theme": "./lib/theme.css"
   },
-  "files": ["dist", "ui", "lib", "index.ts", "theme.css", "README.md"],
+  "files": ["dist", "lib", "README.md"],
   "scripts": {
-    "dev": "vite build --watch",
-    "build": "vite build",
+    "dev": "vite",
+    "build": "tsc -p tsconfig.prod.json && vite build",
     "lint": "biome check .",
     "fmt": "biome format --write .",
     "typecheck": "tsc --noEmit",

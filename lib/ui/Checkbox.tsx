@@ -1,7 +1,7 @@
 import { Check } from 'lucide-solid';
 import { type JSX, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
-import { uid } from '../lib/uid';
+import { uid } from '../uid';
 
 /**
  * Configuration and properties for the Checkbox component.

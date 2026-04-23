@@ -1,0 +1,20 @@
+@import "tailwindcss";
+@import "../../lib/theme.css";
+
+/* Neubrutalism Demo Variables */
+:root {
+  --brutal-bg: #fdf5e6; /* light cream */
+  --brutal-border: #000000;
+  --brutal-shadow: 6px 6px 0px 0px #000000;
+  --brutal-shadow-sm: 4px 4px 0px 0px #000000;
+  --brutal-shadow-lg: 10px 10px 0px 0px #000000;
+  --brutal-primary: #ff4d4d; /* vibrant red */
+  --brutal-secondary: #ffb800; /* vibrant yellow */
+  --brutal-accent: #00e5ff; /* vibrant cyan */
+}
+
+body {
+  background-color: var(--brutal-bg);
+  color: #000;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}

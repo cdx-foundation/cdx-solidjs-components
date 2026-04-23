@@ -1,7 +1,7 @@
 import { ChevronDown } from 'lucide-solid';
 import { type JSX, Show, createSignal, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
-import { uid } from '../lib/uid';
+import { uid } from '../uid';
 
 /**
  * Configuration properties for an individual accordion section.

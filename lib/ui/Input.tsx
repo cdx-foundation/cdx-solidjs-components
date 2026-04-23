@@ -1,6 +1,6 @@
 import { type JSX, Show, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
-import { uid } from '../lib/uid';
+import { uid } from '../uid';
 
 /**
  * Configuration and properties for the Input component.
