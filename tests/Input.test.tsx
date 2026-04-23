@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library';
 import { describe, expect, it, vi } from 'vitest';
-import { Input } from '../ui/Input';
+import { Input } from '../lib/ui/Input';
 
 describe('Input', () => {
   it('renders with a label', () => {

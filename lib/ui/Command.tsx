@@ -6,6 +6,7 @@ import {
   createContext,
   createEffect,
   createMemo,
+  createSelector,
   createSignal,
   onCleanup,
   onMount,
@@ -38,8 +39,8 @@ interface CommandContextValue {
   search: Accessor<string>;
   /** Updates the global search string across all components. */
   setSearch: (v: string) => void;
-  /** The ID of the item currently being keyboard-navigated. */
-  activeId: Accessor<string | null>;
+  /** Accessor to check if an ID is currently active. */
+  isActive: (id: string) => boolean;
   /** Updates the focused item ID. */
   setActiveId: (id: string | null) => void;
   /** Adds a new `CommandItem` to the active registry. */
@@ -90,27 +91,6 @@ interface CommandProps {
  * A high-performance, accessible command palette and menu system.
  * It handles fuzzy filtering, global keyboard navigation, and intelligent scroll-management out of the box.
  *
- * @example
- * ```tsx
- * const [open, setOpen] = createSignal(false);
- *
- * <Command isOpen={open()} onClose={() => setOpen(false)}>
- *   <CommandGroup heading="Actions">
- *     <CommandItem index={0} value="create-project" onSelect={doCreate}>
- *       Create New Project...
- *     </CommandItem>
- *     <CommandItem index={1} value="settings" onSelect={openSettings}>
- *       Preferences
- *     </CommandItem>
- *   </CommandGroup>
- * </Command>
- * ```
- *
- * **Keyboard Shortcuts:**
- * - `ArrowDown` / `ArrowUp`: Navigate through filtered items.
- * - `Enter`: Select the currently highlighted item.
- * - `ESC`: Close the palette.
- *
  * @param props - Customization options for the palette overlay.
  */
 export const Command = (props: CommandProps) => {
@@ -125,6 +105,7 @@ export const Command = (props: CommandProps) => {
 
   const [search, setSearch] = createSignal('');
   const [activeId, setActiveId] = createSignal<string | null>(null);
+  const isActive = createSelector(activeId);
   const [items, setItems] = createSignal<CommandItemData[]>([]);
 
   const registerItem = (item: CommandItemData) => {
@@ -151,7 +132,7 @@ export const Command = (props: CommandProps) => {
     if (local.isOpen) {
       const originalStyle = window.getComputedStyle(document.body).overflow;
       document.body.style.overflow = 'hidden';
-      
+
       setSearch('');
       setActiveId(null);
       // Use requestAnimationFrame for cleaner focus timing
@@ -225,7 +206,7 @@ export const Command = (props: CommandProps) => {
               value={{
                 search,
                 setSearch,
-                activeId,
+                isActive,
                 setActiveId,
                 registerItem,
                 unregisterItem,
@@ -339,13 +320,7 @@ export const CommandItem = (props: CommandItemProps) => {
     onCleanup(() => context.unregisterItem(id));
   });
 
-  const isActive = () => {
-    // If nothing is active but we are the first visible item, we are implicitly active
-    if (!context.activeId()) {
-      const vItems = context.search() !== undefined ? [] : []; // Force reactivity if needed, though handled in Command
-    }
-    return context.activeId() === id;
-  };
+  const isActive = () => context.isActive(id);
 
   return (
     <Show when={isVisible()}>

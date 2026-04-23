@@ -1,17 +1,31 @@
 import { render, screen } from '@solidjs/testing-library';
 import { describe, expect, it } from 'vitest';
-import { Card } from '../ui/Card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '../lib/ui/Card';
 
 describe('Card', () => {
-  it('renders correctly with children', () => {
+  it('renders correctly with composable pattern', () => {
     render(() => (
       <Card>
-        <div data-testid="child">Card Content</div>
+        <CardHeader>
+          <CardTitle>Title</CardTitle>
+          <CardDescription>Description</CardDescription>
+        </CardHeader>
+        <CardContent>Content</CardContent>
+        <CardFooter>Footer</CardFooter>
       </Card>
     ));
 
-    expect(screen.getByTestId('child')).toBeInTheDocument();
-    expect(screen.getByText('Card Content')).toBeInTheDocument();
+    expect(screen.getByText('Title')).toBeInTheDocument();
+    expect(screen.getByText('Description')).toBeInTheDocument();
+    expect(screen.getByText('Content')).toBeInTheDocument();
+    expect(screen.getByText('Footer')).toBeInTheDocument();
   });
 
   it('applies default and custom classes', () => {

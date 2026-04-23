@@ -1,10 +1,22 @@
-import { type JSX, Show, splitProps } from 'solid-js';
+import {
+  type JSX,
+  Show,
+  createContext,
+  createEffect,
+  createSignal,
+  splitProps,
+  useContext,
+} from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
-/**
- * Configuration and behavior properties for the Avatar component.
- */
-interface AvatarProps extends JSX.HTMLAttributes<HTMLDivElement> {}
+type AvatarStatus = 'idle' | 'loading' | 'loaded' | 'error';
+
+interface AvatarContextValue {
+  status: () => AvatarStatus;
+  setStatus: (status: AvatarStatus) => void;
+}
+
+const AvatarContext = createContext<AvatarContextValue>();
 
 /**
  * ### Avatar Component
@@ -19,46 +31,60 @@ interface AvatarProps extends JSX.HTMLAttributes<HTMLDivElement> {}
  *   <AvatarFallback>YA</AvatarFallback>
  * </Avatar>
  * ```
- *
- * **Behaviors:**
- * - **Image Scaling:** Uses `object-cover` to ensure non-square images fill the container without distortion.
- * - **Corner Radius:** Follows the theme's `rounded-card` variable for a consistent squircle or rounded look.
- *
- * @param props - Standard div attributes.
  */
-export const Avatar = (props: AvatarProps) => {
+export const Avatar = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
+  const [status, setStatus] = createSignal<AvatarStatus>('idle');
 
   return (
-    <div
-      class={twMerge(
-        'relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-card bg-surface border border-stroke overflow-hidden',
-        local.class,
-      )}
-      {...others}
-    >
-      {local.children}
-    </div>
+    <AvatarContext.Provider value={{ status, setStatus }}>
+      <div
+        class={twMerge(
+          'relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-card bg-surface border border-stroke overflow-hidden',
+          local.class,
+        )}
+        {...others}
+      >
+        {local.children}
+      </div>
+    </AvatarContext.Provider>
   );
 };
 
 /**
  * ### AvatarImage Component
  *
- * The image element for the avatar.
+ * The actual image source for the avatar.
  *
- * @example
- * ```tsx
- * <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
- * ```
- *
- * @param props - Standard HTML img attributes.
+ * @param props - Standard HTML img attributes. `alt` is required for accessibility.
  */
-export const AvatarImage = (props: JSX.ImgHTMLAttributes<HTMLImageElement>) => {
-  const [local, others] = splitProps(props, ['class']);
+export const AvatarImage = (props: JSX.ImgHTMLAttributes<HTMLImageElement> & { alt: string }) => {
+  const ctx = useContext(AvatarContext);
+  if (!ctx) throw new Error('AvatarImage must be used within an Avatar');
+
+  const [local, others] = splitProps(props, ['class', 'onLoad', 'onError', 'alt']);
+
+  createEffect(() => {
+    ctx.setStatus('loading');
+  });
+
   return (
+    // biome-ignore lint/a11y/useAltText: Alt text is required via props
     <img
-      class={twMerge('aspect-square h-full w-full object-cover', local.class)}
+      alt={local.alt}
+      class={twMerge(
+        'aspect-square h-full w-full object-cover',
+        ctx.status() !== 'loaded' && 'hidden',
+        local.class,
+      )}
+      onLoad={(e) => {
+        ctx.setStatus('loaded');
+        if (typeof local.onLoad === 'function') local.onLoad(e);
+      }}
+      onError={(e) => {
+        ctx.setStatus('error');
+        if (typeof local.onError === 'function') local.onError(e);
+      }}
       {...others}
     />
   );
@@ -67,26 +93,27 @@ export const AvatarImage = (props: JSX.ImgHTMLAttributes<HTMLImageElement>) => {
 /**
  * ### AvatarFallback Component
  *
- * The fallback content for the avatar when the image is not available.
- *
- * @example
- * ```tsx
- * <AvatarFallback>CN</AvatarFallback>
- * ```
+ * The fallback content for the avatar when the image is not available or hasn't loaded yet.
  *
  * @param props - Standard HTML div attributes.
  */
 export const AvatarFallback = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const ctx = useContext(AvatarContext);
+  if (!ctx) throw new Error('AvatarFallback must be used within an Avatar');
+
   const [local, others] = splitProps(props, ['class', 'children']);
+
   return (
-    <div
-      class={twMerge(
-        'flex h-full w-full items-center justify-center rounded-full bg-muted',
-        local.class
-      )}
-      {...others}
-    >
-      {local.children}
-    </div>
+    <Show when={ctx.status() !== 'loaded'}>
+      <div
+        class={twMerge(
+          'flex h-full w-full items-center justify-center rounded-card bg-surface text-xs font-semibold uppercase tracking-wider text-muted',
+          local.class,
+        )}
+        {...others}
+      >
+        {local.children}
+      </div>
+    </Show>
   );
 };

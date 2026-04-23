@@ -1,5 +1,6 @@
+import { makeEventListener } from '@solid-primitives/event-listener';
 import { ChevronLeft, ChevronRight } from 'lucide-solid';
-import { For, type JSX, createSignal, splitProps } from 'solid-js';
+import { For, type JSX, createSignal, onMount, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
 /**
@@ -20,23 +21,6 @@ interface CarouselProps extends JSX.HTMLAttributes<HTMLDivElement> {
  * It leverages native browser snap-scrolling for the best possible touch and trackpad experience,
  * while providing manual navigation controls for mouse users.
  *
- * @example
- * ```tsx
- * const slides = [
- *   <img src="/img1.jpg" class="rounded-xl" />,
- *   <img src="/img2.jpg" class="rounded-xl" />,
- *   <img src="/img3.jpg" class="rounded-xl" />
- * ];
- *
- * <Carousel items={slides} class="my-8" />
- * ```
- *
- * **Behaviors:**
- * - **Snap Alignment:** Centrally aligns each slide within the viewport using `snap-center`.
- * - **Responsive Sizing:** Automatically adjusts slide width (80% on mobile, 30% on desktop).
- * - **Smart Controls:** Navigation buttons only appear when the user hovers over the carousel and hide automatically when the edge is reached.
- * - **Smooth Motion:** Uses CSS-driven smooth scrolling for programmatic navigation.
- *
  * @param props - Customization options including the `items` array and container classes.
  */
 export const Carousel = (props: CarouselProps) => {
@@ -44,6 +28,14 @@ export const Carousel = (props: CarouselProps) => {
   let containerRef: HTMLDivElement | undefined;
   const [canScrollLeft, setCanScrollLeft] = createSignal(false);
   const [canScrollRight, setCanScrollRight] = createSignal(true);
+
+  const updateScrollState = () => {
+    if (!containerRef) return;
+    setCanScrollLeft(containerRef.scrollLeft > 0);
+    setCanScrollRight(
+      Math.ceil(containerRef.scrollLeft + containerRef.clientWidth) < containerRef.scrollWidth,
+    );
+  };
 
   const scroll = (direction: 'left' | 'right') => {
     if (!containerRef) return;
@@ -54,19 +46,17 @@ export const Carousel = (props: CarouselProps) => {
     });
   };
 
-  const handleScroll = () => {
-    if (!containerRef) return;
-    setCanScrollLeft(containerRef.scrollLeft > 0);
-    setCanScrollRight(
-      Math.ceil(containerRef.scrollLeft + containerRef.clientWidth) < containerRef.scrollWidth,
-    );
-  };
+  onMount(() => {
+    if (containerRef) {
+      makeEventListener(containerRef, 'scroll', updateScrollState, { passive: true });
+      updateScrollState();
+    }
+  });
 
   return (
     <div class={twMerge('relative group w-full', local.class)} {...others}>
       <div
         ref={containerRef}
-        onScroll={handleScroll}
         class="flex w-full gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide"
         style={{ 'scrollbar-width': 'none', '-ms-overflow-style': 'none' }}
       >

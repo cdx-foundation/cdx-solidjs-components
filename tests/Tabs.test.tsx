@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library';
 import { describe, expect, it } from 'vitest';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/Tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../lib/ui/Tabs';
 
 describe('Tabs', () => {
-  it('renders and switches content', () => {
+  it('renders and switches content using compound component pattern', () => {
     render(() => (
       <Tabs defaultValue="tab1">
         <TabsList>
@@ -37,29 +37,5 @@ describe('Tabs', () => {
     expect(screen.getByRole('tablist')).toBeInTheDocument();
     expect(screen.getByRole('tab')).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByRole('tabpanel')).toBeInTheDocument();
-  });
-
-  it('renders triggers automatically from items prop', () => {
-    const items = [
-      { id: 't1', label: 'Tab 1' },
-      { id: 't2', label: 'Tab 2' },
-    ];
-    render(() => <Tabs items={items} activeTab="t1" />);
-
-    expect(screen.getByText('Tab 1')).toBeInTheDocument();
-    expect(screen.getByText('Tab 2')).toBeInTheDocument();
-    expect(screen.getByText('Tab 1')).toHaveAttribute('aria-selected', 'true');
-  });
-
-  it('calls onTabChange when a shorthand tab is clicked', () => {
-    const items = [
-      { id: 't1', label: 'Tab 1' },
-      { id: 't2', label: 'Tab 2' },
-    ];
-    const onTabChange = vi.fn();
-    render(() => <Tabs items={items} onTabChange={onTabChange} />);
-
-    fireEvent.click(screen.getByText('Tab 2'));
-    expect(onTabChange).toHaveBeenCalledWith('t2');
   });
 });

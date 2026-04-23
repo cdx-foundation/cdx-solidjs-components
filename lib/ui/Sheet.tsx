@@ -140,10 +140,7 @@ export const Sheet = (props: SheetProps) => {
 export const SheetHeader = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <div
-      class={twMerge('flex flex-col gap-1.5 p-6 pb-0 pr-12', local.class)}
-      {...others}
-    >
+    <div class={twMerge('flex flex-col gap-1.5 p-6 pb-0 pr-12', local.class)} {...others}>
       {local.children}
     </div>
   );
@@ -164,10 +161,7 @@ export const SheetHeader = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
 export const SheetTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <h2
-      class={twMerge('text-lg font-semibold text-fg', local.class)}
-      {...others}
-    >
+    <h2 class={twMerge('text-lg font-semibold text-fg', local.class)} {...others}>
       {local.children}
     </h2>
   );
@@ -188,10 +182,7 @@ export const SheetTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
 export const SheetDescription = (props: JSX.HTMLAttributes<HTMLParagraphElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <p
-      class={twMerge('text-sm font-mono text-muted', local.class)}
-      {...others}
-    >
+    <p class={twMerge('text-sm font-mono text-muted', local.class)} {...others}>
       {local.children}
     </p>
   );
@@ -215,10 +206,7 @@ export const SheetDescription = (props: JSX.HTMLAttributes<HTMLParagraphElement>
 export const SheetContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <div
-      class={twMerge('flex-1 overflow-y-auto p-6', local.class)}
-      {...others}
-    >
+    <div class={twMerge('flex-1 overflow-y-auto p-6', local.class)} {...others}>
       {local.children}
     </div>
   );

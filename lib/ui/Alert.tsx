@@ -67,16 +67,9 @@ export const Alert = (props: AlertProps) => {
   };
 
   return (
-    <div
-      class={twMerge(
-        baseStyles,
-        variants[local.variant || "info"],
-        local.class,
-      )}
-      {...others}
-    >
+    <div class={twMerge(baseStyles, variants[local.variant || 'info'], local.class)} {...others}>
       <div class="absolute left-4 top-4">
-        <Dynamic component={icons[local.variant || "info"]} size={18} />
+        <Dynamic component={icons[local.variant || 'info']} size={18} />
       </div>
       {local.children}
     </div>
@@ -98,10 +91,7 @@ export const Alert = (props: AlertProps) => {
 export const AlertTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <h5
-      class={twMerge('mb-1 font-medium leading-none tracking-tight', local.class)}
-      {...others}
-    >
+    <h5 class={twMerge('mb-1 font-medium leading-none tracking-tight', local.class)} {...others}>
       {local.children}
     </h5>
   );
@@ -122,10 +112,7 @@ export const AlertTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
 export const AlertDescription = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <div
-      class={twMerge('text-sm [&_p]:leading-relaxed', local.class)}
-      {...others}
-    >
+    <div class={twMerge('text-sm [&_p]:leading-relaxed', local.class)} {...others}>
       {local.children}
     </div>
   );

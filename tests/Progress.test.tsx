@@ -1,6 +1,6 @@
 import { render, screen } from '@solidjs/testing-library';
 import { describe, expect, it } from 'vitest';
-import { Progress } from '../ui/Progress';
+import { Progress } from '../lib/ui/Progress';
 
 describe('Progress', () => {
   it('renders with correct ARIA attributes', () => {

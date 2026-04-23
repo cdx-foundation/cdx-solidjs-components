@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library';
 import { describe, expect, it, vi } from 'vitest';
-import { Slider } from '../ui/Slider';
+import { Slider } from '../lib/ui/Slider';
 
 describe('Slider', () => {
   it('renders with label and value', () => {

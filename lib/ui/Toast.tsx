@@ -1,5 +1,5 @@
 import { X } from 'lucide-solid';
-import { type JSX, For, Show, createSignal, splitProps } from 'solid-js';
+import { For, type JSX, Show, createSignal, splitProps } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
@@ -161,10 +161,7 @@ export const Toaster = () => {
 export const ToastTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <h3
-      class={twMerge('text-sm font-semibold text-fg', local.class)}
-      {...others}
-    >
+    <h3 class={twMerge('text-sm font-semibold text-fg', local.class)} {...others}>
       {local.children}
     </h3>
   );
@@ -185,10 +182,7 @@ export const ToastTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
 export const ToastDescription = (props: JSX.HTMLAttributes<HTMLParagraphElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <p
-      class={twMerge('text-xs font-mono text-muted', local.class)}
-      {...others}
-    >
+    <p class={twMerge('text-xs font-mono text-muted', local.class)} {...others}>
       {local.children}
     </p>
   );

@@ -1,6 +1,6 @@
 import { render, screen } from '@solidjs/testing-library';
 import { describe, expect, it } from 'vitest';
-import { Label } from '../ui/Label';
+import { Label } from '../lib/ui/Label';
 
 describe('Label', () => {
   it('renders correctly with children', () => {

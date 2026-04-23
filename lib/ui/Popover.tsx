@@ -1,10 +1,7 @@
 import { createShortcut } from '@solid-primitives/keyboard';
-import { type JSX, Show, createSignal, splitProps } from 'solid-js';
+import { type JSX, createSignal, onCleanup } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
-import { clickOutside } from '../directives';
-
-// Suppress unused warning for directive
-false && clickOutside;
+import { Floating } from './Floating';
 
 /**
  * Configuration and behavior properties for the Popover component.
@@ -27,74 +24,60 @@ interface PopoverProps {
 
   /**
    * The horizontal anchor point of the popover relative to its trigger.
-   * - `left`: Aligns the left edge of the popover with the left edge of the trigger.
-   * - `center`: Centers the popover horizontally relative to the trigger.
-   * - `right`: Aligns the right edge of the popover with the right edge of the trigger.
-   * @default "left"
+   * @default "bottom"
    */
-  align?: 'left' | 'center' | 'right';
+  align?: 'top' | 'bottom' | 'left' | 'right';
 }
 
 /**
  * ### Popover Component
  *
  * A floating container used to display rich content or additional options without navigating away.
- * It is typically triggered by a click and automatically dismisses itself when the user clicks
- * anywhere outside the component.
- *
- * @example
- * ```tsx
- * <Popover
- *   trigger={<Button variant="outline">Open Settings</Button>}
- *   align="center"
- * >
- *   <div class="flex flex-col gap-4">
- *     <h4 class="font-bold">Preferences</h4>
- *     <p class="text-sm text-muted">Update your account settings here.</p>
- *     <Button size="sm">Save</Button>
- *   </div>
- * </Popover>
- * ```
- *
- * **Interaction Behaviors:**
- * - **Toggle Logic:** Clicking the trigger toggles the visibility of the popover.
- * - **Smart Dismissal:** Uses the `clickOutside` directive to close when clicking elsewhere.
- * - **Keyboard Support:** Automatically closes on `Escape` key press.
- * - **Alignment Options:** Provides flexible positioning via the `align` prop.
- * - **Transitions:** Smooth fade-in and vertical slide transition.
- *
- * @param props - Customization options including `trigger`, `children`, and `align`.
  */
 export const Popover = (props: PopoverProps) => {
   const [isOpen, setIsOpen] = createSignal(false);
+  let containerRef: HTMLDivElement | undefined;
+  let triggerRef: HTMLDivElement | undefined;
+
+  const onClickOutside = (e: MouseEvent) => {
+    if (
+      isOpen() &&
+      containerRef &&
+      !containerRef.contains(e.target as Node) &&
+      triggerRef &&
+      !triggerRef.contains(e.target as Node)
+    ) {
+      setIsOpen(false);
+    }
+  };
+
+  document.addEventListener('mousedown', onClickOutside);
+  onCleanup(() => document.removeEventListener('mousedown', onClickOutside));
 
   createShortcut(['Escape'], () => {
     if (isOpen()) setIsOpen(false);
   });
 
-  const alignClass =
-    props.align === 'right'
-      ? 'right-0'
-      : props.align === 'center'
-        ? 'left-1/2 -translate-x-1/2'
-        : 'left-0';
-
   return (
-    <div class="relative inline-block" use:clickOutside={() => setIsOpen(false)}>
-      <div onClick={() => setIsOpen(!isOpen())} class="cursor-pointer">
-        {props.trigger}
-      </div>
-      <Show when={isOpen()}>
+    <Floating
+      isOpen={isOpen()}
+      align={props.align || 'bottom'}
+      sideOffset={8}
+      class={twMerge('border border-stroke bg-panel p-4 shadow-xl rounded-card', props.class)}
+      trigger={(ref) => (
         <div
-          class={twMerge(
-            'absolute z-50 mt-2 border border-stroke bg-panel p-4 shadow-md animate-in fade-in slide-in-from-top-2 duration-150',
-            alignClass,
-            props.class,
-          )}
+          ref={(el) => {
+            triggerRef = el;
+            ref(el);
+          }}
+          onClick={() => setIsOpen(!isOpen())}
+          class="inline-block cursor-pointer"
         >
-          {props.children}
+          {props.trigger}
         </div>
-      </Show>
-    </div>
+      )}
+    >
+      <div ref={containerRef}>{props.children}</div>
+    </Floating>
   );
 };

@@ -1,4 +1,4 @@
-import { For, type JSX, Show, splitProps } from 'solid-js';
+import { For, type JSX, Show, createContext, splitProps, useContext } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
 /**
@@ -22,14 +22,22 @@ export interface RadioOption {
   description?: string;
 }
 
+interface RadioGroupContextValue {
+  value: () => string;
+  onChange: (value: string) => void;
+  name: string;
+}
+
+const RadioGroupContext = createContext<RadioGroupContextValue>();
+
 /**
  * Configuration and behavior properties for the RadioGroup component.
  */
 interface RadioGroupProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   /**
-   * An array of `RadioOption` objects to render as choices.
+   * An array of `RadioOption` objects to render as choices (Shorthand pattern).
    */
-  options: RadioOption[];
+  options?: RadioOption[];
 
   /**
    * The value of the currently selected option.
@@ -56,30 +64,29 @@ interface RadioGroupProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onCh
  * ### RadioGroup Component
  *
  * A set of mutually exclusive choices where only one option can be selected at a time.
- * Unlike standard browser radios, this component uses a modern card-based layout that is
- * highly legible and supports rich metadata like descriptions.
+ * Supports both a clean shorthand `options` prop and a flexible composable pattern.
  *
  * @example
  * ```tsx
- * const [plan, setPlan] = createSignal("hobby");
+ * // Composable Pattern (Flexible)
+ * <RadioGroup name="plan" value={plan()} onChange={setPlan}>
+ *   <div class="flex items-center gap-2">
+ *     <RadioGroupItem value="1" id="r1" />
+ *     <Label for="r1">Option 1</Label>
+ *   </div>
+ * </RadioGroup>
  *
+ * // Shorthand Pattern (Clean)
  * <RadioGroup
  *   name="pricing-plan"
  *   label="Choose a Plan"
  *   value={plan()}
  *   onChange={setPlan}
  *   options={[
- *     { value: "hobby", label: "Hobby", description: "Free for side projects." },
- *     { value: "pro", label: "Professional", description: "$20/mo for scaling teams." }
+ *     { value: "hobby", label: "Hobby", description: "Free for side projects." }
  *   ]}
  * />
  * ```
- *
- * **Interaction Design:**
- * - **Card Layout:** Each option is wrapped in a clickable card with distinct hover and active states.
- * - **Custom Indicator:** Uses a theme-aware SVG-like circle indicator instead of the browser default.
- * - **Accessibility:** Uses a hidden native `<input type="radio">` to maintain keyboard navigation and screen reader support.
- * - **Grid Sizing:** Automatically arranges options into a 2-column grid on larger screens for better space utilization.
  *
  * @param props - Customization options including `options`, `value`, and `name`.
  */
@@ -91,57 +98,122 @@ export const RadioGroup = (props: RadioGroupProps) => {
     'name',
     'label',
     'class',
+    'children',
   ]);
 
+  const contextValue: RadioGroupContextValue = {
+    value: () => local.value,
+    onChange: local.onChange,
+    name: local.name,
+  };
+
   return (
-    <div class={twMerge('flex flex-col gap-3 w-full', local.class)} {...others}>
-      <Show when={local.label}>
-        <div class="text-xs font-semibold text-fg">{local.label}</div>
-      </Show>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <For each={local.options}>
-          {(option) => {
-            const isSelected = () => local.value === option.value;
-            return (
-              <label
-                class={twMerge(
-                  'relative flex items-start gap-3 border p-3 cursor-pointer transition-colors duration-150 bg-panel',
-                  isSelected() ? 'border-primary bg-primary/5' : 'border-stroke hover:border-muted',
-                )}
-              >
-                <input
-                  type="radio"
-                  name={local.name}
+    <RadioGroupContext.Provider value={contextValue}>
+      <div class={twMerge('flex flex-col gap-3 w-full', local.class)} {...others}>
+        <Show when={local.label}>
+          <div class="text-xs font-semibold text-fg">{local.label}</div>
+        </Show>
+        <Show
+          when={local.options}
+          fallback={<div class="flex flex-col gap-3">{local.children}</div>}
+        >
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <For each={local.options}>
+              {(option) => (
+                <RadioGroupItemCard
                   value={option.value}
-                  checked={isSelected()}
-                  onChange={() => local.onChange(option.value)}
-                  class="sr-only"
+                  label={option.label}
+                  description={option.description}
                 />
-                <div
-                  class={twMerge(
-                    'mt-0.5 w-4 h-4 rounded-full border flex items-center justify-center shrink-0 transition-all',
-                    isSelected() ? 'border-primary' : 'border-stroke',
-                  )}
-                >
-                  <Show when={isSelected()}>
-                    <div class="w-2 h-2 rounded-full bg-primary" />
-                  </Show>
-                </div>
-                <div class="flex flex-col">
-                  <span
-                    class={twMerge('text-sm font-semibold', isSelected() ? 'text-fg' : 'text-fg')}
-                  >
-                    {option.label}
-                  </span>
-                  {option.description && (
-                    <span class="text-xs text-muted font-mono mt-0.5">{option.description}</span>
-                  )}
-                </div>
-              </label>
-            );
-          }}
-        </For>
+              )}
+            </For>
+          </div>
+        </Show>
       </div>
+    </RadioGroupContext.Provider>
+  );
+};
+
+/**
+ * Internal helper for the shorthand card-based radio option.
+ */
+const RadioGroupItemCard = (props: RadioOption) => {
+  const context = useContext(RadioGroupContext);
+  if (!context) return null;
+
+  const isSelected = () => context.value() === props.value;
+
+  return (
+    <label
+      class={twMerge(
+        'relative flex items-start gap-3 border p-3 cursor-pointer transition-colors duration-150 bg-panel',
+        isSelected() ? 'border-primary bg-primary/5' : 'border-stroke hover:border-muted',
+      )}
+    >
+      <input
+        type="radio"
+        name={context.name}
+        value={props.value}
+        checked={isSelected()}
+        onChange={() => context.onChange(props.value)}
+        class="sr-only"
+      />
+      <div
+        class={twMerge(
+          'mt-0.5 w-4 h-4 rounded-full border flex items-center justify-center shrink-0 transition-all',
+          isSelected() ? 'border-primary' : 'border-stroke',
+        )}
+      >
+        <Show when={isSelected()}>
+          <div class="w-2 h-2 rounded-full bg-primary" />
+        </Show>
+      </div>
+      <div class="flex flex-col">
+        <span class={twMerge('text-sm font-semibold', isSelected() ? 'text-fg' : 'text-fg')}>
+          {props.label}
+        </span>
+        {props.description && (
+          <span class="text-xs text-muted font-mono mt-0.5">{props.description}</span>
+        )}
+      </div>
+    </label>
+  );
+};
+
+/**
+ * ### RadioGroupItem Component
+ *
+ * A low-level radio indicator used within the composable `RadioGroup` pattern.
+ *
+ * @param props - Standard HTML input attributes.
+ */
+export const RadioGroupItem = (props: JSX.InputHTMLAttributes<HTMLInputElement>) => {
+  const context = useContext(RadioGroupContext);
+  const [local, others] = splitProps(props, ['class', 'value']);
+
+  if (!context) return null;
+
+  const isSelected = () => context.value() === local.value;
+
+  return (
+    <div class="relative flex items-center justify-center">
+      <input
+        type="radio"
+        name={context.name}
+        value={local.value}
+        checked={isSelected()}
+        onChange={() => context.onChange(local.value as string)}
+        class={twMerge(
+          'peer h-4 w-4 rounded-full border border-stroke text-primary ring-offset-bg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none cursor-pointer checked:border-primary',
+          local.class,
+        )}
+        {...others}
+      />
+      <div
+        class={twMerge(
+          'absolute h-2 w-2 rounded-full bg-primary transition-transform scale-0 peer-checked:scale-100 pointer-events-none',
+        )}
+      />
     </div>
   );
 };

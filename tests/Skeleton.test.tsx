@@ -1,6 +1,6 @@
 import { render } from '@solidjs/testing-library';
 import { describe, expect, it } from 'vitest';
-import { Skeleton } from '../ui/Skeleton';
+import { Skeleton } from '../lib/ui/Skeleton';
 
 describe('Skeleton', () => {
   it('renders with default classes', () => {

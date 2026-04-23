@@ -1,28 +1,43 @@
 import { render, screen } from '@solidjs/testing-library';
 import { describe, expect, it } from 'vitest';
-import { Alert } from '../ui/Alert';
+import { Alert, AlertDescription, AlertTitle } from '../lib/ui/Alert';
 
 describe('Alert', () => {
-  it('renders correctly with title and children', () => {
-    render(() => <Alert title="Test Title">Test Content</Alert>);
+  it('renders correctly with title and description', () => {
+    render(() => (
+      <Alert>
+        <AlertTitle>Test Title</AlertTitle>
+        <AlertDescription>Test Content</AlertDescription>
+      </Alert>
+    ));
 
     expect(screen.getByText('Test Title')).toBeInTheDocument();
     expect(screen.getByText('Test Content')).toBeInTheDocument();
   });
 
   it('applies variant classes', () => {
-    const { container } = render(() => <Alert title="Warning" variant="warning" />);
+    const { container } = render(() => (
+      <Alert variant="warning">
+        <AlertTitle>Warning</AlertTitle>
+      </Alert>
+    ));
     const alert = container.firstChild as HTMLElement;
 
-    // Check for some warning-specific classes or presence
     expect(alert).toHaveClass('bg-amber-50');
   });
 
   it('renders different icons based on variant', () => {
-    const { container: infoContainer } = render(() => <Alert title="Info" variant="info" />);
-    const { container: errorContainer } = render(() => <Alert title="Error" variant="error" />);
+    const { container: infoContainer } = render(() => (
+      <Alert variant="info">
+        <AlertTitle>Info</AlertTitle>
+      </Alert>
+    ));
+    const { container: errorContainer } = render(() => (
+      <Alert variant="error">
+        <AlertTitle>Error</AlertTitle>
+      </Alert>
+    ));
 
-    // Icons are SVGs, we can check if they exist
     expect(infoContainer.querySelector('svg')).toBeInTheDocument();
     expect(errorContainer.querySelector('svg')).toBeInTheDocument();
   });

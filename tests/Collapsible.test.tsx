@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library';
 import { describe, expect, it } from 'vitest';
-import { Collapsible } from '../ui/Collapsible';
+import { Collapsible } from '../lib/ui/Collapsible';
 
 describe('Collapsible', () => {
   it('is collapsed by default', () => {

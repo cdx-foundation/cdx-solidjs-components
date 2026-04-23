@@ -1,5 +1,5 @@
-import { createSignal, Show, splitProps, type JSX } from 'solid-js';
-import { Copy, Check, FileCode } from 'lucide-solid';
+import { Check, Copy, FileCode } from 'lucide-solid';
+import { type JSX, Show, createSignal, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { Button } from './Button';
 import { ScrollArea } from './ScrollArea';
@@ -22,16 +22,16 @@ interface CodeProps extends JSX.HTMLAttributes<HTMLDivElement> {
 
 /**
  * ### Code Component
- * 
- * A professional code block component featuring a header with optional filename, 
+ *
+ * A professional code block component featuring a header with optional filename,
  * a copy-to-clipboard action, and integrated scroll management.
- * 
+ *
  * @example
  * ```tsx
- * <Code 
- *   code="npm install starling-components" 
- *   fileName="terminal" 
- *   language="bash" 
+ * <Code
+ *   code="npm install starling-components"
+ *   fileName="terminal"
+ *   language="bash"
  * />
  * ```
  */
@@ -42,7 +42,7 @@ export const Code = (props: CodeProps) => {
     'language',
     'showCopy',
     'class',
-    'codeClass'
+    'codeClass',
   ]);
 
   const [copied, setCopied] = createSignal(false);
@@ -62,7 +62,7 @@ export const Code = (props: CodeProps) => {
     <div
       class={twMerge(
         'group relative flex flex-col overflow-hidden rounded-card border border-stroke bg-panel/50 font-mono text-sm',
-        local.class
+        local.class,
       )}
       {...others}
     >

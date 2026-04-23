@@ -36,14 +36,19 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from 's
     <TableRow>
       <TableHead>Server</TableHead>
       <TableHead>Uptime</TableHead>
-      <TableHead>Status</TableHead>
+      <TableHead class="text-right">Status</TableHead>
     </TableRow>
   </TableHeader>
   <TableBody>
     <TableRow>
-      <TableCell>US-EAST-1</TableCell>
-      <TableCell>99.9%</TableCell>
-      <TableCell><Badge variant="success">Healthy</Badge></TableCell>
+      <TableCell class="font-mono text-xs">US-EAST-1</TableCell>
+      <TableCell class="text-sm">99.9%</TableCell>
+      <TableCell class="text-right"><Badge variant="success">Healthy</Badge></TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell class="font-mono text-xs">EU-WEST-1</TableCell>
+      <TableCell class="text-sm">98.2%</TableCell>
+      <TableCell class="text-right"><Badge variant="warning">Degraded</Badge></TableCell>
     </TableRow>
   </TableBody>
 </Table>

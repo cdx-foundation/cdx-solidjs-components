@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library';
 import { describe, expect, it, vi } from 'vitest';
-import { Checkbox } from '../ui/Checkbox';
+import { Checkbox } from '../lib/ui/Checkbox';
 
 describe('Checkbox', () => {
   it('renders and toggles', () => {

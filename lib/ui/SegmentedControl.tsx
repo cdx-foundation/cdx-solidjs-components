@@ -31,10 +31,10 @@ interface SegmentedControlProps {
 
 /**
  * ### SegmentedControl Component
- * 
+ *
  * A compact, pill-styled toggle group for switching between mutually exclusive values.
  * Optimized for toolbars, theme switchers, and view mode toggles.
- * 
+ *
  * @example
  * ```tsx
  * <SegmentedControl
@@ -54,13 +54,13 @@ export const SegmentedControl = (props: SegmentedControlProps) => {
     <div
       class={twMerge(
         'inline-flex items-center bg-surface p-1 rounded-input border border-stroke shadow-sm',
-        local.class
+        local.class,
       )}
     >
       <For each={local.options}>
         {(option) => {
           const isActive = () => local.value === option.value;
-          
+
           return (
             <button
               type="button"
@@ -70,12 +70,10 @@ export const SegmentedControl = (props: SegmentedControlProps) => {
                 isActive()
                   ? 'bg-primary text-white shadow-lg'
                   : 'text-muted hover:text-fg hover:bg-panel/50',
-                local.itemClass
+                local.itemClass,
               )}
             >
-              <Show when={option.icon}>
-                {(Icon) => <Icon class="shrink-0" size={12} />}
-              </Show>
+              <Show when={option.icon}>{(Icon) => <Icon class="shrink-0" size={12} />}</Show>
               <span>{option.label}</span>
             </button>
           );

@@ -1,6 +1,6 @@
 import { render, screen } from '@solidjs/testing-library';
 import { describe, expect, it } from 'vitest';
-import { Kbd } from '../ui/Kbd';
+import { Kbd } from '../lib/ui/Kbd';
 
 describe('Kbd', () => {
   it('renders correctly with children', () => {

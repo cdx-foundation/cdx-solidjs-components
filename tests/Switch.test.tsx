@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library';
 import { describe, expect, it, vi } from 'vitest';
-import { Switch } from '../ui/Switch';
+import { Switch } from '../lib/ui/Switch';
 
 describe('Switch', () => {
   it('renders correctly', () => {

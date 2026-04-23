@@ -132,10 +132,7 @@ export const Modal = (props: ModalProps) => {
 export const ModalHeader = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <div
-      class={twMerge('flex flex-col gap-1.5 mb-5 pr-8', local.class)}
-      {...others}
-    >
+    <div class={twMerge('flex flex-col gap-1.5 mb-5 pr-8', local.class)} {...others}>
       {local.children}
     </div>
   );
@@ -156,10 +153,7 @@ export const ModalHeader = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
 export const ModalTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <h3
-      class={twMerge('text-lg font-bold leading-none tracking-tight', local.class)}
-      {...others}
-    >
+    <h3 class={twMerge('text-lg font-bold leading-none tracking-tight', local.class)} {...others}>
       {local.children}
     </h3>
   );
@@ -180,10 +174,7 @@ export const ModalTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
 export const ModalDescription = (props: JSX.HTMLAttributes<HTMLParagraphElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <p
-      class={twMerge('text-sm text-muted', local.class)}
-      {...others}
-    >
+    <p class={twMerge('text-sm text-muted', local.class)} {...others}>
       {local.children}
     </p>
   );
@@ -207,10 +198,7 @@ export const ModalDescription = (props: JSX.HTMLAttributes<HTMLParagraphElement>
 export const ModalFooter = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <div
-      class={twMerge('flex items-center justify-end gap-2 mt-6', local.class)}
-      {...others}
-    >
+    <div class={twMerge('flex items-center justify-end gap-2 mt-6', local.class)} {...others}>
       {local.children}
     </div>
   );

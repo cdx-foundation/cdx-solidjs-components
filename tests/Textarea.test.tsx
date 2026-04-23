@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library';
 import { describe, expect, it, vi } from 'vitest';
-import { Textarea } from '../ui/Textarea';
+import { Textarea } from '../lib/ui/Textarea';
 
 describe('Textarea', () => {
   it('renders with a label', () => {

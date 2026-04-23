@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap");
 @import "tailwindcss";
 @import "../../lib/theme.css";
 
@@ -11,7 +11,7 @@
   --color-fg: var(--fg-main);
   --color-muted: var(--text-muted);
   --color-stroke: var(--border-main);
-  
+
   --radius-card: var(--radius-card);
   --radius-btn: var(--radius-btn);
   --radius-input: var(--radius-input);
@@ -27,7 +27,7 @@
   --fg-main: #18181b;
   --text-muted: #71717a;
   --border-main: #e4e4e7;
-  
+
   --radius-card: 12px;
   --radius-btn: 8px;
   --radius-input: 8px;
@@ -52,13 +52,14 @@
   --fg-main: #000000;
   --text-muted: #4b5563;
   --border-main: #000000;
-  
+
   --radius-card: 0px;
   --radius-btn: 0px;
   --radius-input: 0px;
   --radius-badge: 0px;
 
-  & aside, & header {
+  & aside,
+  & header {
     background: #ffffff !important;
     border-width: 2px !important;
     border-color: #000000 !important;
@@ -69,7 +70,7 @@
     border-width: 3px !important;
     box-shadow: 6px 6px 0px 0px #000 !important;
   }
-  
+
   & .bg-primary {
     background: #ffb800 !important;
     border: 3px solid #000 !important;
@@ -89,7 +90,7 @@
   --fg-main: #f8fafc;
   --text-muted: #94a3b8;
   --border-main: #334155;
-  
+
   --radius-card: 28px;
   --radius-btn: 9999px;
   --radius-input: 16px;
@@ -97,7 +98,8 @@
 
   color-scheme: dark;
 
-  & aside, & header {
+  & aside,
+  & header {
     background: #0f172a !important;
     border-color: rgba(255, 255, 255, 0.1) !important;
   }
@@ -128,7 +130,7 @@ html {
 body {
   background-color: transparent;
   color: inherit;
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 14px;
@@ -136,15 +138,18 @@ body {
 }
 
 /* Force SOLID background for ALL panel-like elements and overlays in the demo */
-[role="dialog"], 
-.clean-panel, 
+[role="dialog"],
+.clean-panel,
 .bg-panel {
   background-color: var(--bg-panel) !important;
   opacity: 1 !important;
   background-image: none !important; /* Prevent gradient leaks from other styles */
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-weight: 700;
   letter-spacing: -0.01em;
 }
@@ -154,9 +159,17 @@ h1, h2, h3, h4 {
 }
 
 /* Custom scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-main); }
-::-webkit-scrollbar-thumb { background: var(--border-main); border-radius: 3px; }
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-main);
+  border-radius: 3px;
+}
 
 .gradient-text {
   background: linear-gradient(135deg, var(--primary-color) 0%, #a78bfa 50%, #38bdf8 100%);
@@ -166,10 +179,18 @@ h1, h2, h3, h4 {
 }
 
 .grid-bg {
-  background-image: radial-gradient(circle at 2px 2px, color-mix(in srgb, var(--color-fg), transparent 95%) 1px, transparent 0);
+  background-image: radial-gradient(
+    circle at 2px 2px,
+    color-mix(in srgb, var(--color-fg), transparent 95%) 1px,
+    transparent 0
+  );
   background-size: 24px 24px;
 }
 
 .hero-glow {
-  background: radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--primary-color), transparent 85%) 0%, transparent 70%);
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in srgb, var(--primary-color), transparent 85%) 0%,
+    transparent 70%
+  );
 }

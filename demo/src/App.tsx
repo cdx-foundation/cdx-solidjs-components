@@ -1,40 +1,92 @@
-import { createSignal, For, Show, onMount, onCleanup, createMemo, createEffect } from 'solid-js';
-import { Button } from '../../lib/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '../../lib/ui/Card';
-import { Badge } from '../../lib/ui/Badge';
-import { Input } from '../../lib/ui/Input';
-import { Label } from '../../lib/ui/Label';
-import { Switch } from '../../lib/ui/Switch';
-import { Avatar, AvatarFallback, AvatarImage } from '../../lib/ui/Avatar';
-import { Alert, AlertDescription, AlertTitle } from '../../lib/ui/Alert';
-import { Checkbox } from '../../lib/ui/Checkbox';
-import { Slider } from '../../lib/ui/Slider';
-import { Progress } from '../../lib/ui/Progress';
-import { Textarea } from '../../lib/ui/Textarea';
-import { Kbd } from '../../lib/ui/Kbd';
-import { Separator } from '../../lib/ui/Separator';
-import { Skeleton } from '../../lib/ui/Skeleton';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../../lib/ui/Accordion';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../lib/ui/Tabs';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../lib/ui/Table';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from '../../lib/ui/Breadcrumb';
-import { Command, CommandGroup, CommandItem } from '../../lib/ui/Command';
-import { Modal, ModalHeader, ModalTitle, ModalDescription, ModalFooter } from '../../lib/ui/Modal';
-import { Sheet, SheetHeader, SheetTitle, SheetDescription, SheetContent, SheetFooter } from '../../lib/ui/Sheet';
-import { Tooltip } from '../../lib/ui/Tooltip';
-import { Popover } from '../../lib/ui/Popover';
-import { HoverCard } from '../../lib/ui/HoverCard';
-import { Calendar } from '../../lib/ui/Calendar';
-import { Select } from '../../lib/ui/Select';
-import { SegmentedControl } from '../../lib/ui/SegmentedControl';
-import { ScrollArea } from '../../lib/ui/ScrollArea';
-import { AspectRatio } from '../../lib/ui/AspectRatio';
-import { Code } from '../../lib/ui/Code';
-import { toast, Toaster } from '../../lib/ui/Toast';
-import { Menu, X, ChevronRight, Cat, ExternalLink, Code2, Layers, Cpu, Palette, Sparkles, Zap, Shield, Search, Sun, Moon } from 'lucide-solid';
+import {
+  Cat,
+  ChevronRight,
+  Code2,
+  Cpu,
+  ExternalLink,
+  Layers,
+  Menu,
+  Moon,
+  Palette,
+  Search,
+  Shield,
+  Sparkles,
+  Sun,
+  X,
+  Zap,
+} from 'lucide-solid';
+import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '../../lib/ui/Accordion';
+import { Alert, AlertDescription, AlertTitle } from '../../lib/ui/Alert';
+import { AspectRatio } from '../../lib/ui/AspectRatio';
+import { Avatar, AvatarFallback, AvatarImage } from '../../lib/ui/Avatar';
+import { Badge } from '../../lib/ui/Badge';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from '../../lib/ui/Breadcrumb';
+import { Button } from '../../lib/ui/Button';
+import { Calendar } from '../../lib/ui/Calendar';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '../../lib/ui/Card';
+import { Checkbox } from '../../lib/ui/Checkbox';
+import { Code } from '../../lib/ui/Code';
+import { Command, CommandGroup, CommandItem } from '../../lib/ui/Command';
+import { HoverCard } from '../../lib/ui/HoverCard';
+import { Input } from '../../lib/ui/Input';
+import { Kbd } from '../../lib/ui/Kbd';
+import { Label } from '../../lib/ui/Label';
+import { Modal, ModalDescription, ModalFooter, ModalHeader, ModalTitle } from '../../lib/ui/Modal';
+import { Popover } from '../../lib/ui/Popover';
+import { Progress } from '../../lib/ui/Progress';
+import { ScrollArea } from '../../lib/ui/ScrollArea';
+import { SegmentedControl } from '../../lib/ui/SegmentedControl';
+import { Select } from '../../lib/ui/Select';
+import { Separator } from '../../lib/ui/Separator';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '../../lib/ui/Sheet';
+import { Skeleton } from '../../lib/ui/Skeleton';
+import { Slider } from '../../lib/ui/Slider';
+import { Switch } from '../../lib/ui/Switch';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../lib/ui/Table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../lib/ui/Tabs';
+import { Textarea } from '../../lib/ui/Textarea';
+import { Toaster, toast } from '../../lib/ui/Toast';
+import { Tooltip } from '../../lib/ui/Tooltip';
 
-type Section = 'intro' | 'get-started' | 'theming' | 'layout' | 'forms' | 'nav' | 'data' | 'feedback' | 'overlays' | 'disclosure' | 'utils';
+type Section =
+  | 'intro'
+  | 'get-started'
+  | 'theming'
+  | 'layout'
+  | 'forms'
+  | 'nav'
+  | 'data'
+  | 'feedback'
+  | 'overlays'
+  | 'disclosure'
+  | 'utils';
 type Theme = 'professional' | 'brutalist' | 'midnight';
 
 export default function App() {
@@ -71,17 +123,89 @@ export default function App() {
   });
 
   const navItems = [
-    { id: 'intro', label: 'Introduction', group: 'Getting Started' },
-    { id: 'get-started', label: 'Installation', group: 'Getting Started' },
-    { id: 'theming', label: 'Theming', group: 'Getting Started' },
-    { id: 'layout', label: 'Layout', group: 'Components' },
-    { id: 'forms', label: 'Forms & Inputs', group: 'Components' },
-    { id: 'nav', label: 'Navigation', group: 'Components' },
-    { id: 'data', label: 'Data Display', group: 'Components' },
-    { id: 'feedback', label: 'Feedback', group: 'Components' },
-    { id: 'overlays', label: 'Overlays', group: 'Components' },
-    { id: 'disclosure', label: 'Disclosure', group: 'Components' },
-    { id: 'utils', label: 'Utilities', group: 'Development' },
+    { id: 'intro', label: 'Introduction', group: 'Getting Started', keywords: ['about', 'guide'] },
+    {
+      id: 'get-started',
+      label: 'Installation',
+      group: 'Getting Started',
+      keywords: ['setup', 'install', 'usage'],
+    },
+    {
+      id: 'theming',
+      label: 'Theming',
+      group: 'Getting Started',
+      keywords: ['colors', 'customization', 'branding'],
+    },
+    {
+      id: 'layout',
+      label: 'Layout',
+      group: 'Components',
+      keywords: ['card', 'separator', 'aspect ratio', 'scrollarea', 'resizable'],
+    },
+    {
+      id: 'forms',
+      label: 'Forms & Inputs',
+      group: 'Components',
+      keywords: [
+        'button',
+        'input',
+        'textarea',
+        'checkbox',
+        'radio',
+        'select',
+        'slider',
+        'switch',
+        'colorpicker',
+        'datepicker',
+        'label',
+      ],
+    },
+    {
+      id: 'nav',
+      label: 'Navigation',
+      group: 'Components',
+      keywords: ['navigation menu', 'menubar', 'breadcrumb', 'pagination', 'tabs'],
+    },
+    {
+      id: 'data',
+      label: 'Data Display',
+      group: 'Components',
+      keywords: ['badge', 'table', 'avatar', 'kbd', 'calendar', 'code'],
+    },
+    {
+      id: 'feedback',
+      label: 'Feedback',
+      group: 'Components',
+      keywords: ['alert', 'progress', 'skeleton', 'toast', 'toaster'],
+    },
+    {
+      id: 'overlays',
+      label: 'Overlays',
+      group: 'Components',
+      keywords: [
+        'modal',
+        'dialog',
+        'sheet',
+        'popover',
+        'tooltip',
+        'hover card',
+        'context menu',
+        'command',
+        'dropdown menu',
+      ],
+    },
+    {
+      id: 'disclosure',
+      label: 'Disclosure',
+      group: 'Components',
+      keywords: ['accordion', 'collapsible', 'carousel'],
+    },
+    {
+      id: 'utils',
+      label: 'Utilities',
+      group: 'Development',
+      keywords: ['clickOutside', 'hooks', 'directives'],
+    },
   ];
 
   const themes = [
@@ -92,18 +216,18 @@ export default function App() {
 
   const groupedNav = createMemo(() => {
     const groups: Record<string, typeof navItems> = {};
-    navItems.forEach(item => {
+    for (const item of navItems) {
       if (!groups[item.group]) groups[item.group] = [];
       groups[item.group].push(item);
-    });
+    }
     return groups;
   });
 
   const Sidebar = () => (
     <aside
       class={twMerge(
-        "fixed inset-y-0 left-0 z-40 w-64 bg-panel border-r border-stroke transition-all duration-400 lg:translate-x-0 lg:static lg:inset-auto lg:z-0",
-        sidebarOpen() ? "translate-x-0" : "-translate-x-full",
+        'fixed inset-y-0 left-0 z-40 w-64 bg-panel border-r border-stroke transition-all duration-400 lg:translate-x-0 lg:static lg:inset-auto lg:z-0',
+        sidebarOpen() ? 'translate-x-0' : '-translate-x-full',
       )}
     >
       <div class="h-full flex flex-col p-6 overflow-y-auto">
@@ -125,21 +249,20 @@ export default function App() {
                   <For each={items}>
                     {(item) => (
                       <button
+                        type="button"
                         onClick={() => {
                           setActiveSection(item.id as Section);
                           setSidebarOpen(false);
                         }}
                         class={twMerge(
-                          "w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors",
+                          'w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors',
                           activeSection() === item.id
-                            ? "bg-primary/10 text-primary"
-                            : "text-muted hover:bg-surface hover:text-fg",
+                            ? 'bg-primary/10 text-primary'
+                            : 'text-muted hover:bg-surface hover:text-fg',
                         )}
                       >
                         {item.label}
-                        {activeSection() === item.id && (
-                          <ChevronRight size={14} />
-                        )}
+                        {activeSection() === item.id && <ChevronRight size={14} />}
                       </button>
                     )}
                   </For>
@@ -162,7 +285,13 @@ export default function App() {
     </aside>
   );
 
-  const Preview = (props: { title: string, description: string, children: any, code: string, fileName?: string }) => (
+  const Preview = (props: {
+    title: string;
+    description: string;
+    children: any;
+    code: string;
+    fileName?: string;
+  }) => (
     <div class="space-y-6 mb-20">
       <div class="flex flex-col gap-1">
         <h3 class="text-2xl font-bold tracking-tight">{props.title}</h3>
@@ -172,7 +301,7 @@ export default function App() {
         <div class="border border-stroke rounded-xl overflow-hidden bg-bg/50 grid-bg p-12 flex items-center justify-center min-h-[250px]">
           {props.children}
         </div>
-        <Code code={props.code} fileName={props.fileName || "Usage"} language="tsx" />
+        <Code code={props.code} fileName={props.fileName || 'Usage'} language="tsx" />
       </div>
     </div>
   );
@@ -193,6 +322,7 @@ export default function App() {
         <header class="h-16 border-b border-stroke bg-bg/80 backdrop-blur-md sticky top-0 z-20 flex items-center justify-between px-6 shrink-0 transition-all duration-400">
           <div class="flex items-center gap-4 flex-1">
             <button
+              type="button"
               class="lg:hidden p-2 -ml-2 text-muted hover:text-fg"
               onClick={() => setSidebarOpen(true)}
             >
@@ -209,6 +339,7 @@ export default function App() {
 
           <div class="flex-1 flex justify-center max-w-xl mx-auto lg:mx-0">
             <button
+              type="button"
               onClick={() => setCommandOpen(true)}
               class="w-full flex items-center gap-3 px-4 h-10 border border-stroke rounded-lg bg-panel/50 text-muted hover:border-muted transition-colors text-sm"
             >
@@ -227,29 +358,25 @@ export default function App() {
               variant="primary"
               class="hidden sm:flex h-9 px-4 text-xs font-bold uppercase tracking-tight"
             >
-              v1.2.0
+              v2.0.0
             </Button>
           </div>
         </header>
 
         <div class="max-w-4xl w-full mx-auto p-6 md:p-12 lg:p-16">
           {/* Section: Introduction */}
-          <Show when={activeSection() === "intro"}>
+          <Show when={activeSection() === 'intro'}>
             <section class="space-y-6">
-              <Badge
-                variant="outline"
-                class="text-primary border-primary/20 bg-primary/5"
-              >
+              <Badge variant="outline" class="text-primary border-primary/20 bg-primary/5">
                 Documentation
               </Badge>
               <h1 class="text-5xl font-extrabold tracking-tight leading-[1.1]">
-                Precision components for{" "}
-                <span class="gradient-text">technical teams</span>.
+                Precision components for <span class="gradient-text">technical teams</span>.
               </h1>
               <p class="text-xl text-muted leading-relaxed max-w-2xl">
-                Starling UI is a meticulously crafted component library for
-                SolidJS, optimized for data-heavy interfaces. It emphasizes
-                precision, accessibility, and professional aesthetics.
+                Starling UI is a meticulously crafted component library for SolidJS, optimized for
+                data-heavy interfaces. It emphasizes precision, accessibility, and professional
+                aesthetics.
               </p>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
                 <Card class="bg-panel/30 border-dashed">
@@ -257,8 +384,7 @@ export default function App() {
                     <Cpu size={24} class="text-primary mb-2" />
                     <CardTitle>Performance First</CardTitle>
                     <CardDescription>
-                      Zero-cost abstractions and built-in tree shaking ensure
-                      minimal bundle sizes.
+                      Zero-cost abstractions and built-in tree shaking ensure minimal bundle sizes.
                     </CardDescription>
                   </CardHeader>
                 </Card>
@@ -267,14 +393,14 @@ export default function App() {
                     <Palette size={24} class="text-primary mb-2" />
                     <CardTitle>Multiple Presets</CardTitle>
                     <CardDescription>
-                      Switch between several theme presets with zero
-                      configuration, optimized for all technical scenarios.
+                      Switch between several theme presets with zero configuration, optimized for
+                      all technical scenarios.
                     </CardDescription>
                   </CardHeader>
                 </Card>
               </div>
               <div class="pt-10 flex gap-4">
-                <Button onClick={() => setActiveSection("get-started")}>
+                <Button onClick={() => setActiveSection('get-started')}>
                   Get Started <ChevronRight size={16} class="ml-2" />
                 </Button>
                 <Button
@@ -289,31 +415,23 @@ export default function App() {
           </Show>
 
           {/* Section: Installation */}
-          <Show when={activeSection() === "get-started"}>
+          <Show when={activeSection() === 'get-started'}>
             <section class="space-y-10">
               <div>
-                <h1 class="text-4xl font-extrabold tracking-tight mb-4">
-                  Installation
-                </h1>
-                <p class="text-muted">
-                  Set up Starling UI in your project in seconds.
-                </p>
+                <h1 class="text-4xl font-extrabold tracking-tight mb-4">Installation</h1>
+                <p class="text-muted">Set up Starling UI in your project in seconds.</p>
               </div>
 
               <div class="space-y-4">
                 <h2 class="text-xl font-bold">1. Install Package</h2>
-                <Code
-                  code="npm install starling-components"
-                  fileName="terminal"
-                  language="bash"
-                />
+                <Code code="npm install starling-components" fileName="terminal" language="bash" />
               </div>
 
               <div class="space-y-4">
                 <h2 class="text-xl font-bold">2. Add Tailwind Styles</h2>
                 <p class="text-sm text-muted">
-                  Import the theme and base styles into your CSS entry point
-                  (Tailwind v4 compatible).
+                  Import the theme and base styles into your CSS entry point (Tailwind v4
+                  compatible).
                 </p>
                 <Code
                   code={`@import "tailwindcss";\n@import "starling-components/theme";`}
@@ -323,12 +441,9 @@ export default function App() {
               </div>
 
               <Alert class="bg-primary/5 border-primary/20">
-                <AlertTitle class="text-primary font-bold">
-                  Important Step
-                </AlertTitle>
+                <AlertTitle class="text-primary font-bold">Important Step</AlertTitle>
                 <AlertDescription>
-                  The notification system requires the `Toaster` component at
-                  your app's root.
+                  The notification system requires the `Toaster` component at your app's root.
                 </AlertDescription>
                 <div class="mt-4">
                   <Code
@@ -341,13 +456,12 @@ export default function App() {
           </Show>
 
           {/* Section: Theming */}
-          <Show when={activeSection() === "theming"}>
+          <Show when={activeSection() === 'theming'}>
             <section class="space-y-8">
               <h1 class="text-4xl font-extrabold tracking-tight">Theming</h1>
               <p class="text-muted leading-relaxed max-w-2xl">
-                Starling UI uses a CSS variable-based design system. You can
-                override these variables in your global CSS to customize the
-                entire library.
+                Starling UI uses a CSS variable-based design system. You can override these
+                variables in your global CSS to customize the entire library.
               </p>
 
               <div class="space-y-10">
@@ -364,81 +478,45 @@ export default function App() {
                       </TableHeader>
                       <TableBody>
                         <TableRow>
-                          <TableCell class="font-mono text-xs">
-                            --color-primary
-                          </TableCell>
-                          <TableCell class="text-sm text-muted">
-                            Main accent/action color
-                          </TableCell>
-                          <TableCell class="text-right font-mono text-xs">
-                            bg-primary
-                          </TableCell>
+                          <TableCell class="font-mono text-xs">--color-primary</TableCell>
+                          <TableCell class="text-sm text-muted">Main accent/action color</TableCell>
+                          <TableCell class="text-right font-mono text-xs">bg-primary</TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell class="font-mono text-xs">
-                            --color-bg
-                          </TableCell>
-                          <TableCell class="text-sm text-muted">
-                            Page background
-                          </TableCell>
-                          <TableCell class="text-right font-mono text-xs">
-                            bg-bg
-                          </TableCell>
+                          <TableCell class="font-mono text-xs">--color-bg</TableCell>
+                          <TableCell class="text-sm text-muted">Page background</TableCell>
+                          <TableCell class="text-right font-mono text-xs">bg-bg</TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell class="font-mono text-xs">
-                            --color-panel
-                          </TableCell>
+                          <TableCell class="font-mono text-xs">--color-panel</TableCell>
                           <TableCell class="text-sm text-muted">
                             Card & floating backgrounds
                           </TableCell>
-                          <TableCell class="text-right font-mono text-xs">
-                            bg-panel
-                          </TableCell>
+                          <TableCell class="text-right font-mono text-xs">bg-panel</TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell class="font-mono text-xs">
-                            --color-surface
-                          </TableCell>
+                          <TableCell class="font-mono text-xs">--color-surface</TableCell>
                           <TableCell class="text-sm text-muted">
                             Subtle hover/active surfaces
                           </TableCell>
-                          <TableCell class="text-right font-mono text-xs">
-                            bg-surface
-                          </TableCell>
+                          <TableCell class="text-right font-mono text-xs">bg-surface</TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell class="font-mono text-xs">
-                            --color-fg
-                          </TableCell>
-                          <TableCell class="text-sm text-muted">
-                            Primary text color
-                          </TableCell>
-                          <TableCell class="text-right font-mono text-xs">
-                            text-fg
-                          </TableCell>
+                          <TableCell class="font-mono text-xs">--color-fg</TableCell>
+                          <TableCell class="text-sm text-muted">Primary text color</TableCell>
+                          <TableCell class="text-right font-mono text-xs">text-fg</TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell class="font-mono text-xs">
-                            --color-muted
-                          </TableCell>
+                          <TableCell class="font-mono text-xs">--color-muted</TableCell>
                           <TableCell class="text-sm text-muted">
                             Secondary/de-emphasized text
                           </TableCell>
-                          <TableCell class="text-right font-mono text-xs">
-                            text-muted
-                          </TableCell>
+                          <TableCell class="text-right font-mono text-xs">text-muted</TableCell>
                         </TableRow>
                         <TableRow class="border-none">
-                          <TableCell class="font-mono text-xs">
-                            --color-stroke
-                          </TableCell>
-                          <TableCell class="text-sm text-muted">
-                            Border and divider color
-                          </TableCell>
-                          <TableCell class="text-right font-mono text-xs">
-                            border-stroke
-                          </TableCell>
+                          <TableCell class="font-mono text-xs">--color-stroke</TableCell>
+                          <TableCell class="text-sm text-muted">Border and divider color</TableCell>
+                          <TableCell class="text-right font-mono text-xs">border-stroke</TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>
@@ -458,48 +536,28 @@ export default function App() {
                       </TableHeader>
                       <TableBody>
                         <TableRow>
-                          <TableCell class="font-mono text-xs">
-                            --radius-card
-                          </TableCell>
+                          <TableCell class="font-mono text-xs">--radius-card</TableCell>
                           <TableCell class="text-sm text-muted">
                             Radius for Cards and Panels
                           </TableCell>
-                          <TableCell class="text-right font-mono text-xs">
-                            rounded-card
-                          </TableCell>
+                          <TableCell class="text-right font-mono text-xs">rounded-card</TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell class="font-mono text-xs">
-                            --radius-btn
-                          </TableCell>
-                          <TableCell class="text-sm text-muted">
-                            Radius for Buttons
-                          </TableCell>
-                          <TableCell class="text-right font-mono text-xs">
-                            rounded-btn
-                          </TableCell>
+                          <TableCell class="font-mono text-xs">--radius-btn</TableCell>
+                          <TableCell class="text-sm text-muted">Radius for Buttons</TableCell>
+                          <TableCell class="text-right font-mono text-xs">rounded-btn</TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell class="font-mono text-xs">
-                            --radius-input
-                          </TableCell>
+                          <TableCell class="font-mono text-xs">--radius-input</TableCell>
                           <TableCell class="text-sm text-muted">
                             Radius for Inputs & Selects
                           </TableCell>
-                          <TableCell class="text-right font-mono text-xs">
-                            rounded-input
-                          </TableCell>
+                          <TableCell class="text-right font-mono text-xs">rounded-input</TableCell>
                         </TableRow>
                         <TableRow class="border-none">
-                          <TableCell class="font-mono text-xs">
-                            --radius-badge
-                          </TableCell>
-                          <TableCell class="text-sm text-muted">
-                            Radius for Badges
-                          </TableCell>
-                          <TableCell class="text-right font-mono text-xs">
-                            rounded-badge
-                          </TableCell>
+                          <TableCell class="font-mono text-xs">--radius-badge</TableCell>
+                          <TableCell class="text-sm text-muted">Radius for Badges</TableCell>
+                          <TableCell class="text-right font-mono text-xs">rounded-badge</TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>
@@ -519,26 +577,16 @@ export default function App() {
                       </TableHeader>
                       <TableBody>
                         <TableRow>
-                          <TableCell class="font-mono text-xs">
-                            --font-sans
-                          </TableCell>
-                          <TableCell class="text-sm text-muted">
-                            Main UI font stack
-                          </TableCell>
-                          <TableCell class="text-right font-mono text-xs">
-                            font-sans
-                          </TableCell>
+                          <TableCell class="font-mono text-xs">--font-sans</TableCell>
+                          <TableCell class="text-sm text-muted">Main UI font stack</TableCell>
+                          <TableCell class="text-right font-mono text-xs">font-sans</TableCell>
                         </TableRow>
                         <TableRow class="border-none">
-                          <TableCell class="font-mono text-xs">
-                            --font-mono
-                          </TableCell>
+                          <TableCell class="font-mono text-xs">--font-mono</TableCell>
                           <TableCell class="text-sm text-muted">
                             Technical/data font stack
                           </TableCell>
-                          <TableCell class="text-right font-mono text-xs">
-                            font-mono
-                          </TableCell>
+                          <TableCell class="text-right font-mono text-xs">font-mono</TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>
@@ -548,8 +596,7 @@ export default function App() {
                 <div class="space-y-4 pt-6">
                   <h2 class="text-xl font-bold">Usage Example</h2>
                   <p class="text-sm text-muted mb-4">
-                    You can apply these variables globally or scope them to a
-                    specific container.
+                    You can apply these variables globally or scope them to a specific container.
                   </p>
                   <Code
                     code={`:root {\n  --color-primary: #10b981;\n  --radius-card: 0px;\n  --radius-btn: 4px;\n  --font-mono: "Fira Code", monospace;\n}`}
@@ -562,12 +609,10 @@ export default function App() {
           </Show>
 
           {/* Section: Layout */}
-          <Show when={activeSection() === "layout"}>
+          <Show when={activeSection() === 'layout'}>
             <section class="space-y-12">
               <div>
-                <h1 class="text-4xl font-extrabold tracking-tight mb-4">
-                  Layout
-                </h1>
+                <h1 class="text-4xl font-extrabold tracking-tight mb-4">Layout</h1>
                 <p class="text-lg text-muted">
                   Essential components for structuring application pages.
                 </p>
@@ -585,8 +630,7 @@ export default function App() {
                   </CardHeader>
                   <CardContent>
                     <p class="text-sm text-muted">
-                      All systems in us-east-1 are operational. Deployment #4288
-                      passed CI.
+                      All systems in us-east-1 are operational. Deployment #4288 passed CI.
                     </p>
                   </CardContent>
                   <CardFooter>
@@ -607,21 +651,15 @@ export default function App() {
                   class="w-full max-w-sm border border-stroke p-4 rounded-lg bg-panel"
                 >
                   <div class="space-y-4">
-                    <p class="text-sm text-muted font-mono">
-                      [08:42:01] System initializing...
-                    </p>
-                    <p class="text-sm text-muted font-mono">
-                      [08:42:05] Loading kernel modules...
-                    </p>
+                    <p class="text-sm text-muted font-mono">[08:42:01] System initializing...</p>
+                    <p class="text-sm text-muted font-mono">[08:42:05] Loading kernel modules...</p>
                     <p class="text-sm text-muted font-mono">
                       [08:42:10] Database connection established.
                     </p>
                     <p class="text-sm text-muted font-mono">
                       [08:42:12] Web server listening on :4000
                     </p>
-                    <p class="text-sm text-muted font-mono">
-                      [08:42:15] Monitoring agents active.
-                    </p>
+                    <p class="text-sm text-muted font-mono">[08:42:15] Monitoring agents active.</p>
                   </div>
                 </ScrollArea>
               </Preview>
@@ -634,9 +672,7 @@ export default function App() {
                 <div class="w-full max-w-sm overflow-hidden rounded-xl border border-stroke shadow-lg">
                   <AspectRatio ratio={16 / 9}>
                     <div class="w-full h-full bg-surface grid-bg flex items-center justify-center">
-                      <span class="text-muted font-bold">
-                        16:9 Aspect Ratio
-                      </span>
+                      <span class="text-muted font-bold">16:9 Aspect Ratio</span>
                     </div>
                   </AspectRatio>
                 </div>
@@ -645,15 +681,11 @@ export default function App() {
           </Show>
 
           {/* Section: Forms */}
-          <Show when={activeSection() === "forms"}>
+          <Show when={activeSection() === 'forms'}>
             <section class="space-y-12">
               <div>
-                <h1 class="text-4xl font-extrabold tracking-tight mb-4">
-                  Forms & Inputs
-                </h1>
-                <p class="text-lg text-muted">
-                  Precision primitives for user data entry.
-                </p>
+                <h1 class="text-4xl font-extrabold tracking-tight mb-4">Forms & Inputs</h1>
+                <p class="text-lg text-muted">Precision primitives for user data entry.</p>
               </div>
 
               <Preview
@@ -694,9 +726,9 @@ export default function App() {
                     value={selectVal()}
                     onChange={setSelectVal}
                     options={[
-                      { label: "Production (US-EAST)", value: "prod" },
-                      { label: "Staging (EU-WEST)", value: "stage" },
-                      { label: "Development (LOCAL)", value: "dev" },
+                      { label: 'Production (US-EAST)', value: 'prod' },
+                      { label: 'Staging (EU-WEST)', value: 'stage' },
+                      { label: 'Development (LOCAL)', value: 'dev' },
                     ]}
                   />
                 </div>
@@ -726,23 +758,17 @@ export default function App() {
                     <Label class="text-muted">Memory Allocation</Label>
                     <span class="text-primary font-bold">{sliderVal()}%</span>
                   </div>
-                  <Slider
-                    value={sliderVal()}
-                    onValueChange={setSliderVal}
-                    max={100}
-                  />
+                  <Slider value={sliderVal()} onValueChange={setSliderVal} max={100} />
                 </div>
               </Preview>
             </section>
           </Show>
 
           {/* Section: Navigation */}
-          <Show when={activeSection() === "nav"}>
+          <Show when={activeSection() === 'nav'}>
             <section class="space-y-12">
               <div>
-                <h1 class="text-4xl font-extrabold tracking-tight mb-4">
-                  Navigation
-                </h1>
+                <h1 class="text-4xl font-extrabold tracking-tight mb-4">Navigation</h1>
                 <p class="text-lg text-muted">
                   Components for complex site structure and traversal.
                 </p>
@@ -796,15 +822,11 @@ export default function App() {
           </Show>
 
           {/* Section: Data Display */}
-          <Show when={activeSection() === "data"}>
+          <Show when={activeSection() === 'data'}>
             <section class="space-y-12">
               <div>
-                <h1 class="text-4xl font-extrabold tracking-tight mb-4">
-                  Data Display
-                </h1>
-                <p class="text-lg text-muted">
-                  Structured layout for complex information.
-                </p>
+                <h1 class="text-4xl font-extrabold tracking-tight mb-4">Data Display</h1>
+                <p class="text-lg text-muted">Structured layout for complex information.</p>
               </div>
 
               <Preview
@@ -816,7 +838,9 @@ export default function App() {
                   <Code
                     fileName="lib/ui/Code.tsx"
                     language="typescript"
-                    code={`export const Code = (props: CodeProps) => {\n  const [copied, setCopied] = createSignal(false);\n  // ... implementation details\n};`}
+                    code={
+                      'export const Code = (props: CodeProps) => {\n  const [copied, setCopied] = createSignal(false);\n  // ... implementation details\n};'
+                    }
                   />
                 </div>
               </Preview>
@@ -837,22 +861,14 @@ export default function App() {
                     </TableHeader>
                     <TableBody>
                       <TableRow>
-                        <TableCell class="font-mono text-xs">
-                          US-EAST-1
-                        </TableCell>
+                        <TableCell class="font-mono text-xs">US-EAST-1</TableCell>
                         <TableCell>
-                          <Badge class="bg-green-500/10 text-green-500 border-none">
-                            Healthy
-                          </Badge>
+                          <Badge class="bg-green-500/10 text-green-500 border-none">Healthy</Badge>
                         </TableCell>
-                        <TableCell class="text-right font-mono text-xs text-muted">
-                          12ms
-                        </TableCell>
+                        <TableCell class="text-right font-mono text-xs text-muted">12ms</TableCell>
                       </TableRow>
                       <TableRow class="border-none">
-                        <TableCell class="font-mono text-xs">
-                          EU-WEST-1
-                        </TableCell>
+                        <TableCell class="font-mono text-xs">EU-WEST-1</TableCell>
                         <TableCell>
                           <Badge
                             variant="destructive"
@@ -861,9 +877,7 @@ export default function App() {
                             Degraded
                           </Badge>
                         </TableCell>
-                        <TableCell class="text-right font-mono text-xs text-muted">
-                          145ms
-                        </TableCell>
+                        <TableCell class="text-right font-mono text-xs text-muted">145ms</TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>
@@ -888,15 +902,11 @@ export default function App() {
           </Show>
 
           {/* Section: Feedback */}
-          <Show when={activeSection() === "feedback"}>
+          <Show when={activeSection() === 'feedback'}>
             <section class="space-y-12">
               <div>
-                <h1 class="text-4xl font-extrabold tracking-tight mb-4">
-                  Feedback
-                </h1>
-                <p class="text-lg text-muted">
-                  Communicate system status and task progress.
-                </p>
+                <h1 class="text-4xl font-extrabold tracking-tight mb-4">Feedback</h1>
+                <p class="text-lg text-muted">Communicate system status and task progress.</p>
               </div>
 
               <Preview
@@ -907,15 +917,11 @@ export default function App() {
                 <div class="flex flex-col gap-4 w-full max-w-md transition-all duration-400">
                   <Alert>
                     <AlertTitle>System Update</AlertTitle>
-                    <AlertDescription>
-                      A new version is available for deployment.
-                    </AlertDescription>
+                    <AlertDescription>A new version is available for deployment.</AlertDescription>
                   </Alert>
                   <Alert variant="destructive">
                     <AlertTitle>Critical Error</AlertTitle>
-                    <AlertDescription>
-                      Memory leak detected in regional cluster.
-                    </AlertDescription>
+                    <AlertDescription>Memory leak detected in regional cluster.</AlertDescription>
                   </Alert>
                 </div>
               </Preview>
@@ -944,9 +950,9 @@ export default function App() {
                   variant="outline"
                   onClick={() =>
                     toast({
-                      title: "System Ready",
-                      description: "All clusters operational.",
-                      type: "success",
+                      title: 'System Ready',
+                      description: 'All clusters operational.',
+                      type: 'success',
                     })
                   }
                 >
@@ -957,15 +963,11 @@ export default function App() {
           </Show>
 
           {/* Section: Overlays */}
-          <Show when={activeSection() === "overlays"}>
+          <Show when={activeSection() === 'overlays'}>
             <section class="space-y-12">
               <div>
-                <h1 class="text-4xl font-extrabold tracking-tight mb-4">
-                  Overlays
-                </h1>
-                <p class="text-lg text-muted">
-                  Accessible dialogs, sheets, and popovers.
-                </p>
+                <h1 class="text-4xl font-extrabold tracking-tight mb-4">Overlays</h1>
+                <p class="text-lg text-muted">Accessible dialogs, sheets, and popovers.</p>
               </div>
 
               <Preview
@@ -1022,15 +1024,12 @@ export default function App() {
                 description="A floating container for rich content, triggered by a click."
                 code={`import { Popover } from 'starling-components/ui/Popover';\n\n<Popover\n  trigger={<Button variant="outline">Open Popover</Button>}\n  align="center"\n>\n  <div class="p-2">Detailed information here.</div>\n</Popover>`}
               >
-                <Popover
-                  trigger={<Button variant="outline">Click for Details</Button>}
-                  align="center"
-                >
+                <Popover trigger={<Button variant="outline">Click for Details</Button>} align="top">
                   <div class="p-4 w-64 space-y-2">
                     <h4 class="font-bold">Project Details</h4>
                     <p class="text-xs text-muted">
-                      Created by Yanis on April 2026. This project is currently
-                      in active development.
+                      Created by Yanis on April 2026. This project is currently in active
+                      development.
                     </p>
                     <div class="pt-2">
                       <Button variant="primary" class="w-full h-8 text-xs">
@@ -1044,22 +1043,22 @@ export default function App() {
               <Preview
                 title="Hover Card"
                 description="A non-interactive preview that appears on hover with a slight delay."
-                code={`import { HoverCard } from 'starling-components/ui/HoverCard';\n\n<HoverCard trigger={<a href="#" class="text-primary underline">@yanis</a>}>\n  <div class="flex gap-4">\n    <Avatar fallback="YA" />\n    <div>\n      <h4 class="text-sm font-bold">Yanis</h4>\n      <p class="text-xs text-muted">Core Developer</p>\n    </div>\n  </div>\n</HoverCard>`}
+                code={`import { HoverCard } from 'starling-components/ui/HoverCard';\nimport { Avatar, AvatarImage, AvatarFallback } from 'starling-components/ui/Avatar';\n\n<HoverCard trigger={<a href="#" class="text-primary underline">@yanis</a>}>\n  <div class="flex gap-4">\n    <Avatar>\n      <AvatarImage src="https://github.com/nutlope.png" alt="Yanis" />\n      <AvatarFallback>YA</AvatarFallback>\n    </Avatar>\n    <div>\n      <h4 class="text-sm font-bold">Yanis</h4>\n      <p class="text-xs text-muted">Core Developer</p>\n    </div>\n  </div>\n</HoverCard>`}
               >
                 <HoverCard
                   trigger={
-                    <span class="text-primary underline cursor-help">
-                      Hover for Profile
-                    </span>
+                    <span class="text-primary underline cursor-help">Hover for Profile</span>
                   }
                 >
                   <div class="flex gap-4">
-                    <Avatar fallback="YA" />
+                    <Avatar>
+                      <AvatarImage src="https://github.com/nutlope.png" alt="Yanis" />
+                      <AvatarFallback>YA</AvatarFallback>
+                    </Avatar>
                     <div class="space-y-1">
                       <h4 class="text-sm font-bold">Yanis</h4>
                       <p class="text-xs text-muted">
-                        Building the future of Starling UI. Lead developer and
-                        architect.
+                        Building the future of Starling UI. Lead developer and architect.
                       </p>
                       <div class="flex items-center gap-1 pt-2">
                         <Badge class="text-[10px] h-4">Maintainer</Badge>
@@ -1073,15 +1072,11 @@ export default function App() {
           </Show>
 
           {/* Section: Disclosure */}
-          <Show when={activeSection() === "disclosure"}>
+          <Show when={activeSection() === 'disclosure'}>
             <section class="space-y-12">
               <div>
-                <h1 class="text-4xl font-extrabold tracking-tight mb-4">
-                  Disclosure
-                </h1>
-                <p class="text-lg text-muted">
-                  Toggle visibility of large content sections.
-                </p>
+                <h1 class="text-4xl font-extrabold tracking-tight mb-4">Disclosure</h1>
+                <p class="text-lg text-muted">Toggle visibility of large content sections.</p>
               </div>
 
               <Preview
@@ -1115,19 +1110,17 @@ export default function App() {
           </Show>
 
           {/* Section: Utilities */}
-          <Show when={activeSection() === "utils"}>
+          <Show when={activeSection() === 'utils'}>
             <section class="space-y-10">
               <h1 class="text-4xl font-extrabold tracking-tight">Utilities</h1>
               <p class="text-muted leading-relaxed max-w-2xl">
-                Shared hooks and directives that power Starling UI's interactive
-                features.
+                Shared hooks and directives that power Starling UI's interactive features.
               </p>
 
               <div class="space-y-4">
                 <h2 class="text-xl font-bold">useTheme Hook</h2>
                 <p class="text-sm text-muted mb-4">
-                  Reactive hook for managing application theme states and
-                  persistent storage.
+                  Reactive hook for managing application theme states and persistent storage.
                 </p>
                 <Code
                   code={`import { useTheme } from 'starling-components/hooks';\n\nconst { isDark, toggleTheme, setAccentColor } = useTheme();`}
@@ -1139,8 +1132,7 @@ export default function App() {
               <div class="space-y-4 pt-6">
                 <h2 class="text-xl font-bold">clickOutside Directive</h2>
                 <p class="text-sm text-muted mb-4">
-                  A directive to detect clicks outside an element, perfect for
-                  custom menus.
+                  A directive to detect clicks outside an element, perfect for custom menus.
                 </p>
                 <Code
                   code={`import { clickOutside } from 'starling-components/directives';\n\n<div use:clickOutside={() => setOpen(false)}>\n  My Custom Dropdown\n</div>`}
@@ -1163,8 +1155,7 @@ export default function App() {
         </ModalHeader>
         <div class="py-6">
           <p class="text-sm text-muted">
-            Your changes will be live instantly across all regions. Ensure CI
-            checks have passed.
+            Your changes will be live instantly across all regions. Ensure CI checks have passed.
           </p>
         </div>
         <ModalFooter>
@@ -1173,7 +1164,7 @@ export default function App() {
           </Button>
           <Button
             onClick={() => {
-              toast({ title: "Deployment started", type: "default" });
+              toast({ title: 'Deployment started', type: 'default' });
               setModalOpen(false);
             }}
           >
@@ -1185,15 +1176,11 @@ export default function App() {
       <Sheet isOpen={sheetOpen()} onClose={() => setSheetOpen(false)}>
         <SheetHeader>
           <SheetTitle>Environment Configuration</SheetTitle>
-          <SheetDescription>
-            Settings for the current workspace cluster.
-          </SheetDescription>
+          <SheetDescription>Settings for the current workspace cluster.</SheetDescription>
         </SheetHeader>
         <SheetContent class="pt-6 space-y-6">
           <div class="space-y-2">
-            <Label class="text-xs uppercase font-bold text-muted tracking-wider">
-              Region Name
-            </Label>
+            <Label class="text-xs uppercase font-bold text-muted tracking-wider">Region Name</Label>
             <Input value="Production (AWS)" />
           </div>
           <div class="space-y-2">
@@ -1228,12 +1215,18 @@ export default function App() {
             {(item) => (
               <CommandItem
                 value={item.id}
+                keywords={item.keywords}
                 onClick={() => {
                   setActiveSection(item.id as Section);
                   setCommandOpen(false);
                 }}
               >
-                {item.label}
+                <div class="flex flex-col">
+                  <span>{item.label}</span>
+                  <span class="text-[10px] text-muted font-mono opacity-70">
+                    {item.group} • {item.keywords.slice(0, 3).join(', ')}...
+                  </span>
+                </div>
               </CommandItem>
             )}
           </For>

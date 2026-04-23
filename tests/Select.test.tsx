@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library';
 import { describe, expect, it, vi } from 'vitest';
-import { Select } from '../ui/Select';
+import { Select } from '../lib/ui/Select';
 
 describe('Select', () => {
   const options = [

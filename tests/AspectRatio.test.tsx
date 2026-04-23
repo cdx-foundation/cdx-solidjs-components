@@ -1,6 +1,6 @@
 import { render, screen } from '@solidjs/testing-library';
 import { describe, expect, it } from 'vitest';
-import { AspectRatio } from '../ui/AspectRatio';
+import { AspectRatio } from '../lib/ui/AspectRatio';
 
 describe('AspectRatio', () => {
   it('renders children and applies padding-bottom correctly', () => {

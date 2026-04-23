@@ -1,13 +1,19 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library';
 import { describe, expect, it } from 'vitest';
-import { Accordion, AccordionItem } from '../ui/Accordion';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../lib/ui/Accordion';
 
 describe('Accordion', () => {
   it('expands and collapses items', () => {
     render(() => (
       <Accordion>
-        <AccordionItem title="Section 1">Content 1</AccordionItem>
-        <AccordionItem title="Section 2">Content 2</AccordionItem>
+        <AccordionItem>
+          <AccordionTrigger>Section 1</AccordionTrigger>
+          <AccordionContent>Content 1</AccordionContent>
+        </AccordionItem>
+        <AccordionItem>
+          <AccordionTrigger>Section 2</AccordionTrigger>
+          <AccordionContent>Content 2</AccordionContent>
+        </AccordionItem>
       </Accordion>
     ));
 
@@ -23,14 +29,17 @@ describe('Accordion', () => {
   it('has correct ARIA attributes', () => {
     render(() => (
       <Accordion>
-        <AccordionItem title="Section 1">Content 1</AccordionItem>
+        <AccordionItem>
+          <AccordionTrigger>Section 1</AccordionTrigger>
+          <AccordionContent>Content 1</AccordionContent>
+        </AccordionItem>
       </Accordion>
     ));
 
-    const trigger = screen.getByText('Section 1').closest('button');
+    const trigger = screen.getByText('Section 1');
     expect(trigger).toHaveAttribute('aria-expanded', 'false');
 
-    fireEvent.click(trigger!);
+    fireEvent.click(trigger);
     expect(trigger).toHaveAttribute('aria-expanded', 'true');
   });
 });

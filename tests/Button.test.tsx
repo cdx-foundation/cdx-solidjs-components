@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library';
 import { describe, expect, it, vi } from 'vitest';
-import { Button } from '../ui/Button';
+import { Button } from '../lib/ui/Button';
 
 describe('Button', () => {
   it('renders correctly with children', () => {

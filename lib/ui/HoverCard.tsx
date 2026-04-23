@@ -1,5 +1,6 @@
-import { type JSX, Show, createSignal } from 'solid-js';
+import { type JSX, createSignal } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
+import { Floating } from './Floating';
 
 /**
  * Configuration and properties for the HoverCard component.
@@ -25,28 +26,8 @@ interface HoverCardProps {
  * ### HoverCard Component
  *
  * Provides a non-interactive preview of content that appears when hovering over a trigger.
- * It is designed with a specific "grace period" (200ms delay) that prevents accidental closure
- * when the mouse moves between the trigger and the card.
- *
- * @example
- * ```tsx
- * <HoverCard
- *   trigger={<a href="/u/yanis" class="underline">@yanis</a>}
- * >
- *   <div class="flex gap-4">
- *     <Avatar fallback="YA" />
- *     <div>
- *       <h4 class="text-sm font-bold">Yanis</h4>
- *       <p class="text-xs text-muted">Building the future of coding.</p>
- *     </div>
- *   </div>
- * </HoverCard>
- * ```
- *
- * **Interaction Behaviors:**
- * - **Intent-based Delay:** Uses a 200ms timeout on mouse leave, allowing users to hover over the card content itself without it disappearing.
- * - **Auto-centering:** The card is automatically centered horizontally above the trigger.
- * - **Transition:** Smooth fade-in and vertical slide-up animation for a premium feel.
+ * It uses a Portal and dynamic positioning to ensure it isn't clipped by parent containers
+ * and stays within the viewport.
  *
  * @param props - Customization options including the `trigger` and `children`.
  */
@@ -64,22 +45,25 @@ export const HoverCard = (props: HoverCardProps) => {
   };
 
   return (
-    <div
-      class="relative inline-block"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <div class="cursor-help">{props.trigger}</div>
-      <Show when={isOpen()}>
+    <Floating
+      isOpen={isOpen()}
+      align="top"
+      sideOffset={8}
+      class={twMerge('w-64 border border-stroke bg-panel p-4 shadow-xl rounded-card', props.class)}
+      trigger={(ref) => (
         <div
-          class={twMerge(
-            'absolute left-1/2 -translate-x-1/2 bottom-full mb-2 z-50 w-64 border border-stroke bg-panel p-4 shadow-md animate-in fade-in slide-in-from-bottom-2 duration-150',
-            props.class,
-          )}
+          ref={ref}
+          class="inline-block cursor-help"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
-          {props.children}
+          {props.trigger}
         </div>
-      </Show>
-    </div>
+      )}
+    >
+      <div onMouseEnter={() => clearTimeout(timeoutId)} onMouseLeave={handleMouseLeave}>
+        {props.children}
+      </div>
+    </Floating>
   );
 };

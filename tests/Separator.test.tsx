@@ -1,6 +1,6 @@
 import { render } from '@solidjs/testing-library';
 import { describe, expect, it } from 'vitest';
-import { Separator } from '../ui/Separator';
+import { Separator } from '../lib/ui/Separator';
 
 describe('Separator', () => {
   it('renders horizontal separator by default', () => {

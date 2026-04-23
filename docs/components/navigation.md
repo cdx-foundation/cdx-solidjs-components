@@ -11,14 +11,23 @@ import { NavigationMenu, NavigationMenuItem, NavigationMenuLink } from 'starling
 
 <NavigationMenu>
   <NavigationMenuItem trigger="Documentation">
-    <div class="p-4 w-48">
-      <NavigationMenuLink href="/docs/intro">Introduction</NavigationMenuLink>
-      <NavigationMenuLink href="/docs/components">Components</NavigationMenuLink>
+    <div class="p-6 w-[400px] grid grid-cols-2 gap-4">
+      <div class="col-span-1 space-y-2">
+         <h4 class="font-bold text-sm">Getting Started</h4>
+         <NavigationMenuLink href="/docs/intro" class="text-xs">Introduction</NavigationMenuLink>
+         <NavigationMenuLink href="/docs/install" class="text-xs">Installation</NavigationMenuLink>
+      </div>
+      <div class="col-span-1 space-y-2">
+         <h4 class="font-bold text-sm">Components</h4>
+         <NavigationMenuLink href="/docs/buttons" class="text-xs">Buttons</NavigationMenuLink>
+         <NavigationMenuLink href="/docs/forms" class="text-xs">Forms</NavigationMenuLink>
+      </div>
     </div>
   </NavigationMenuItem>
-  <NavigationMenuItem trigger="Community">
-    <div class="p-4 w-48">
+  <NavigationMenuItem trigger="Resources">
+    <div class="p-4 w-48 flex flex-col gap-1">
       <NavigationMenuLink href="/github">GitHub</NavigationMenuLink>
+      <NavigationMenuLink href="/changelog">Changelog</NavigationMenuLink>
     </div>
   </NavigationMenuItem>
 </NavigationMenu>

@@ -1,22 +1,35 @@
 import { render, screen } from '@solidjs/testing-library';
 import { describe, expect, it } from 'vitest';
-import { Avatar } from '../ui/Avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '../lib/ui/Avatar';
 
 describe('Avatar', () => {
-  it('renders fallback initials when src is not provided', () => {
-    render(() => <Avatar fallback="John Doe" />);
-    expect(screen.getByText('Jo')).toBeInTheDocument();
+  it('renders fallback initials', () => {
+    render(() => (
+      <Avatar>
+        <AvatarFallback>JD</AvatarFallback>
+      </Avatar>
+    ));
+    expect(screen.getByText('JD')).toBeInTheDocument();
   });
 
   it('renders an image when src is provided', () => {
-    render(() => <Avatar src="test.jpg" fallback="John Doe" />);
+    render(() => (
+      <Avatar>
+        <AvatarImage src="test.jpg" alt="John Doe" />
+        <AvatarFallback>JD</AvatarFallback>
+      </Avatar>
+    ));
     const img = screen.getByRole('img');
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute('src', 'test.jpg');
   });
 
   it('applies custom classes', () => {
-    const { container } = render(() => <Avatar fallback="JD" class="h-12 w-12" />);
+    const { container } = render(() => (
+      <Avatar class="h-12 w-12">
+        <AvatarFallback>JD</AvatarFallback>
+      </Avatar>
+    ));
     expect(container.firstChild).toHaveClass('h-12 w-12');
   });
 });

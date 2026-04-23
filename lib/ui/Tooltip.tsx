@@ -1,5 +1,6 @@
-import type { JSX } from 'solid-js';
+import { type JSX, createSignal } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
+import { Floating } from './Floating';
 
 /**
  * Configuration and properties for the Tooltip component.
@@ -31,52 +32,49 @@ interface TooltipProps {
  * ### Tooltip Component
  *
  * A compact floating label that provides additional context about an element when hovered.
- * It is highly performant, using CSS `group-hover` for visibility transitions rather than JS state.
- *
- * @example
- * ```tsx
- * <Tooltip
- *   trigger={<IconButton icon={Info} />}
- *   content="Learn more about our pricing plans."
- *   align="right"
- * />
- * ```
- *
- * **Interaction Design:**
- * - **High Performance:** Visibility is managed entirely via CSS, ensuring zero-latency transitions.
- * - **Auto-Positioning:** Correctly offsets itself in four cardinal directions with centering logic.
- * - **Aesthetics:** Uses a high-contrast inverted theme (dark background, light text) to ensure it stands out from the primary UI.
+ * Now uses position: fixed and zero animations for instant, accurate placement.
  *
  * @param props - Customization options including `trigger`, `content`, and `align`.
  */
 export const Tooltip = (props: TooltipProps) => {
+  const [isOpen, setIsOpen] = createSignal(false);
   const align = props.align || 'top';
 
-  const getAlignClasses = () => {
+  const getArrowClasses = () => {
     switch (align) {
       case 'top':
-        return 'bottom-full left-1/2 -translate-x-1/2 mb-2';
+        return 'after:top-full after:left-1/2 after:-translate-x-1/2 after:border-t-fg';
       case 'bottom':
-        return 'top-full left-1/2 -translate-x-1/2 mt-2';
+        return 'after:bottom-full after:left-1/2 after:-translate-x-1/2 after:border-b-fg';
       case 'left':
-        return 'right-full top-1/2 -translate-y-1/2 mr-2';
+        return 'after:left-full after:top-1/2 after:-translate-y-1/2 after:border-l-fg';
       case 'right':
-        return 'left-full top-1/2 -translate-y-1/2 ml-2';
+        return 'after:right-full after:top-1/2 after:-translate-y-1/2 after:border-r-fg';
     }
   };
 
   return (
-    <div class="group relative inline-flex">
-      {props.trigger}
-      <div
-        class={twMerge(
-          'pointer-events-none absolute z-50 whitespace-nowrap border border-stroke bg-fg px-2 py-1 text-xs text-panel opacity-0 transition-opacity duration-200 group-hover:opacity-100',
-          getAlignClasses(),
-          props.class,
-        )}
-      >
-        {props.content}
-      </div>
-    </div>
+    <Floating
+      isOpen={isOpen()}
+      align={align}
+      sideOffset={8}
+      class={twMerge(
+        'pointer-events-none whitespace-nowrap rounded-card border border-stroke bg-fg px-2.5 py-1.5 text-xs font-medium text-panel shadow-xl after:absolute after:border-4 after:border-transparent',
+        getArrowClasses(),
+        props.class,
+      )}
+      trigger={(ref) => (
+        <div
+          ref={ref}
+          class="inline-flex"
+          onMouseEnter={() => setIsOpen(true)}
+          onMouseLeave={() => setIsOpen(false)}
+        >
+          {props.trigger}
+        </div>
+      )}
+    >
+      {props.content}
+    </Floating>
   );
 };

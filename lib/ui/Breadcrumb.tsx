@@ -1,5 +1,5 @@
-import { For, type JSX, Show, splitProps } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { For, type JSX, Show, splitProps } from 'solid-js';
+import { twMerge } from 'tailwind-merge';
 
 /**
  * ### Breadcrumb Component
@@ -30,11 +30,11 @@ import { twMerge } from "tailwind-merge";
  * @param props - Standard HTML nav attributes.
  */
 export const Breadcrumb = (props: JSX.HTMLAttributes<HTMLElement>) => {
-  const [local, others] = splitProps(props, ["class", "children"]);
+  const [local, others] = splitProps(props, ['class', 'children']);
 
   return (
     <nav
-      class={twMerge("flex items-center text-sm font-mono", local.class)}
+      class={twMerge('flex items-center text-sm font-mono', local.class)}
       aria-label="breadcrumb"
       {...others}
     >
@@ -51,11 +51,11 @@ export const Breadcrumb = (props: JSX.HTMLAttributes<HTMLElement>) => {
  * @param props - Standard HTML ol attributes.
  */
 export const BreadcrumbList = (props: JSX.HTMLAttributes<HTMLOListElement>) => {
-  const [local, others] = splitProps(props, ["class", "children"]);
+  const [local, others] = splitProps(props, ['class', 'children']);
   return (
     <ol
       class={twMerge(
-        "flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5",
+        'flex flex-wrap items-center gap-1.5 wrap-break-word text-sm text-muted-foreground sm:gap-2.5',
         local.class,
       )}
       {...others}
@@ -73,12 +73,9 @@ export const BreadcrumbList = (props: JSX.HTMLAttributes<HTMLOListElement>) => {
  * @param props - Standard HTML li attributes.
  */
 export const BreadcrumbItem = (props: JSX.HTMLAttributes<HTMLLIElement>) => {
-  const [local, others] = splitProps(props, ["class", "children"]);
+  const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <li
-      class={twMerge("inline-flex items-center gap-1.5", local.class)}
-      {...others}
-    >
+    <li class={twMerge('inline-flex items-center gap-1.5', local.class)} {...others}>
       {local.children}
     </li>
   );
@@ -91,15 +88,10 @@ export const BreadcrumbItem = (props: JSX.HTMLAttributes<HTMLLIElement>) => {
  *
  * @param props - Standard HTML anchor attributes.
  */
-export const BreadcrumbLink = (
-  props: JSX.AnchorHTMLAttributes<HTMLAnchorElement>,
-) => {
-  const [local, others] = splitProps(props, ["class", "children"]);
+export const BreadcrumbLink = (props: JSX.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <a
-      class={twMerge("transition-colors hover:text-foreground", local.class)}
-      {...others}
-    >
+    <a class={twMerge('transition-colors hover:text-foreground', local.class)} {...others}>
       {local.children}
     </a>
   );
@@ -112,18 +104,16 @@ export const BreadcrumbLink = (
  *
  * @param props - Standard HTML li attributes.
  */
-export const BreadcrumbSeparator = (
-  props: JSX.HTMLAttributes<HTMLLIElement>,
-) => {
-  const [local, others] = splitProps(props, ["class", "children"]);
+export const BreadcrumbSeparator = (props: JSX.HTMLAttributes<HTMLLIElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
   return (
     <li
       role="presentation"
       aria-hidden="true"
-      class={twMerge("[&>svg]:w-3.5 [&>svg]:h-3.5", local.class)}
+      class={twMerge('[&>svg]:w-3.5 [&>svg]:h-3.5', local.class)}
       {...others}
     >
-      {local.children ?? "/"}
+      {local.children ?? '/'}
     </li>
   );
 };

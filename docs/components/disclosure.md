@@ -33,13 +33,14 @@ A simple interactive area to show or hide content.
 
 ```tsx
 import { Collapsible } from 'starling-components/ui/Collapsible';
+import { Button } from 'starling-components/ui/Button';
 
 <Collapsible
   trigger={<Button variant="outline">Advanced Settings</Button>}
   defaultOpen={false}
 >
-  <div class="p-4 border mt-2">
-    {/* Hidden settings */}
+  <div class="p-4 border border-stroke rounded-xl mt-2 bg-panel shadow-sm">
+    <p class="text-xs text-muted">Configure granular server parameters here.</p>
   </div>
 </Collapsible>
 ```
@@ -55,9 +56,15 @@ import { Carousel } from 'starling-components/ui/Carousel';
 
 <Carousel
   items={[
-    <div class="h-40 bg-surface border flex items-center justify-center">Slide 1</div>,
-    <div class="h-40 bg-surface border flex items-center justify-center">Slide 2</div>,
-    <div class="h-40 bg-surface border flex items-center justify-center">Slide 3</div>
+    <div class="h-60 w-full bg-surface border border-stroke rounded-xl flex items-center justify-center">
+      <span class="text-muted font-bold text-2xl">Slide 1</span>
+    </div>,
+    <div class="h-60 w-full bg-surface border border-stroke rounded-xl flex items-center justify-center">
+      <span class="text-muted font-bold text-2xl">Slide 2</span>
+    </div>,
+    <div class="h-60 w-full bg-surface border border-stroke rounded-xl flex items-center justify-center">
+      <span class="text-muted font-bold text-2xl">Slide 3</span>
+    </div>
   ]}
 />
 ```

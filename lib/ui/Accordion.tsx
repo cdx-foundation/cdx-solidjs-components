@@ -1,5 +1,5 @@
 import { ChevronDown } from 'lucide-solid';
-import { type JSX, Show, createSignal, splitProps, createContext, useContext } from 'solid-js';
+import { type JSX, Show, createContext, createSignal, splitProps, useContext } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { uid } from '../uid';
 
@@ -104,8 +104,8 @@ export const Accordion = (props: AccordionProps) => {
 export const AccordionTrigger = (props: JSX.HTMLAttributes<HTMLButtonElement>) => {
   const [local, others] = splitProps(props, ['class', 'children', 'onClick']);
   const ctx = useContext(AccordionItemContext);
-  
-  if (!ctx) throw new Error("AccordionTrigger must be used within an AccordionItem");
+
+  if (!ctx) throw new Error('AccordionTrigger must be used within an AccordionItem');
 
   return (
     <button
@@ -124,7 +124,7 @@ export const AccordionTrigger = (props: JSX.HTMLAttributes<HTMLButtonElement>) =
       }}
       class={twMerge(
         'flex w-full flex-1 items-center justify-between py-4 text-sm font-semibold text-fg outline-none transition-all hover:underline [&[data-state=open]>svg]:rotate-180',
-        local.class
+        local.class,
       )}
       {...others}
     >
@@ -152,7 +152,7 @@ export const AccordionContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   const ctx = useContext(AccordionItemContext);
 
-  if (!ctx) throw new Error("AccordionContent must be used within an AccordionItem");
+  if (!ctx) throw new Error('AccordionContent must be used within an AccordionItem');
 
   return (
     <Show when={ctx.isOpen()}>
@@ -162,7 +162,7 @@ export const AccordionContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
         data-state={ctx.isOpen() ? 'open' : 'closed'}
         class={twMerge(
           'overflow-hidden text-sm transition-all animate-in fade-in slide-in-from-top-1 text-muted',
-          local.class
+          local.class,
         )}
         {...others}
       >

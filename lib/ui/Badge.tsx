@@ -17,7 +17,15 @@ interface BadgeProps extends JSX.OutputHTMLAttributes<HTMLOutputElement> {
    * - `outline`: Transparent with a border.
    * @default "default"
    */
-  variant?: 'default' | 'secondary' | 'primary' | 'success' | 'warning' | 'error' | 'destructive' | 'outline';
+  variant?:
+    | 'default'
+    | 'secondary'
+    | 'primary'
+    | 'success'
+    | 'warning'
+    | 'error'
+    | 'destructive'
+    | 'outline';
 }
 
 /**
