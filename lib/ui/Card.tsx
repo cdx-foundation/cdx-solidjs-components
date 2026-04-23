@@ -34,3 +34,88 @@ export const Card = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
     </div>
   );
 };
+
+/**
+ * ### CardHeader Component
+ *
+ * Container for the card's title and description.
+ * Applies standard vertical spacing.
+ *
+ * @param props - Standard HTML div attributes.
+ */
+export const CardHeader = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <div class={twMerge('flex flex-col space-y-1.5', local.class)} {...others}>
+      {local.children}
+    </div>
+  );
+};
+
+/**
+ * ### CardTitle Component
+ *
+ * The primary heading for the card.
+ * Uses an `<h3>` element by default with emphasized typography.
+ *
+ * @param props - Standard HTML heading attributes.
+ */
+export const CardTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <h3
+      class={twMerge('text-lg font-semibold leading-none tracking-tight', local.class)}
+      {...others}
+    >
+      {local.children}
+    </h3>
+  );
+};
+
+/**
+ * ### CardDescription Component
+ *
+ * Secondary descriptive text for the card, typically placed under the title.
+ *
+ * @param props - Standard HTML paragraph attributes.
+ */
+export const CardDescription = (props: JSX.HTMLAttributes<HTMLParagraphElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <p class={twMerge('text-sm text-muted-foreground', local.class)} {...others}>
+      {local.children}
+    </p>
+  );
+};
+
+/**
+ * ### CardContent Component
+ *
+ * The main body container for the card where primary content should be placed.
+ *
+ * @param props - Standard HTML div attributes.
+ */
+export const CardContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <div class={twMerge('', local.class)} {...others}>
+      {local.children}
+    </div>
+  );
+};
+
+/**
+ * ### CardFooter Component
+ *
+ * Container for the card's bottom actions or secondary information.
+ *
+ * @param props - Standard HTML div attributes.
+ */
+export const CardFooter = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <div class={twMerge('flex items-center pt-0', local.class)} {...others}>
+      {local.children}
+    </div>
+  );
+};

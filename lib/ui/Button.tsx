@@ -32,6 +32,16 @@ interface ButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
    * @default "button"
    */
   as?: any;
+
+  /**
+   * Optional URL for when the button acts as a link (as="a").
+   */
+  href?: string;
+
+  /**
+   * Optional target for when the button acts as a link (as="a").
+   */
+  target?: string;
 }
 
 /**

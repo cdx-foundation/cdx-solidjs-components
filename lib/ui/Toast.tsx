@@ -1,6 +1,7 @@
 import { X } from 'lucide-solid';
-import { For, Show, createSignal } from 'solid-js';
+import { type JSX, For, Show, createSignal, splitProps } from 'solid-js';
 import { Portal } from 'solid-js/web';
+import { twMerge } from 'tailwind-merge';
 
 /**
  * Data structure representing a single notification item.
@@ -131,9 +132,9 @@ export const Toaster = () => {
                 >
                   <X size={16} />
                 </button>
-                <h3 class="text-sm font-semibold text-fg">{t.title}</h3>
+                <ToastTitle>{t.title}</ToastTitle>
                 <Show when={t.description}>
-                  <p class="text-xs font-mono text-muted">{t.description}</p>
+                  <ToastDescription>{t.description}</ToastDescription>
                 </Show>
               </div>
             )}
@@ -141,5 +142,54 @@ export const Toaster = () => {
         </TransitionGroup>
       </div>
     </Portal>
+  );
+};
+
+/**
+ * ### ToastTitle Component
+ *
+ * The primary heading of an individual toast notification.
+ * Can be used inside a custom toast renderer or within the `Toaster`.
+ *
+ * @example
+ * ```tsx
+ * <ToastTitle>Profile updated successfully.</ToastTitle>
+ * ```
+ *
+ * @param props - Standard HTML heading attributes.
+ */
+export const ToastTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <h3
+      class={twMerge('text-sm font-semibold text-fg', local.class)}
+      {...others}
+    >
+      {local.children}
+    </h3>
+  );
+};
+
+/**
+ * ### ToastDescription Component
+ *
+ * Secondary descriptive text inside a toast notification, rendered in a smaller monospace style.
+ *
+ * @example
+ * ```tsx
+ * <ToastDescription>Reason: Connection timed out after 30s.</ToastDescription>
+ * ```
+ *
+ * @param props - Standard HTML paragraph attributes.
+ */
+export const ToastDescription = (props: JSX.HTMLAttributes<HTMLParagraphElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <p
+      class={twMerge('text-xs font-mono text-muted', local.class)}
+      {...others}
+    >
+      {local.children}
+    </p>
   );
 };

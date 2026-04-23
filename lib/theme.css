@@ -30,6 +30,10 @@
 }
 
 @layer base {
+  html {
+    scrollbar-gutter: stable;
+  }
+
   * {
     border-color: var(--border-main);
     box-shadow: none;
@@ -54,9 +58,9 @@
 
 @layer utilities {
   .clean-panel {
-    background: var(--bg-panel);
-    border: 1px solid var(--border-main);
-    border-radius: var(--radius-card);
+    background-color: var(--bg-panel, #ffffff);
+    border: 1px solid var(--border-main, #e5e5e5);
+    border-radius: var(--radius-card, 0px);
   }
 
   .scrollbar-gutter-stable {

@@ -14,6 +14,7 @@ import {
 } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
+import { uid } from '../uid';
 
 // --- Context & Types ---
 
@@ -21,11 +22,11 @@ import { twMerge } from 'tailwind-merge';
  * Internal data structure for maintaining state across command items.
  */
 interface CommandItemData {
-  /** Unique numeric identifier for the item. */
-  index: number;
+  /** Unique string identifier for the item. */
+  id: string;
   /** Reactive accessor checking if the item matches current filter criteria. */
   isVisible: Accessor<boolean>;
-  /** Reference to the physical DOM element for auto-scrolling. */
+  /** Reference to the physical DOM element for auto-scrolling and sorting. */
   ref?: HTMLElement;
 }
 
@@ -37,14 +38,14 @@ interface CommandContextValue {
   search: Accessor<string>;
   /** Updates the global search string across all components. */
   setSearch: (v: string) => void;
-  /** The index of the item currently being keyboard-navigated. */
-  activeIndex: Accessor<number>;
-  /** Updates the focused item index. */
-  setActiveIndex: (i: number) => void;
+  /** The ID of the item currently being keyboard-navigated. */
+  activeId: Accessor<string | null>;
+  /** Updates the focused item ID. */
+  setActiveId: (id: string | null) => void;
   /** Adds a new `CommandItem` to the active registry. */
   registerItem: (item: CommandItemData) => void;
   /** Removes an item from the registry on component unmount. */
-  unregisterItem: (index: number) => void;
+  unregisterItem: (id: string) => void;
 }
 
 const CommandContext = createContext<CommandContextValue>();
@@ -123,35 +124,50 @@ export const Command = (props: CommandProps) => {
   ]);
 
   const [search, setSearch] = createSignal('');
-  const [activeIndex, setActiveIndex] = createSignal(0);
+  const [activeId, setActiveId] = createSignal<string | null>(null);
   const [items, setItems] = createSignal<CommandItemData[]>([]);
 
   const registerItem = (item: CommandItemData) => {
-    setItems((prev) => [...prev, item].sort((a, b) => a.index - b.index));
+    setItems((prev) => {
+      const newItems = [...prev, item];
+      // Sort items purely by their visual DOM position so arrow keys navigate correctly
+      return newItems.sort((a, b) => {
+        if (!a.ref || !b.ref) return 0;
+        return a.ref.compareDocumentPosition(b.ref) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+      });
+    });
   };
 
-  const unregisterItem = (index: number) => {
-    setItems((prev) => prev.filter((item) => item.index !== index));
+  const unregisterItem = (id: string) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
   const visibleItems = createMemo(() => items().filter((item) => item.isVisible()));
 
   let inputRef: HTMLInputElement | undefined;
 
-  // Reset state when opening/closing
+  // Reset state and handle scroll locking when opening/closing
   createEffect(() => {
     if (local.isOpen) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = 'hidden';
+      
       setSearch('');
-      setActiveIndex(0);
+      setActiveId(null);
       // Use requestAnimationFrame for cleaner focus timing
       requestAnimationFrame(() => inputRef?.focus());
+
+      onCleanup(() => {
+        document.body.style.overflow = originalStyle;
+      });
     }
   });
 
   // Handle scrolling active item into view
   createEffect(() => {
-    const idx = activeIndex();
-    const activeItem = items().find((it) => it.index === idx);
+    const aid = activeId();
+    if (!aid) return;
+    const activeItem = items().find((it) => it.id === aid);
     if (activeItem?.ref) {
       activeItem.ref.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
@@ -164,7 +180,8 @@ export const Command = (props: CommandProps) => {
       return;
     }
 
-    const currentVisibleIdx = vItems.findIndex((item) => item.index === activeIndex());
+    let currentIdx = vItems.findIndex((item) => item.id === activeId());
+    if (currentIdx === -1) currentIdx = 0; // fallback to first item if none selected
 
     switch (e.key) {
       case 'Escape':
@@ -172,15 +189,15 @@ export const Command = (props: CommandProps) => {
         break;
       case 'ArrowDown':
         e.preventDefault();
-        setActiveIndex(vItems[(currentVisibleIdx + 1) % vItems.length].index);
+        setActiveId(vItems[(currentIdx + 1) % vItems.length].id);
         break;
       case 'ArrowUp':
         e.preventDefault();
-        setActiveIndex(vItems[(currentVisibleIdx - 1 + vItems.length) % vItems.length].index);
+        setActiveId(vItems[(currentIdx - 1 + vItems.length) % vItems.length].id);
         break;
       case 'Enter':
         e.preventDefault();
-        vItems[currentVisibleIdx]?.ref?.click();
+        vItems[currentIdx]?.ref?.click();
         break;
     }
   };
@@ -199,7 +216,7 @@ export const Command = (props: CommandProps) => {
 
           <div
             class={twMerge(
-              'relative z-101 flex w-full max-w-xl flex-col overflow-hidden rounded-xl border border-stroke bg-panel shadow-2xl animate-in fade-in zoom-in-95 duration-200',
+              'clean-panel relative z-101 flex w-full max-w-xl flex-col overflow-hidden rounded-xl border border-stroke bg-panel shadow-2xl animate-in fade-in zoom-in-95 duration-200',
               local.class,
             )}
             {...others}
@@ -208,8 +225,8 @@ export const Command = (props: CommandProps) => {
               value={{
                 search,
                 setSearch,
-                activeIndex,
-                setActiveIndex,
+                activeId,
+                setActiveId,
                 registerItem,
                 unregisterItem,
               }}
@@ -227,7 +244,7 @@ export const Command = (props: CommandProps) => {
                     // Reset to first visible item after filtering
                     requestAnimationFrame(() => {
                       const v = visibleItems();
-                      if (v.length > 0) setActiveIndex(v[0].index);
+                      if (v.length > 0) setActiveId(v[0].id);
                     });
                   }}
                 />
@@ -279,11 +296,6 @@ export const CommandGroup = (props: {
  */
 interface CommandItemProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /**
-   * A numeric index used for deterministic keyboard navigation.
-   * Should be unique within the palette.
-   */
-  index: number;
-  /**
    * A programmatic value returned via `onSelect`. Also used for searching if provided.
    */
   value?: string;
@@ -300,10 +312,11 @@ interface CommandItemProps extends JSX.HTMLAttributes<HTMLDivElement> {
  */
 export const CommandItem = (props: CommandItemProps) => {
   const context = useContext(CommandContext);
-  const [local, others] = splitProps(props, ['class', 'index', 'value', 'keywords', 'children']);
+  const [local, others] = splitProps(props, ['class', 'value', 'keywords', 'children']);
 
   if (!context) return null;
 
+  const id = uid('cmd-item');
   let itemRef: HTMLDivElement | undefined;
 
   const isVisible = createMemo(() => {
@@ -319,14 +332,20 @@ export const CommandItem = (props: CommandItemProps) => {
 
   onMount(() => {
     context.registerItem({
-      index: local.index,
+      id,
       isVisible,
       ref: itemRef,
     });
-    onCleanup(() => context.unregisterItem(local.index));
+    onCleanup(() => context.unregisterItem(id));
   });
 
-  const isActive = () => context.activeIndex() === local.index;
+  const isActive = () => {
+    // If nothing is active but we are the first visible item, we are implicitly active
+    if (!context.activeId()) {
+      const vItems = context.search() !== undefined ? [] : []; // Force reactivity if needed, though handled in Command
+    }
+    return context.activeId() === id;
+  };
 
   return (
     <Show when={isVisible()}>
@@ -340,7 +359,7 @@ export const CommandItem = (props: CommandItemProps) => {
           local.class,
         )}
         data-active={isActive()}
-        onMouseEnter={() => context.setActiveIndex(local.index)}
+        onMouseEnter={() => context.setActiveId(id)}
         {...others}
       >
         {local.children}

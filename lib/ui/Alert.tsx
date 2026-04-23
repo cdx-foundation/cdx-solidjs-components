@@ -9,19 +9,15 @@ import { twMerge } from 'tailwind-merge';
  */
 interface AlertProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /**
-   * The bold primary heading of the alert message.
-   */
-  title: string;
-
-  /**
    * The semantic flavor of the alert, which determines the color scheme and icon.
    * - `info`: Blue theme, for general information.
    * - `warning`: Amber theme, for cautionary messages.
    * - `error`: Red theme, for critical failures or destructive actions.
    * - `success`: Emerald theme, for positive completions.
+   * - `destructive`: Synonym for error, matches Button variant.
    * @default "info"
    */
-  variant?: 'info' | 'warning' | 'error' | 'success';
+  variant?: 'info' | 'warning' | 'error' | 'success' | 'destructive';
 }
 
 /**
@@ -32,15 +28,9 @@ interface AlertProps extends JSX.HTMLAttributes<HTMLDivElement> {
  *
  * @example
  * ```tsx
- * <Alert
- *   title="Security Update"
- *   variant="warning"
- * >
- *   Your password will expire in 2 days. Please update it in settings.
- * </Alert>
- *
- * <Alert title="File Uploaded" variant="success">
- *   The report was successfully saved to your cloud storage.
+ * <Alert variant="warning">
+ *   <AlertTitle>Security Update</AlertTitle>
+ *   <AlertDescription>Your password will expire in 2 days. Please update it in settings.</AlertDescription>
  * </Alert>
  * ```
  *
@@ -49,10 +39,10 @@ interface AlertProps extends JSX.HTMLAttributes<HTMLDivElement> {
  * - **Layout:** Uses a structured grid with a fixed icon position and flexible body text.
  * - **Accessibility:** Uses semantic colors that maintain high contrast in both light and dark modes.
  *
- * @param props - Customization options including `title` and `variant`.
+ * @param props - Customization options including `variant`.
  */
 export const Alert = (props: AlertProps) => {
-  const [local, others] = splitProps(props, ['title', 'variant', 'class', 'children']);
+  const [local, others] = splitProps(props, ['variant', 'class', 'children']);
 
   const baseStyles = 'relative w-full rounded-card border p-4 pl-12 flex flex-col gap-1 text-sm';
 
@@ -64,6 +54,8 @@ export const Alert = (props: AlertProps) => {
       'bg-red-50 border-red-200/60 text-red-700 dark:bg-red-500/8 dark:border-red-500/20 dark:text-red-400',
     success:
       'bg-emerald-50 border-emerald-200/60 text-emerald-700 dark:bg-emerald-500/8 dark:border-emerald-500/20 dark:text-emerald-400',
+    destructive:
+      'bg-red-50 border-red-200/60 text-red-700 dark:bg-red-500/8 dark:border-red-500/20 dark:text-red-400',
   };
 
   const icons = {
@@ -71,15 +63,70 @@ export const Alert = (props: AlertProps) => {
     warning: TriangleAlert,
     error: CircleX,
     success: CircleCheck,
+    destructive: CircleX,
   };
 
   return (
-    <div class={twMerge(baseStyles, variants[local.variant || 'info'], local.class)} {...others}>
+    <div
+      class={twMerge(
+        baseStyles,
+        variants[local.variant || "info"],
+        local.class,
+      )}
+      {...others}
+    >
       <div class="absolute left-4 top-4">
-        <Dynamic component={icons[local.variant || 'info']} size={18} />
+        <Dynamic component={icons[local.variant || "info"]} size={18} />
       </div>
-      <h5 class="font-bold tracking-tight">{local.title}</h5>
-      <div class="text-current/70 leading-relaxed text-[13px]">{local.children}</div>
+      {local.children}
+    </div>
+  );
+};
+
+/**
+ * ### AlertTitle Component
+ *
+ * The title for the alert.
+ *
+ * @example
+ * ```tsx
+ * <AlertTitle>Heads up!</AlertTitle>
+ * ```
+ *
+ * @param props - Standard HTML heading attributes.
+ */
+export const AlertTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <h5
+      class={twMerge('mb-1 font-medium leading-none tracking-tight', local.class)}
+      {...others}
+    >
+      {local.children}
+    </h5>
+  );
+};
+
+/**
+ * ### AlertDescription Component
+ *
+ * The description for the alert.
+ *
+ * @example
+ * ```tsx
+ * <AlertDescription>You can add components to your app using the cli.</AlertDescription>
+ * ```
+ *
+ * @param props - Standard HTML div attributes.
+ */
+export const AlertDescription = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <div
+      class={twMerge('text-sm [&_p]:leading-relaxed', local.class)}
+      {...others}
+    >
+      {local.children}
     </div>
   );
 };

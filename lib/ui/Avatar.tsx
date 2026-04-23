@@ -4,20 +4,7 @@ import { twMerge } from 'tailwind-merge';
 /**
  * Configuration and behavior properties for the Avatar component.
  */
-interface AvatarProps extends JSX.HTMLAttributes<HTMLDivElement> {
-  /**
-   * The source URL of the profile image.
-   * If omitted or failing to load, the component will show initials from the `fallback` prop.
-   */
-  src?: string;
-
-  /**
-   * A required string (typically a user's full name or username).
-   * The component extracts the first two characters to display as a placeholder.
-   * @example "John Doe" -> "JO"
-   */
-  fallback: string;
-}
+interface AvatarProps extends JSX.HTMLAttributes<HTMLDivElement> {}
 
 /**
  * ### Avatar Component
@@ -27,25 +14,20 @@ interface AvatarProps extends JSX.HTMLAttributes<HTMLDivElement> {
  *
  * @example
  * ```tsx
- * // With an image
- * <Avatar src="https://github.com/nutlope.png" fallback="Yanis" />
- *
- * // Without an image (Shows "YA")
- * <Avatar fallback="Yanis" />
- *
- * // Custom size
- * <Avatar fallback="Seeker" class="h-12 w-12 text-sm" />
+ * <Avatar>
+ *   <AvatarImage src="https://github.com/nutlope.png" alt="Avatar" />
+ *   <AvatarFallback>YA</AvatarFallback>
+ * </Avatar>
  * ```
  *
  * **Behaviors:**
- * - **Initials Extraction:** Automatically slices the `fallback` string to a max of 2 characters.
  * - **Image Scaling:** Uses `object-cover` to ensure non-square images fill the container without distortion.
  * - **Corner Radius:** Follows the theme's `rounded-card` variable for a consistent squircle or rounded look.
  *
- * @param props - Customization options including `src` and `fallback`.
+ * @param props - Standard div attributes.
  */
 export const Avatar = (props: AvatarProps) => {
-  const [local, others] = splitProps(props, ['src', 'fallback', 'class']);
+  const [local, others] = splitProps(props, ['class', 'children']);
 
   return (
     <div
@@ -55,16 +37,56 @@ export const Avatar = (props: AvatarProps) => {
       )}
       {...others}
     >
-      <Show
-        when={local.src}
-        fallback={
-          <span class="font-semibold text-muted uppercase text-xs">
-            {local.fallback.slice(0, 2)}
-          </span>
-        }
-      >
-        <img src={local.src} class="aspect-square h-full w-full object-cover" alt="Avatar" />
-      </Show>
+      {local.children}
+    </div>
+  );
+};
+
+/**
+ * ### AvatarImage Component
+ *
+ * The image element for the avatar.
+ *
+ * @example
+ * ```tsx
+ * <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+ * ```
+ *
+ * @param props - Standard HTML img attributes.
+ */
+export const AvatarImage = (props: JSX.ImgHTMLAttributes<HTMLImageElement>) => {
+  const [local, others] = splitProps(props, ['class']);
+  return (
+    <img
+      class={twMerge('aspect-square h-full w-full object-cover', local.class)}
+      {...others}
+    />
+  );
+};
+
+/**
+ * ### AvatarFallback Component
+ *
+ * The fallback content for the avatar when the image is not available.
+ *
+ * @example
+ * ```tsx
+ * <AvatarFallback>CN</AvatarFallback>
+ * ```
+ *
+ * @param props - Standard HTML div attributes.
+ */
+export const AvatarFallback = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <div
+      class={twMerge(
+        'flex h-full w-full items-center justify-center rounded-full bg-muted',
+        local.class
+      )}
+      {...others}
+    >
+      {local.children}
     </div>
   );
 };

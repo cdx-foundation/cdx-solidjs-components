@@ -2,6 +2,7 @@ import { join } from 'node:path';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import solidPlugin from 'vite-plugin-solid';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig(({ command, mode }) => {
   const isDemo = process.env.BUILD_DEMO === 'true' || command === 'serve';
@@ -9,7 +10,7 @@ export default defineConfig(({ command, mode }) => {
   if (isDemo) {
     return {
       root: 'demo',
-      plugins: [solidPlugin()],
+      plugins: [tailwindcss(), solidPlugin()],
       build: {
         outDir: '../dist-demo',
         emptyOutDir: true,

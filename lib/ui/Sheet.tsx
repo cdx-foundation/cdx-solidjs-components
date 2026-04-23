@@ -6,31 +6,16 @@ import { twMerge } from 'tailwind-merge';
 /**
  * Configuration and behavior properties for the Sheet component.
  */
-interface SheetProps {
+interface SheetProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /**
    * Controls the visibility state of the slide-over panel.
    */
   isOpen: boolean;
 
   /**
-   * Event handler triggered when the user initiates a closure (e.g., clicking the backdrop).
+   * Event handler triggered when the user initiates a closure.
    */
   onClose: () => void;
-
-  /**
-   * A prominent heading displayed at the top of the sheet.
-   */
-  title?: string;
-
-  /**
-   * Supporting text displayed directly under the title in a monospace font.
-   */
-  description?: string;
-
-  /**
-   * The content to render within the scrollable panel body.
-   */
-  children: JSX.Element;
 
   /**
    * The viewport edge from which the sheet will emerge.
@@ -39,17 +24,16 @@ interface SheetProps {
   side?: 'left' | 'right';
 
   /**
-   * Custom CSS classes for the panel container.
+   * Custom CSS classes for the backdrop (the dimmed area behind the sheet).
    */
-  class?: string;
+  backdropClass?: string;
 }
 
 /**
  * ### Sheet Component (Slide-over)
  *
- * An extended dialog that slides in from the edge of the screen.
- * Often used for complex forms, navigation menus, or filtering sidebars where the context of the
- * main page needs to remain partially visible.
+ * A composable slide-over panel. Use `SheetHeader`, `SheetTitle`, `SheetDescription`,
+ * `SheetContent`, and `SheetFooter` to structure the layout.
  *
  * @example
  * ```tsx
@@ -57,38 +41,33 @@ interface SheetProps {
  *
  * <Button onClick={() => setOpen(true)}>Edit Settings</Button>
  *
- * <Sheet
- *   isOpen={open()}
- *   onClose={() => setOpen(false)}
- *   side="right"
- *   title="Global Settings"
- *   description="Configure your workspace preferences."
- * >
- *   <SettingsForm onSave={() => setOpen(false)} />
+ * <Sheet isOpen={open()} onClose={() => setOpen(false)} side="right">
+ *   <SheetHeader>
+ *     <SheetTitle>Global Settings</SheetTitle>
+ *     <SheetDescription>Configure your workspace preferences.</SheetDescription>
+ *   </SheetHeader>
+ *   <SheetContent>
+ *     <SettingsForm />
+ *   </SheetContent>
+ *   <SheetFooter>
+ *     <Button onClick={() => setOpen(false)}>Save</Button>
+ *   </SheetFooter>
  * </Sheet>
  * ```
  *
- * **Behaviors:**
- * - **Scroll Locking:** Automatically disables scrolling on `document.body` while the sheet is active.
- * - **Dismissal:** Features a clear 'X' button and closes when the dimmed backdrop is clicked.
- * - **Portal Rendering:** Injected at the root of the DOM to avoid clipping by parent containers.
- * - **Animations:** Uses Tailwind `slide-in-from-*` transitions tailored to the chosen `side`.
- *
- * @param props - Customization options including `side`, `title`, and `isOpen`.
+ * @param props - Customization options including `side`, `isOpen`, and `onClose`.
  */
 export const Sheet = (props: SheetProps) => {
   const [local, others] = splitProps(props, [
     'isOpen',
     'onClose',
-    'title',
-    'description',
     'children',
     'side',
     'class',
+    'backdropClass',
   ]);
-  const side = local.side || 'right';
+  const side = () => local.side || 'right';
 
-  // Robust Body Scroll Lock
   createEffect(() => {
     if (local.isOpen) {
       const originalStyle = window.getComputedStyle(document.body).overflow;
@@ -105,23 +84,22 @@ export const Sheet = (props: SheetProps) => {
         <div
           class={twMerge(
             'fixed inset-0 z-50 flex',
-            side === 'right' ? 'justify-end' : 'justify-start',
+            side() === 'right' ? 'justify-end' : 'justify-start',
           )}
         >
-          {/* Backdrop */}
           <div
-            class="fixed inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+            class={twMerge(
+              'fixed inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200',
+              local.backdropClass,
+            )}
             onClick={local.onClose}
           />
-          {/* Panel */}
           <div
             role="dialog"
             aria-modal="true"
-            aria-labelledby={local.title ? 'sheet-title' : undefined}
-            aria-describedby={local.description ? 'sheet-desc' : undefined}
             class={twMerge(
-              'fixed z-50 h-full w-full sm:max-w-md border-stroke bg-panel p-6 shadow-lg transition ease-in-out duration-300 animate-in focus:outline-none',
-              side === 'right'
+              'clean-panel fixed z-50 h-full w-full sm:max-w-md border-stroke bg-panel shadow-lg transition ease-in-out duration-300 animate-in flex flex-col focus:outline-none',
+              side() === 'right'
                 ? 'right-0 border-l slide-in-from-right-full'
                 : 'left-0 border-r slide-in-from-left-full',
               local.class,
@@ -136,22 +114,139 @@ export const Sheet = (props: SheetProps) => {
             >
               <X size={20} />
             </button>
-            <div class="flex flex-col gap-1.5 mb-6">
-              <Show when={local.title}>
-                <h2 id="sheet-title" class="text-lg font-semibold text-fg">
-                  {local.title}
-                </h2>
-              </Show>
-              <Show when={local.description}>
-                <p id="sheet-desc" class="text-sm font-mono text-muted">
-                  {local.description}
-                </p>
-              </Show>
-            </div>
-            <div class="h-full overflow-y-auto pb-10">{local.children}</div>
+            {local.children}
           </div>
         </div>
       </Portal>
     </Show>
+  );
+};
+
+/**
+ * ### SheetHeader Component
+ *
+ * A semantic header container, typically housing `SheetTitle` and `SheetDescription`.
+ *
+ * @example
+ * ```tsx
+ * <SheetHeader>
+ *   <SheetTitle>Edit Profile</SheetTitle>
+ *   <SheetDescription>Make changes to your public profile here.</SheetDescription>
+ * </SheetHeader>
+ * ```
+ *
+ * @param props - Standard HTML div attributes.
+ */
+export const SheetHeader = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <div
+      class={twMerge('flex flex-col gap-1.5 p-6 pb-0 pr-12', local.class)}
+      {...others}
+    >
+      {local.children}
+    </div>
+  );
+};
+
+/**
+ * ### SheetTitle Component
+ *
+ * The primary heading for the sheet panel.
+ *
+ * @example
+ * ```tsx
+ * <SheetTitle>Notification Settings</SheetTitle>
+ * ```
+ *
+ * @param props - Standard HTML heading attributes.
+ */
+export const SheetTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <h2
+      class={twMerge('text-lg font-semibold text-fg', local.class)}
+      {...others}
+    >
+      {local.children}
+    </h2>
+  );
+};
+
+/**
+ * ### SheetDescription Component
+ *
+ * Supporting descriptive text displayed below the `SheetTitle`.
+ *
+ * @example
+ * ```tsx
+ * <SheetDescription>These notifications cannot be undone.</SheetDescription>
+ * ```
+ *
+ * @param props - Standard HTML paragraph attributes.
+ */
+export const SheetDescription = (props: JSX.HTMLAttributes<HTMLParagraphElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <p
+      class={twMerge('text-sm font-mono text-muted', local.class)}
+      {...others}
+    >
+      {local.children}
+    </p>
+  );
+};
+
+/**
+ * ### SheetContent Component
+ *
+ * The scrollable main body of the sheet, taking up all remaining vertical space.
+ *
+ * @example
+ * ```tsx
+ * <SheetContent>
+ *   <FormField label="Username" />
+ *   <FormField label="Bio" />
+ * </SheetContent>
+ * ```
+ *
+ * @param props - Standard HTML div attributes.
+ */
+export const SheetContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <div
+      class={twMerge('flex-1 overflow-y-auto p-6', local.class)}
+      {...others}
+    >
+      {local.children}
+    </div>
+  );
+};
+
+/**
+ * ### SheetFooter Component
+ *
+ * A sticky footer for action buttons, pinned to the bottom of the sheet.
+ *
+ * @example
+ * ```tsx
+ * <SheetFooter>
+ *   <Button variant="secondary">Cancel</Button>
+ *   <Button>Save changes</Button>
+ * </SheetFooter>
+ * ```
+ *
+ * @param props - Standard HTML div attributes.
+ */
+export const SheetFooter = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <div
+      class={twMerge('flex items-center justify-end gap-2 p-6 border-t border-stroke', local.class)}
+      {...others}
+    >
+      {local.children}
+    </div>
   );
 };
