@@ -200,11 +200,19 @@ export const ResizableHandle = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
       tabIndex={0}
       onMouseDown={(e) => {
         context.startResizing(id, e);
-        local.onMouseDown?.(e);
+        if (typeof local.onMouseDown === 'function') {
+          local.onMouseDown(e);
+        } else if (Array.isArray(local.onMouseDown)) {
+          local.onMouseDown[0](local.onMouseDown[1], e);
+        }
       }}
       onTouchStart={(e) => {
         context.startResizing(id, e);
-        local.onTouchStart?.(e);
+        if (typeof local.onTouchStart === 'function') {
+          local.onTouchStart(e);
+        } else if (Array.isArray(local.onTouchStart)) {
+          local.onTouchStart[0](local.onTouchStart[1], e);
+        }
       }}
       class={twMerge(
         'relative flex items-center justify-center bg-stroke transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-fg hover:bg-fg/20',

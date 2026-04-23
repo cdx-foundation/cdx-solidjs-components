@@ -42,6 +42,12 @@ interface ButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
    * Optional target for when the button acts as a link (as="a").
    */
   target?: string;
+
+  /**
+   * The size of the button.
+   * @default "md"
+   */
+  size?: 'sm' | 'md' | 'lg' | 'icon';
 }
 
 /**
@@ -73,6 +79,7 @@ interface ButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
 export const Button = (props: ButtonProps) => {
   const [local, others] = splitProps(props, [
     'variant',
+    'size',
     'isLoading',
     'class',
     'children',
@@ -81,14 +88,21 @@ export const Button = (props: ButtonProps) => {
   ]);
 
   const baseStyles =
-    'relative inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold tracking-wide transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50 rounded-btn';
+    'relative inline-flex items-center justify-center font-semibold tracking-wide transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50 rounded-btn';
 
   const variants = {
     primary: 'bg-primary text-white hover:bg-primary-hover border-none',
     secondary: 'bg-transparent text-fg border border-stroke hover:bg-surface',
-    outline: 'bg-transparent text-fg border border-stroke hover:bg-surface text-xs',
+    outline: 'bg-transparent text-fg border border-stroke hover:bg-surface',
     ghost: 'bg-surface text-fg hover:bg-surface/80 border-none',
     destructive: 'bg-red-600 text-white hover:bg-red-700 border-none',
+  };
+
+  const sizes = {
+    sm: 'px-3 py-1.5 text-xs',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-8 py-3 text-base',
+    icon: 'h-9 w-9 p-0',
   };
 
   return (
@@ -96,7 +110,12 @@ export const Button = (props: ButtonProps) => {
       component={local.as || 'button'}
       type={local.as ? undefined : 'button'}
       {...others}
-      class={twMerge(baseStyles, variants[local.variant || 'primary'], local.class)}
+      class={twMerge(
+        baseStyles,
+        variants[local.variant || 'primary'],
+        sizes[local.size || 'md'],
+        local.class,
+      )}
       disabled={local.disabled || local.isLoading}
     >
       {local.isLoading ? (

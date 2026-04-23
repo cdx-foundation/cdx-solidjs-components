@@ -1,4 +1,5 @@
 import { For, type JSX, Show, splitProps } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
 /**
@@ -10,7 +11,7 @@ export interface SegmentedControlOption {
   /** The text label displayed to the user. */
   label: string;
   /** An optional icon component to render alongside the label. */
-  icon?: (props: { size?: number | string; class?: string }) => JSX.Element;
+  icon?: any;
 }
 
 /**
@@ -73,7 +74,9 @@ export const SegmentedControl = (props: SegmentedControlProps) => {
                 local.itemClass,
               )}
             >
-              <Show when={option.icon}>{(Icon) => <Icon class="shrink-0" size={12} />}</Show>
+              <Show when={option.icon}>
+                <Dynamic component={option.icon} class="shrink-0" size={12} />
+              </Show>
               <span>{option.label}</span>
             </button>
           );
