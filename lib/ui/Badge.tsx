@@ -1,10 +1,11 @@
 import { type JSX, splitProps } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
 /**
  * Configuration and behavior properties for the Badge component.
  */
-interface BadgeProps extends JSX.OutputHTMLAttributes<HTMLOutputElement> {
+interface BadgeProps extends JSX.HTMLAttributes<HTMLElement> {
   /**
    * The visual style variant of the badge.
    * - `default`: Subtle gray style for secondary metadata or tags.
@@ -26,6 +27,23 @@ interface BadgeProps extends JSX.OutputHTMLAttributes<HTMLOutputElement> {
     | 'error'
     | 'destructive'
     | 'outline';
+
+  /**
+   * Polymorphic prop to change the underlying HTML element or component.
+   * Allows using the badge styles on links ('a').
+   * @default "span"
+   */
+  as?: any;
+
+  /**
+   * Optional URL for when the badge acts as a link (as="a").
+   */
+  href?: string;
+
+  /**
+   * Optional target for when the badge acts as a link (as="a").
+   */
+  target?: string;
 }
 
 /**
@@ -42,7 +60,7 @@ interface BadgeProps extends JSX.OutputHTMLAttributes<HTMLOutputElement> {
  *
  * // Tags and metadata
  * <Badge variant="default">Beta</Badge>
- * <Badge variant="outline">New Feature</Badge>
+ * <Badge variant="outline" as="a" href="/tags/new">New Feature</Badge>
  * ```
  *
  * **Visual Features:**
@@ -50,13 +68,13 @@ interface BadgeProps extends JSX.OutputHTMLAttributes<HTMLOutputElement> {
  * - **Variants:** Automatically applies semantic colors and backgrounds based on the chosen `variant`.
  * - **Scaling:** Inherits container line-height for seamless integration into text flows.
  *
- * @param props - Customization options including `variant`.
+ * @param props - Customization options including `variant` and `as`.
  */
 export const Badge = (props: BadgeProps) => {
-  const [local, others] = splitProps(props, ['variant', 'class', 'children']);
+  const [local, others] = splitProps(props, ['variant', 'class', 'children', 'as']);
 
   const baseStyles =
-    'inline-flex items-center px-2 py-0.5 rounded-badge text-[10px] font-bold uppercase tracking-wider';
+    'inline-flex items-center px-2 py-0.5 rounded-badge text-[10px] font-bold uppercase tracking-wider transition-colors';
 
   const variants = {
     default: 'bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-400',
@@ -70,11 +88,12 @@ export const Badge = (props: BadgeProps) => {
   };
 
   return (
-    <output
+    <Dynamic
+      component={local.as || 'span'}
       class={twMerge(baseStyles, variants[local.variant || 'default'], local.class)}
       {...others}
     >
       {local.children}
-    </output>
+    </Dynamic>
   );
 };

@@ -1,4 +1,5 @@
 import { type JSX, splitProps } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
 /**
@@ -9,7 +10,7 @@ import { twMerge } from 'tailwind-merge';
  *
  * @example
  * ```tsx
- * <Card class="max-w-sm">
+ * <Card class="max-w-sm" as="a" href="/details">
  *   <h3 class="font-bold">Project Update</h3>
  *   <p class="text-sm text-muted">The new documentation is now live.</p>
  *   <Button class="mt-2">View Details</Button>
@@ -21,17 +22,18 @@ import { twMerge } from 'tailwind-merge';
  * - **Layout:** Uses a vertical flex layout (`flex-col`) with a default gap of `3` (12px).
  * - **Responsiveness:** Sets `w-full` by default, but allows for custom sizing via the `class` prop.
  *
- * @param props - Standard HTML div attributes for the card container.
+ * @param props - Customization options including `as`.
  */
-export const Card = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
-  const [local, others] = splitProps(props, ['class', 'children']);
+export const Card = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any; href?: string }) => {
+  const [local, others] = splitProps(props, ['class', 'children', 'as']);
   return (
-    <div
+    <Dynamic
+      component={local.as || 'div'}
       class={twMerge('clean-panel w-full p-5 text-left flex flex-col gap-3', local.class)}
       {...others}
     >
       {local.children}
-    </div>
+    </Dynamic>
   );
 };
 
@@ -58,17 +60,18 @@ export const CardHeader = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
  * The primary heading for the card.
  * Uses an `<h3>` element by default with emphasized typography.
  *
- * @param props - Standard HTML heading attributes.
+ * @param props - Customization options including `as`.
  */
-export const CardTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
-  const [local, others] = splitProps(props, ['class', 'children']);
+export const CardTitle = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any }) => {
+  const [local, others] = splitProps(props, ['class', 'children', 'as']);
   return (
-    <h3
+    <Dynamic
+      component={local.as || 'h3'}
       class={twMerge('text-lg font-semibold leading-none tracking-tight', local.class)}
       {...others}
     >
       {local.children}
-    </h3>
+    </Dynamic>
   );
 };
 
@@ -77,14 +80,18 @@ export const CardTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
  *
  * Secondary descriptive text for the card, typically placed under the title.
  *
- * @param props - Standard HTML paragraph attributes.
+ * @param props - Customization options including `as`.
  */
-export const CardDescription = (props: JSX.HTMLAttributes<HTMLParagraphElement>) => {
-  const [local, others] = splitProps(props, ['class', 'children']);
+export const CardDescription = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any }) => {
+  const [local, others] = splitProps(props, ['class', 'children', 'as']);
   return (
-    <p class={twMerge('text-sm text-muted-foreground', local.class)} {...others}>
+    <Dynamic
+      component={local.as || 'p'}
+      class={twMerge('text-sm text-muted-foreground', local.class)}
+      {...others}
+    >
       {local.children}
-    </p>
+    </Dynamic>
   );
 };
 

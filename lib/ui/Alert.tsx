@@ -7,7 +7,7 @@ import { twMerge } from 'tailwind-merge';
  * Configuration and properties for the Alert component.
  * Inherits all standard HTML div attributes.
  */
-interface AlertProps extends JSX.HTMLAttributes<HTMLDivElement> {
+interface AlertProps extends JSX.HTMLAttributes<HTMLElement> {
   /**
    * The semantic flavor of the alert, which determines the color scheme and icon.
    * - `info`: Blue theme, for general information.
@@ -18,6 +18,17 @@ interface AlertProps extends JSX.HTMLAttributes<HTMLDivElement> {
    * @default "info"
    */
   variant?: 'info' | 'warning' | 'error' | 'success' | 'destructive';
+
+  /**
+   * Polymorphic prop to change the underlying HTML element or component.
+   * @default "div"
+   */
+  as?: any;
+
+  /**
+   * Optional URL for when the alert acts as a link (as="a").
+   */
+  href?: string;
 }
 
 /**
@@ -39,10 +50,10 @@ interface AlertProps extends JSX.HTMLAttributes<HTMLDivElement> {
  * - **Layout:** Uses a structured grid with a fixed icon position and flexible body text.
  * - **Accessibility:** Uses semantic colors that maintain high contrast in both light and dark modes.
  *
- * @param props - Customization options including `variant`.
+ * @param props - Customization options including `variant` and `as`.
  */
 export const Alert = (props: AlertProps) => {
-  const [local, others] = splitProps(props, ['variant', 'class', 'children']);
+  const [local, others] = splitProps(props, ['variant', 'class', 'children', 'as']);
 
   const baseStyles = 'relative w-full rounded-card border p-4 pl-12 flex flex-col gap-1 text-sm';
 
@@ -67,12 +78,16 @@ export const Alert = (props: AlertProps) => {
   };
 
   return (
-    <div class={twMerge(baseStyles, variants[local.variant || 'info'], local.class)} {...others}>
+    <Dynamic
+      component={local.as || 'div'}
+      class={twMerge(baseStyles, variants[local.variant || 'info'], local.class)}
+      {...others}
+    >
       <div class="absolute left-4 top-4">
         <Dynamic component={icons[local.variant || 'info']} size={18} />
       </div>
       {local.children}
-    </div>
+    </Dynamic>
   );
 };
 
@@ -86,14 +101,18 @@ export const Alert = (props: AlertProps) => {
  * <AlertTitle>Heads up!</AlertTitle>
  * ```
  *
- * @param props - Standard HTML heading attributes.
+ * @param props - Customization options including `as`.
  */
-export const AlertTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
-  const [local, others] = splitProps(props, ['class', 'children']);
+export const AlertTitle = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any }) => {
+  const [local, others] = splitProps(props, ['class', 'children', 'as']);
   return (
-    <h5 class={twMerge('mb-1 font-medium leading-none tracking-tight', local.class)} {...others}>
+    <Dynamic
+      component={local.as || 'h5'}
+      class={twMerge('mb-1 font-medium leading-none tracking-tight', local.class)}
+      {...others}
+    >
       {local.children}
-    </h5>
+    </Dynamic>
   );
 };
 
@@ -107,13 +126,17 @@ export const AlertTitle = (props: JSX.HTMLAttributes<HTMLHeadingElement>) => {
  * <AlertDescription>You can add components to your app using the cli.</AlertDescription>
  * ```
  *
- * @param props - Standard HTML div attributes.
+ * @param props - Customization options including `as`.
  */
-export const AlertDescription = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
-  const [local, others] = splitProps(props, ['class', 'children']);
+export const AlertDescription = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any }) => {
+  const [local, others] = splitProps(props, ['class', 'children', 'as']);
   return (
-    <div class={twMerge('text-sm [&_p]:leading-relaxed', local.class)} {...others}>
+    <Dynamic
+      component={local.as || 'div'}
+      class={twMerge('text-sm [&_p]:leading-relaxed', local.class)}
+      {...others}
+    >
       {local.children}
-    </div>
+    </Dynamic>
   );
 };

@@ -358,7 +358,7 @@ export default function App() {
               variant="primary"
               class="hidden sm:flex h-9 px-4 text-xs font-bold uppercase tracking-tight"
             >
-              v2.0.2
+              v2.0.3
             </Button>
           </div>
         </header>

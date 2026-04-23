@@ -7,6 +7,7 @@ import {
   splitProps,
   useContext,
 } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
 type AvatarStatus = 'idle' | 'loading' | 'loaded' | 'error';
@@ -26,19 +27,21 @@ const AvatarContext = createContext<AvatarContextValue>();
  *
  * @example
  * ```tsx
- * <Avatar>
+ * <Avatar as="a" href="/profile">
  *   <AvatarImage src="https://github.com/nutlope.png" alt="Avatar" />
  *   <AvatarFallback>YA</AvatarFallback>
  * </Avatar>
  * ```
+ * @param props - Customization options including `as`.
  */
-export const Avatar = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
-  const [local, others] = splitProps(props, ['class', 'children']);
+export const Avatar = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any; href?: string }) => {
+  const [local, others] = splitProps(props, ['class', 'children', 'as']);
   const [status, setStatus] = createSignal<AvatarStatus>('idle');
 
   return (
     <AvatarContext.Provider value={{ status, setStatus }}>
-      <div
+      <Dynamic
+        component={local.as || 'div'}
         class={twMerge(
           'relative inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-card bg-surface border border-stroke overflow-hidden',
           local.class,
@@ -46,7 +49,7 @@ export const Avatar = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
         {...others}
       >
         {local.children}
-      </div>
+      </Dynamic>
     </AvatarContext.Provider>
   );
 };
@@ -95,17 +98,18 @@ export const AvatarImage = (props: JSX.ImgHTMLAttributes<HTMLImageElement> & { a
  *
  * The fallback content for the avatar when the image is not available or hasn't loaded yet.
  *
- * @param props - Standard HTML div attributes.
+ * @param props - Customization options including `as`.
  */
-export const AvatarFallback = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+export const AvatarFallback = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any }) => {
   const ctx = useContext(AvatarContext);
   if (!ctx) throw new Error('AvatarFallback must be used within an Avatar');
 
-  const [local, others] = splitProps(props, ['class', 'children']);
+  const [local, others] = splitProps(props, ['class', 'children', 'as']);
 
   return (
     <Show when={ctx.status() !== 'loaded'}>
-      <div
+      <Dynamic
+        component={local.as || 'div'}
         class={twMerge(
           'flex h-full w-full items-center justify-center rounded-card bg-surface text-xs font-semibold uppercase tracking-wider text-muted',
           local.class,
@@ -113,7 +117,7 @@ export const AvatarFallback = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
         {...others}
       >
         {local.children}
-      </div>
+      </Dynamic>
     </Show>
   );
 };
