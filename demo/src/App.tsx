@@ -318,7 +318,7 @@ export default function App() {
         />
       </Show>
 
-      <main class="flex-1 flex flex-col h-screen overflow-y-auto scroll-smooth">
+      <main class="flex-1 flex flex-col h-screen overflow-y-auto scroll-smooth scrollbar-gutter-stable">
         <header class="h-16 border-b border-stroke bg-bg/80 backdrop-blur-md sticky top-0 z-20 flex items-center justify-between px-6 shrink-0 transition-all duration-400">
           <div class="flex items-center gap-4 flex-1">
             <button
@@ -358,7 +358,7 @@ export default function App() {
               variant="primary"
               class="hidden sm:flex h-9 px-4 text-xs font-bold uppercase tracking-tight"
             >
-              v2.0.0
+              v2.0.2
             </Button>
           </div>
         </header>

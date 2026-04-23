@@ -123,7 +123,6 @@ html {
   scroll-behavior: smooth;
   background-color: var(--bg-main);
   color: var(--fg-main);
-  scrollbar-gutter: stable;
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 

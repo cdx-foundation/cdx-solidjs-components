@@ -30,10 +30,6 @@
 }
 
 @layer base {
-  html {
-    scrollbar-gutter: stable;
-  }
-
   * {
     border-color: var(--border-main);
     box-shadow: none;
