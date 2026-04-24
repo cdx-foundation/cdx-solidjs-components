@@ -1,5 +1,5 @@
 import { CircleCheck, CircleX, Info, TriangleAlert, X } from 'lucide-solid';
-import { For, type JSX, Show, createSignal, splitProps } from 'solid-js';
+import { For, type JSX, Show, createEffect, createSignal, splitProps } from 'solid-js';
 import { Dynamic, Portal } from 'solid-js/web';
 import { TransitionGroup } from 'solid-transition-group';
 import { twMerge } from 'tailwind-merge';
@@ -26,6 +26,12 @@ export interface ToastData {
   description?: string;
 
   /**
+   * The display duration in milliseconds.
+   * If not provided, the `Toaster`'s global duration is used.
+   */
+  duration?: number;
+
+  /**
    * The visual theme of the notification.
    * - `default`: Standard informational style.
    * - `info`: Blue theme, for general information.
@@ -40,6 +46,12 @@ export interface ToastData {
 // Global state for toast management
 const [toasts, setToasts] = createSignal<ToastData[]>([]);
 
+// Global configuration for toast behavior, updated via Toaster component
+const [toastConfig, setToastConfig] = createSignal({
+  duration: 4000,
+  maxToasts: 5,
+});
+
 /**
  * Arguments that can be passed to the toast functions.
  */
@@ -49,15 +61,26 @@ export type ToastArgs = string | Omit<ToastData, 'id'>;
  * Programmatic helper to trigger notifications.
  */
 const createToast = (data: ToastArgs) => {
-  const payload = typeof data === 'string' ? { title: data } : data;
+  const payload: Omit<ToastData, 'id'> = typeof data === 'string' ? { title: data } : data;
   const id = Math.random().toString(36).substring(2, 9);
+  const config = toastConfig();
+  const duration = payload.duration ?? config.duration;
 
-  setToasts((prev) => [...prev, { type: 'default', ...payload, id }]);
+  setToasts((prev) => {
+    const item: ToastData = { type: 'default', ...payload, id };
+    const next = [...prev, item];
+    if (next.length > config.maxToasts) {
+      return next.slice(next.length - config.maxToasts);
+    }
+    return next;
+  });
 
   // Auto-dismiss logic
-  setTimeout(() => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  }, 4000);
+  if (duration > 0) {
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, duration);
+  }
 
   return id;
 };
@@ -66,18 +89,19 @@ const createToast = (data: ToastArgs) => {
  * ### toast Utility
  *
  * A programmatic helper to trigger notifications from anywhere in your application.
- * Notifications automatically dismiss after 4 seconds.
+ * Notifications automatically dismiss after a duration (default 4 seconds).
  *
  * @example
  * ```tsx
  * // Simple notification
  * toast("Profile updated");
  *
- * // Detailed notification
+ * // Detailed notification with custom duration
  * toast({
  *   title: "Export failed",
  *   description: "Reason: Timeout after 30s",
- *   type: "error"
+ *   type: "error",
+ *   duration: 10000
  * });
  *
  * // Variants
@@ -121,6 +145,40 @@ export const toast = Object.assign(createToast, {
 });
 
 /**
+ * Possible positions for the Toaster to appear on the screen.
+ */
+export type ToasterPosition =
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right';
+
+/**
+ * Configuration options for the Toaster component.
+ */
+export interface ToasterProps {
+  /**
+   * The corner of the screen where notifications will appear.
+   * @default "bottom-right"
+   */
+  position?: ToasterPosition;
+
+  /**
+   * Global default duration for all toasts in milliseconds.
+   * @default 4000
+   */
+  duration?: number;
+
+  /**
+   * Maximum number of toasts visible at once.
+   * @default 5
+   */
+  maxToasts?: number;
+}
+
+/**
  * ### Toaster Component
  *
  * The rendering engine for toast notifications.
@@ -134,19 +192,39 @@ export const toast = Object.assign(createToast, {
  *   return (
  *     <>
  *       <MyRouter />
- *       <Toaster />
+ *       <Toaster position="top-right" duration={5000} maxToasts={3} />
  *     </>
  *   );
  * }
  * ```
  *
  * **Features:**
- * - **Stacking:** Newest notifications appear at the bottom.
+ * - **Stacking:** Newest notifications appear at the bottom (for bottom positions) or top (for top positions).
  * - **Portal Support:** Renders outside the main DOM tree to prevent clipping.
  * - **Smooth Transitions:** Uses `TransitionGroup` for fluid enter/exit animations.
- * - **Auto-Placement:** Fixed to the bottom-right corner of the viewport.
+ * - **Custom Placement:** Support for six screen positions.
+ * - **Capacity Control:** Limit the number of concurrent notifications via `maxToasts`.
  */
-export const Toaster = () => {
+export const Toaster = (props: ToasterProps) => {
+  const [local] = splitProps(props, ['position', 'duration', 'maxToasts']);
+  const position = () => local.position || 'bottom-right';
+
+  createEffect(() => {
+    setToastConfig({
+      duration: local.duration ?? 4000,
+      maxToasts: local.maxToasts ?? 5,
+    });
+  });
+
+  const positionClasses = {
+    'top-left': 'top-4 left-4 flex-col-reverse',
+    'top-center': 'top-4 left-1/2 -translate-x-1/2 flex-col-reverse',
+    'top-right': 'top-4 right-4 flex-col-reverse',
+    'bottom-left': 'bottom-4 left-4 flex-col',
+    'bottom-center': 'bottom-4 left-1/2 -translate-x-1/2 flex-col',
+    'bottom-right': 'bottom-4 right-4 flex-col',
+  };
+
   const icons = {
     default: Info,
     info: Info,
@@ -165,7 +243,12 @@ export const Toaster = () => {
 
   return (
     <Portal>
-      <div class="fixed bottom-4 right-4 z-100 flex flex-col gap-2 w-full max-w-sm pointer-events-none">
+      <div
+        class={twMerge(
+          'fixed z-100 flex gap-2 w-full max-w-sm pointer-events-none',
+          positionClasses[position()],
+        )}
+      >
         <TransitionGroup
           onEnter={(el, done) => {
             if (!el.animate) {

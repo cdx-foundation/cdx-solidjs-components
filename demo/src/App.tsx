@@ -72,7 +72,7 @@ import { Switch } from '../../lib/ui/Switch';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../lib/ui/Table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../lib/ui/Tabs';
 import { Textarea } from '../../lib/ui/Textarea';
-import { Toaster, toast } from '../../lib/ui/Toast';
+import { Toaster, type ToasterPosition, toast } from '../../lib/ui/Toast';
 import { Tooltip } from '../../lib/ui/Tooltip';
 
 type Section =
@@ -94,6 +94,9 @@ export default function App() {
   const [currentTheme, setCurrentTheme] = createSignal<Theme>('professional');
   const [sidebarOpen, setSidebarOpen] = createSignal(false);
   const [commandOpen, setCommandOpen] = createSignal(false);
+  const [toastPos, setToastPos] = createSignal<ToasterPosition>('bottom-right');
+  const [maxToasts, setMaxToasts] = createSignal(5);
+  const [toastDuration, setToastDuration] = createSignal(4000);
 
   // Interaction States for demos
   const [sliderVal, setSliderVal] = createSignal(65);
@@ -736,11 +739,15 @@ export default function App() {
 
               <Preview
                 title="Inputs & Toggles"
-                description="Standard text inputs and switches."
-                code={`import { Input } from 'starling-components/ui/Input';\nimport { Switch } from 'starling-components/ui/Switch';\nimport { Label } from 'starling-components/ui/Label';\n\n<div class="flex flex-col gap-6">\n  <Input label="Display Name" placeholder="Yanis" />\n  <div class="flex items-center justify-between p-4 bg-panel border border-stroke rounded-xl">\n    <Label>Public Visibility</Label>\n    <Switch checked />\n  </div>\n</div>`}
+                description="Standard text inputs with optional descriptions and switches."
+                code={`import { Input } from 'starling-components/ui/Input';\nimport { Switch } from 'starling-components/ui/Switch';\nimport { Label } from 'starling-components/ui/Label';\n\n<div class="flex flex-col gap-6">\n  <Input \n    label="Username" \n    placeholder="yanis" \n    description="This is your public display name." \n  />\n  <div class="flex items-center justify-between p-4 bg-panel border border-stroke rounded-xl">\n    <Label>Public Visibility</Label>\n    <Switch checked />\n  </div>\n</div>`}
               >
-                <div class="w-full max-sm flex flex-col gap-6">
-                  <Input label="Display Name" placeholder="Yanis" />
+                <div class="w-full max-sm flex flex-col gap-6 transition-all duration-400">
+                  <Input
+                    label="Username"
+                    placeholder="yanis"
+                    description="This is your public display name."
+                  />
                   <div class="flex items-center justify-between p-4 bg-panel border border-stroke rounded-xl">
                     <Label>Public Visibility</Label>
                     <Switch checked />
@@ -943,21 +950,50 @@ export default function App() {
 
               <Preview
                 title="Toast Notifications"
-                description="Fluid, non-interruptive feedback."
-                code={`import { toast } from 'starling-components/ui/Toast';\n\n<Button onClick={() => toast({ title: "Done", type: "success" })}>\n  Show Success\n</Button>`}
+                description="Fluid, non-interruptive feedback. Now with configurable positioning, limits, and duration."
+                code={`import { toast, Toaster } from 'starling-components/ui/Toast';\n\n<Toaster \n  position="${toastPos()}" \n  maxToasts={${maxToasts()}} \n  duration={${toastDuration()}} \n/>\n\n<Button onClick={() => toast({ title: "Done", type: "success" })}>\n  Show Success\n</Button>`}
               >
-                <Button
-                  variant="outline"
-                  onClick={() =>
-                    toast({
-                      title: 'System Ready',
-                      description: 'All clusters operational.',
-                      type: 'success',
-                    })
-                  }
-                >
-                  Trigger Notification
-                </Button>
+                <div class="flex flex-col gap-6 w-full max-w-xs transition-all duration-400">
+                  <Select
+                    label="Toaster Position"
+                    value={toastPos()}
+                    onChange={(v) => setToastPos(v as ToasterPosition)}
+                    options={[
+                      { label: 'Top Left', value: 'top-left' },
+                      { label: 'Top Center', value: 'top-center' },
+                      { label: 'Top Right', value: 'top-right' },
+                      { label: 'Bottom Left', value: 'bottom-left' },
+                      { label: 'Bottom Center', value: 'bottom-center' },
+                      { label: 'Bottom Right', value: 'bottom-right' },
+                    ]}
+                  />
+                  <div class="grid grid-cols-2 gap-4">
+                    <Input
+                      label="Max Toasts"
+                      type="number"
+                      value={maxToasts()}
+                      onInput={(e) => setMaxToasts(Number.parseInt(e.currentTarget.value))}
+                    />
+                    <Input
+                      label="Duration (ms)"
+                      type="number"
+                      value={toastDuration()}
+                      onInput={(e) => setToastDuration(Number.parseInt(e.currentTarget.value))}
+                    />
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={() =>
+                      toast({
+                        title: 'System Ready',
+                        description: 'All clusters operational.',
+                        type: 'success',
+                      })
+                    }
+                  >
+                    Trigger Notification
+                  </Button>
+                </div>
               </Preview>
             </section>
           </Show>
@@ -1233,7 +1269,7 @@ export default function App() {
         </CommandGroup>
       </Command>
 
-      <Toaster />
+      <Toaster position={toastPos()} maxToasts={maxToasts()} duration={toastDuration()} />
     </div>
   );
 }

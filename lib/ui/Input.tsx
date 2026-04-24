@@ -13,6 +13,11 @@ interface InputProps extends JSX.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
 
   /**
+   * Optional helper text displayed below the input field.
+   */
+  description?: string;
+
+  /**
    * An error message displayed in small font below the input.
    * Triggers an error state (primary/red border) on the input itself.
    */
@@ -35,6 +40,12 @@ interface InputProps extends JSX.InputHTMLAttributes<HTMLInputElement> {
  * // Standard usage
  * <Input label="Email Address" placeholder="hello@example.com" type="email" />
  *
+ * // With description
+ * <Input
+ *   label="Username"
+ *   description="This is your public display name."
+ * />
+ *
  * // Error state
  * <Input
  *   label="Password"
@@ -49,11 +60,20 @@ interface InputProps extends JSX.InputHTMLAttributes<HTMLInputElement> {
  * - **Error Highlighting:** Automatically shifts border and text colors to the primary theme color when an error is present.
  * - **ID Management:** Generates a unique `id` automatically to link the label and input for accessibility.
  *
- * @param props - Customization options including `label`, `error`, and all standard input attributes.
+ * @param props - Customization options including `label`, `description`, `error`, and all standard input attributes.
  */
 export const Input = (props: InputProps) => {
-  const [local, others] = splitProps(props, ['label', 'error', 'class', 'id', 'containerClass']);
+  const [local, others] = splitProps(props, [
+    'label',
+    'description',
+    'error',
+    'class',
+    'id',
+    'containerClass',
+  ]);
   const id = local.id || uid('input');
+  const descriptionId = `${id}-description`;
+  const errorId = `${id}-error`;
 
   return (
     <div class={twMerge('flex flex-col gap-1.5 w-full text-left', local.containerClass)}>
@@ -66,7 +86,11 @@ export const Input = (props: InputProps) => {
         <input
           id={id}
           aria-invalid={!!local.error}
-          aria-describedby={local.error ? `${id}-error` : undefined}
+          aria-describedby={
+            [local.description ? descriptionId : null, local.error ? errorId : null]
+              .filter(Boolean)
+              .join(' ') || undefined
+          }
           class={twMerge(
             'w-full border border-stroke bg-transparent rounded-input px-3 py-2.5 text-sm font-mono text-fg outline-none placeholder:text-muted/80 transition-colors duration-150 focus:border-fg',
             local.error && 'border-primary text-primary',
@@ -75,8 +99,13 @@ export const Input = (props: InputProps) => {
           {...others}
         />
       </div>
+      <Show when={local.description}>
+        <p id={descriptionId} class="text-xs text-muted mt-0.5">
+          {local.description}
+        </p>
+      </Show>
       <Show when={local.error}>
-        <p id={`${id}-error`} class="text-xs font-medium text-primary mt-0.5">
+        <p id={errorId} class="text-xs font-medium text-primary mt-0.5">
           {local.error}
         </p>
       </Show>

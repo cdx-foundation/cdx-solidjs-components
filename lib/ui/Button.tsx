@@ -110,6 +110,7 @@ export const Button = (props: ButtonProps) => {
       component={local.as || 'button'}
       type={local.as ? undefined : 'button'}
       {...others}
+      aria-busy={local.isLoading}
       class={twMerge(
         baseStyles,
         variants[local.variant || 'primary'],
@@ -119,7 +120,7 @@ export const Button = (props: ButtonProps) => {
       disabled={local.disabled || local.isLoading}
     >
       {local.isLoading ? (
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2" aria-live="polite">
           <div class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
           <span>Loading...</span>
         </div>
