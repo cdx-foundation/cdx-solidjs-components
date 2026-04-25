@@ -2,11 +2,25 @@ import { createEffect, createSignal, type JSX, onCleanup, onMount, Show } from '
 import { Portal } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
+export type Alignment =
+  | 'top'
+  | 'top-left'
+  | 'top-right'
+  | 'bottom'
+  | 'bottom-left'
+  | 'bottom-right'
+  | 'left'
+  | 'left-top'
+  | 'left-bottom'
+  | 'right'
+  | 'right-top'
+  | 'right-bottom';
+
 interface FloatingProps {
   trigger: (ref: (el: HTMLElement) => void) => JSX.Element;
   children: JSX.Element;
   isOpen: boolean;
-  align?: 'top' | 'bottom' | 'left' | 'right';
+  align?: Alignment;
   sideOffset?: number;
   class?: string;
   id?: string;
@@ -46,16 +60,48 @@ export const Floating = (props: FloatingProps) => {
         top = triggerRect.top - offset;
         left = triggerRect.left + triggerRect.width / 2;
         break;
+      case 'top-left':
+        top = triggerRect.top - offset;
+        left = triggerRect.left;
+        break;
+      case 'top-right':
+        top = triggerRect.top - offset;
+        left = triggerRect.right;
+        break;
       case 'bottom':
         top = triggerRect.bottom + offset;
         left = triggerRect.left + triggerRect.width / 2;
+        break;
+      case 'bottom-left':
+        top = triggerRect.bottom + offset;
+        left = triggerRect.left;
+        break;
+      case 'bottom-right':
+        top = triggerRect.bottom + offset;
+        left = triggerRect.right;
         break;
       case 'left':
         top = triggerRect.top + triggerRect.height / 2;
         left = triggerRect.left - offset;
         break;
+      case 'left-top':
+        top = triggerRect.top;
+        left = triggerRect.left - offset;
+        break;
+      case 'left-bottom':
+        top = triggerRect.bottom;
+        left = triggerRect.left - offset;
+        break;
       case 'right':
         top = triggerRect.top + triggerRect.height / 2;
+        left = triggerRect.right + offset;
+        break;
+      case 'right-top':
+        top = triggerRect.top;
+        left = triggerRect.right + offset;
+        break;
+      case 'right-bottom':
+        top = triggerRect.bottom;
         left = triggerRect.right + offset;
         break;
     }
@@ -88,12 +134,28 @@ export const Floating = (props: FloatingProps) => {
     switch (align) {
       case 'top':
         return 'translate(-50%, -100%)';
+      case 'top-left':
+        return 'translate(0, -100%)';
+      case 'top-right':
+        return 'translate(-100%, -100%)';
       case 'bottom':
         return 'translate(-50%, 0)';
+      case 'bottom-left':
+        return 'translate(0, 0)';
+      case 'bottom-right':
+        return 'translate(-100%, 0)';
       case 'left':
         return 'translate(-100%, -50%)';
+      case 'left-top':
+        return 'translate(-100%, 0)';
+      case 'left-bottom':
+        return 'translate(-100%, -100%)';
       case 'right':
         return 'translate(0, -50%)';
+      case 'right-top':
+        return 'translate(0, 0)';
+      case 'right-bottom':
+        return 'translate(0, -100%)';
       default:
         return 'translate(-50%, 0)';
     }

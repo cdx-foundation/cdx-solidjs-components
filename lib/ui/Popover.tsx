@@ -1,7 +1,7 @@
 import { createShortcut } from '@solid-primitives/keyboard';
 import { createSignal, type JSX, onCleanup } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
-import { Floating } from './Floating';
+import { Alignment, Floating } from './Floating';
 
 /**
  * Configuration and behavior properties for the Popover component.
@@ -23,10 +23,11 @@ interface PopoverProps {
   class?: string;
 
   /**
-   * The horizontal anchor point of the popover relative to its trigger.
+   * The anchor point of the popover relative to its trigger.
+   * Supports cardinal and diagonal positions.
    * @default "bottom"
    */
-  align?: 'top' | 'bottom' | 'left' | 'right';
+  align?: Alignment;
 }
 
 /**

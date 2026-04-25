@@ -1038,52 +1038,117 @@ export default function App() {
 
               <Preview
                 title="Popover"
-                description="A floating container for rich content, triggered by a click."
-                code={`import { Popover } from 'starling-components/ui/Popover';\n\n<Popover\n  trigger={<Button variant="outline">Open Popover</Button>}\n  align="center"\n>\n  <div class="p-2">Detailed information here.</div>\n</Popover>`}
+                description="A floating container for rich content. Now supports cardinal and diagonal (corner) alignment."
+                code={`import { Popover } from 'starling-components/ui/Popover';\n\n<div class="grid grid-cols-3 gap-4">\n  <Popover trigger={<Button variant="outline">Bottom Left</Button>} align="bottom-left">...</Popover>\n  <Popover trigger={<Button variant="outline">Bottom Right</Button>} align="bottom-right">...</Popover>\n  <Popover trigger={<Button variant="outline">Top Right</Button>} align="top-right">...</Popover>\n</div>`}
               >
-                <Popover trigger={<Button variant="outline">Click for Details</Button>} align="top">
-                  <div class="p-4 w-64 space-y-2">
-                    <h4 class="font-bold">Project Details</h4>
-                    <p class="text-xs text-muted">
-                      Created by Yanis on April 2026. This project is currently in active
-                      development.
-                    </p>
-                    <div class="pt-2">
-                      <Button variant="primary" class="w-full h-8 text-xs">
-                        Edit Project
-                      </Button>
-                    </div>
+                <div class="flex flex-col gap-8 w-full items-center">
+                  <div class="flex flex-wrap justify-center gap-4">
+                    <Popover
+                      trigger={<Button variant="outline">Top Left</Button>}
+                      align="top-left"
+                    >
+                      <div class="p-4 w-48 text-sm">Aligned to trigger's top-left corner.</div>
+                    </Popover>
+                    <Popover trigger={<Button variant="outline">Top</Button>} align="top">
+                      <div class="p-4 w-48 text-sm text-center">Standard top alignment.</div>
+                    </Popover>
+                    <Popover
+                      trigger={<Button variant="outline">Top Right</Button>}
+                      align="top-right"
+                    >
+                      <div class="p-4 w-48 text-sm text-right">Aligned to top-right corner.</div>
+                    </Popover>
                   </div>
-                </Popover>
+
+                  <div class="flex flex-wrap justify-center gap-4">
+                    <Popover
+                      trigger={<Button variant="outline">Bottom Left</Button>}
+                      align="bottom-left"
+                    >
+                      <div class="p-4 w-48 text-sm">Aligned to bottom-left corner.</div>
+                    </Popover>
+                    <Popover trigger={<Button variant="outline">Bottom</Button>} align="bottom">
+                      <div class="p-4 w-48 text-sm text-center">Standard bottom alignment.</div>
+                    </Popover>
+                    <Popover
+                      trigger={<Button variant="outline">Bottom Right</Button>}
+                      align="bottom-right"
+                    >
+                      <div class="p-4 w-48 text-sm text-right">Aligned to bottom-right corner.</div>
+                    </Popover>
+                  </div>
+
+                  <div class="flex flex-wrap justify-center gap-4">
+                    <Popover
+                      trigger={<Button variant="outline">Left Top</Button>}
+                      align="left-top"
+                    >
+                      <div class="p-4 w-48 text-sm">Side-aligned to the top.</div>
+                    </Popover>
+                    <Popover
+                      trigger={<Button variant="outline">Right Bottom</Button>}
+                      align="right-bottom"
+                    >
+                      <div class="p-4 w-48 text-sm">Side-aligned to the bottom.</div>
+                    </Popover>
+                  </div>
+                </div>
               </Preview>
 
               <Preview
                 title="Hover Card"
-                description="A non-interactive preview that appears on hover with a slight delay."
-                code={`import { HoverCard } from 'starling-components/ui/HoverCard';\nimport { Avatar, AvatarImage, AvatarFallback } from 'starling-components/ui/Avatar';\n\n<HoverCard trigger={<a href="#" class="text-primary underline">@yanis</a>}>\n  <div class="flex gap-4">\n    <Avatar>\n      <AvatarImage src="https://github.com/nutlope.png" alt="Yanis" />\n      <AvatarFallback>YA</AvatarFallback>\n    </Avatar>\n    <div>\n      <h4 class="text-sm font-bold">Yanis</h4>\n      <p class="text-xs text-muted">Core Developer</p>\n    </div>\n  </div>\n</HoverCard>`}
+                description="A non-interactive preview that appears on hover. Alignment is now fully configurable."
+                code={`import { HoverCard } from 'starling-components/ui/HoverCard';\n\n<HoverCard trigger={<Button>Bottom Right</Button>} align="bottom-right">\n  Content aligned to corner\n</HoverCard>`}
               >
-                <HoverCard
-                  trigger={
-                    <span class="text-primary underline cursor-help">Hover for Profile</span>
-                  }
-                >
-                  <div class="flex gap-4">
-                    <Avatar>
-                      <AvatarImage src="https://github.com/nutlope.png" alt="Yanis" />
-                      <AvatarFallback>YA</AvatarFallback>
-                    </Avatar>
-                    <div class="space-y-1">
-                      <h4 class="text-sm font-bold">Yanis</h4>
-                      <p class="text-xs text-muted">
-                        Building the future of Starling UI. Lead developer and architect.
+                <div class="flex flex-wrap justify-center gap-8">
+                  <HoverCard
+                    align="top-left"
+                    trigger={
+                      <span class="text-primary underline cursor-help font-mono text-xs">
+                        top-left
+                      </span>
+                    }
+                  >
+                    <div class="space-y-2">
+                      <h4 class="text-sm font-bold">Top Left Card</h4>
+                      <p class="text-xs text-muted leading-tight">
+                        Perfect for triggers located at the edges of a container.
                       </p>
-                      <div class="flex items-center gap-1 pt-2">
-                        <Badge class="text-[10px] h-4">Maintainer</Badge>
-                        <Badge class="text-[10px] h-4">Pro</Badge>
-                      </div>
                     </div>
-                  </div>
-                </HoverCard>
+                  </HoverCard>
+
+                  <HoverCard
+                    align="right-top"
+                    trigger={
+                      <span class="text-primary underline cursor-help font-mono text-xs">
+                        right-top
+                      </span>
+                    }
+                  >
+                    <div class="space-y-2">
+                      <h4 class="text-sm font-bold">Right Top Card</h4>
+                      <p class="text-xs text-muted leading-tight">
+                        Appears to the right, flush with the top of the trigger.
+                      </p>
+                    </div>
+                  </HoverCard>
+
+                  <HoverCard
+                    align="bottom-right"
+                    trigger={
+                      <span class="text-primary underline cursor-help font-mono text-xs">
+                        bottom-right
+                      </span>
+                    }
+                  >
+                    <div class="space-y-2">
+                      <h4 class="text-sm font-bold">Bottom Right Card</h4>
+                      <p class="text-xs text-muted leading-tight">
+                        Spawns below and extends to the left from the right edge.
+                      </p>
+                    </div>
+                  </HoverCard>
+                </div>
               </Preview>
             </section>
           </Show>

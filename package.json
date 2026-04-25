@@ -1,6 +1,6 @@
 {
   "name": "starling-components",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Solid.js component library for Starling City projects.",
   "type": "module",
   "sideEffects": [

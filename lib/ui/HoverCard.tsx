@@ -1,6 +1,6 @@
 import { createSignal, type JSX } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
-import { Floating } from './Floating';
+import { Alignment, Floating } from './Floating';
 
 /**
  * Configuration and properties for the HoverCard component.
@@ -20,6 +20,12 @@ interface HoverCardProps {
    * Custom CSS classes for the floating card container.
    */
   class?: string;
+
+  /**
+   * The anchor point of the card relative to its trigger.
+   * @default "top"
+   */
+  align?: Alignment;
 }
 
 /**
@@ -47,7 +53,7 @@ export const HoverCard = (props: HoverCardProps) => {
   return (
     <Floating
       isOpen={isOpen()}
-      align="top"
+      align={props.align || 'top'}
       sideOffset={8}
       class={twMerge('w-64 border border-stroke bg-panel p-4 shadow-xl rounded-card', props.class)}
       trigger={(ref) => (

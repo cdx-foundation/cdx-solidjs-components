@@ -1,6 +1,6 @@
 import { createSignal, type JSX } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
-import { Floating } from './Floating';
+import { Alignment, Floating } from './Floating';
 
 /**
  * Configuration and properties for the Tooltip component.
@@ -22,10 +22,11 @@ interface TooltipProps {
   class?: string;
 
   /**
-   * The cardinal direction where the tooltip should appear relative to the trigger.
+   * The direction where the tooltip should appear relative to the trigger.
+   * Supports cardinal and diagonal positions.
    * @default "top"
    */
-  align?: 'top' | 'bottom' | 'left' | 'right';
+  align?: Alignment;
 }
 
 /**
