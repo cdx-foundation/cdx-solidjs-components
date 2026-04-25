@@ -1,6 +1,6 @@
 import { makeEventListener } from '@solid-primitives/event-listener';
 import { ChevronLeft, ChevronRight } from 'lucide-solid';
-import { For, type JSX, createSignal, onMount, splitProps } from 'solid-js';
+import { createSignal, For, type JSX, onMount, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
 /**

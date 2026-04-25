@@ -1,5 +1,14 @@
 import { CircleCheck, CircleX, Info, TriangleAlert, X } from 'lucide-solid';
-import { For, type JSX, Show, createEffect, createSignal, splitProps } from 'solid-js';
+import {
+  createEffect,
+  createSignal,
+  For,
+  type JSX,
+  onCleanup,
+  onMount,
+  Show,
+  splitProps,
+} from 'solid-js';
 import { Dynamic, Portal } from 'solid-js/web';
 import { TransitionGroup } from 'solid-transition-group';
 import { twMerge } from 'tailwind-merge';
@@ -51,6 +60,9 @@ const [toastConfig, setToastConfig] = createSignal({
   duration: 4000,
   maxToasts: 5,
 });
+
+// Toaster instance management to prevent duplicates
+const [activeToasters, setActiveToasters] = createSignal<string[]>([]);
 
 /**
  * Arguments that can be passed to the toast functions.
@@ -206,14 +218,30 @@ export interface ToasterProps {
  * - **Capacity Control:** Limit the number of concurrent notifications via `maxToasts`.
  */
 export const Toaster = (props: ToasterProps) => {
+  const id = Math.random().toString(36).substring(2, 9);
   const [local] = splitProps(props, ['position', 'duration', 'maxToasts']);
   const position = () => local.position || 'bottom-right';
 
+  onMount(() => {
+    setActiveToasters((prev) => [...prev, id]);
+  });
+
+  onCleanup(() => {
+    setActiveToasters((prev) => prev.filter((t) => t !== id));
+  });
+
+  const isMaster = () => {
+    const stack = activeToasters();
+    return stack[stack.length - 1] === id;
+  };
+
   createEffect(() => {
-    setToastConfig({
-      duration: local.duration ?? 4000,
-      maxToasts: local.maxToasts ?? 5,
-    });
+    if (isMaster()) {
+      setToastConfig({
+        duration: local.duration ?? 4000,
+        maxToasts: local.maxToasts ?? 5,
+      });
+    }
   });
 
   const positionClasses = {
@@ -242,62 +270,64 @@ export const Toaster = (props: ToasterProps) => {
   };
 
   return (
-    <Portal>
-      <div
-        class={twMerge(
-          'fixed z-100 flex gap-2 w-full max-w-sm pointer-events-none',
-          positionClasses[position()],
-        )}
-      >
-        <TransitionGroup
-          onEnter={(el, done) => {
-            if (!el.animate) {
-              done();
-              return;
-            }
-            const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
-              duration: 200,
-              easing: 'ease-out',
-            });
-            a.finished.then(done);
-          }}
-          onExit={(el, done) => {
-            if (!el.animate) {
-              done();
-              return;
-            }
-            const a = el.animate([{ opacity: 1 }, { opacity: 0 }], {
-              duration: 200,
-              easing: 'ease-in',
-            });
-            a.finished.then(done);
-          }}
+    <Show when={isMaster()}>
+      <Portal>
+        <div
+          class={twMerge(
+            'fixed z-100 flex gap-2 w-full max-w-sm pointer-events-none',
+            positionClasses[position()],
+          )}
         >
-          <For each={toasts()}>
-            {(t) => (
-              <div class="relative flex w-full gap-3 border border-stroke bg-panel p-4 shadow-lg pointer-events-auto">
-                <div class={twMerge('shrink-0 pt-0.5', typeStyles[t.type || 'default'])}>
-                  <Dynamic component={icons[t.type || 'default']} size={18} />
+          <TransitionGroup
+            onEnter={(el, done) => {
+              if (!el.animate) {
+                done();
+                return;
+              }
+              const a = el.animate([{ opacity: 0 }, { opacity: 1 }], {
+                duration: 200,
+                easing: 'ease-out',
+              });
+              a.finished.then(done);
+            }}
+            onExit={(el, done) => {
+              if (!el.animate) {
+                done();
+                return;
+              }
+              const a = el.animate([{ opacity: 1 }, { opacity: 0 }], {
+                duration: 200,
+                easing: 'ease-in',
+              });
+              a.finished.then(done);
+            }}
+          >
+            <For each={toasts()}>
+              {(t) => (
+                <div class="relative flex w-full gap-3 border border-stroke bg-panel p-4 shadow-lg pointer-events-auto">
+                  <div class={twMerge('shrink-0 pt-0.5', typeStyles[t.type || 'default'])}>
+                    <Dynamic component={icons[t.type || 'default']} size={18} />
+                  </div>
+                  <div class="flex flex-col gap-1 pr-6 flex-1">
+                    <ToastTitle>{t.title}</ToastTitle>
+                    <Show when={t.description}>
+                      <ToastDescription>{t.description}</ToastDescription>
+                    </Show>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setToasts((prev) => prev.filter((x) => x.id !== t.id))}
+                    class="absolute right-2 top-2 text-muted hover:text-fg transition-colors"
+                  >
+                    <X size={16} />
+                  </button>
                 </div>
-                <div class="flex flex-col gap-1 pr-6 flex-1">
-                  <ToastTitle>{t.title}</ToastTitle>
-                  <Show when={t.description}>
-                    <ToastDescription>{t.description}</ToastDescription>
-                  </Show>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setToasts((prev) => prev.filter((x) => x.id !== t.id))}
-                  class="absolute right-2 top-2 text-muted hover:text-fg transition-colors"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-            )}
-          </For>
-        </TransitionGroup>
-      </div>
-    </Portal>
+              )}
+            </For>
+          </TransitionGroup>
+        </div>
+      </Portal>
+    </Show>
   );
 };
 

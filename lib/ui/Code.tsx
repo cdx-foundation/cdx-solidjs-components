@@ -1,5 +1,5 @@
 import { Check, Copy, FileCode } from 'lucide-solid';
-import { type JSX, Show, createSignal, splitProps } from 'solid-js';
+import { createSignal, type JSX, Show, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { Button } from './Button';
 import { ScrollArea } from './ScrollArea';

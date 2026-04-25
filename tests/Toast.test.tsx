@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@solidjs/testing-library';
+import { render, screen } from '@solidjs/testing-library';
 import { describe, expect, it } from 'vitest';
 import { Toaster, toast } from '../lib/ui/Toast';
 

@@ -1,4 +1,4 @@
-import { type JSX, Show, createSignal, splitProps } from 'solid-js';
+import { createSignal, type JSX, Show, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
 /**

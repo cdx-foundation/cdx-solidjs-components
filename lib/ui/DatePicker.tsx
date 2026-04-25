@@ -1,5 +1,5 @@
 import { Calendar as CalendarIcon } from 'lucide-solid';
-import { type JSX, Show, createSignal, splitProps } from 'solid-js';
+import { createSignal, type JSX, Show, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { Calendar } from './Calendar';
 import { Popover } from './Popover';

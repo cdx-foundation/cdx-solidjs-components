@@ -1,6 +1,6 @@
 import { makeEventListener } from '@solid-primitives/event-listener';
 import { Check, ChevronDown } from 'lucide-solid';
-import { For, Show, createEffect, createSelector, createSignal } from 'solid-js';
+import { createEffect, createSelector, createSignal, For, Show } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { uid } from '../uid';
 import { Floating } from './Floating';

@@ -1,21 +1,5 @@
-import {
-  Cat,
-  ChevronRight,
-  Code2,
-  Cpu,
-  ExternalLink,
-  Layers,
-  Menu,
-  Moon,
-  Palette,
-  Search,
-  Shield,
-  Sparkles,
-  Sun,
-  X,
-  Zap,
-} from 'lucide-solid';
-import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
+import { Cat, ChevronRight, Cpu, Menu, Palette, Search, Shield, Sparkles, Zap } from 'lucide-solid';
+import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import {
   Accordion,
@@ -44,7 +28,6 @@ import {
   CardHeader,
   CardTitle,
 } from '../../lib/ui/Card';
-import { Checkbox } from '../../lib/ui/Checkbox';
 import { Code } from '../../lib/ui/Code';
 import { Command, CommandGroup, CommandItem } from '../../lib/ui/Command';
 import { HoverCard } from '../../lib/ui/HoverCard';
@@ -57,7 +40,6 @@ import { Progress } from '../../lib/ui/Progress';
 import { ScrollArea } from '../../lib/ui/ScrollArea';
 import { SegmentedControl } from '../../lib/ui/SegmentedControl';
 import { Select } from '../../lib/ui/Select';
-import { Separator } from '../../lib/ui/Separator';
 import {
   Sheet,
   SheetContent,
@@ -71,7 +53,6 @@ import { Slider } from '../../lib/ui/Slider';
 import { Switch } from '../../lib/ui/Switch';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../lib/ui/Table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../lib/ui/Tabs';
-import { Textarea } from '../../lib/ui/Textarea';
 import { Toaster, type ToasterPosition, toast } from '../../lib/ui/Toast';
 import { Tooltip } from '../../lib/ui/Tooltip';
 

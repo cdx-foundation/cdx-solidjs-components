@@ -1,3 +1,4 @@
+export * from './hooks';
 export * from './ui/Accordion';
 export * from './ui/Alert';
 export * from './ui/AspectRatio';
@@ -29,8 +30,8 @@ export * from './ui/Progress';
 export * from './ui/RadioGroup';
 export * from './ui/Resizable';
 export * from './ui/ScrollArea';
-export * from './ui/Select';
 export * from './ui/SegmentedControl';
+export * from './ui/Select';
 export * from './ui/Separator';
 export * from './ui/Sheet';
 export * from './ui/Skeleton';
@@ -41,5 +42,3 @@ export * from './ui/Tabs';
 export * from './ui/Textarea';
 export * from './ui/Toast';
 export * from './ui/Tooltip';
-
-export * from './hooks';

@@ -1,10 +1,10 @@
 import {
   type Component,
+  createContext,
+  createSignal,
   For,
   type JSX,
   Show,
-  createContext,
-  createSignal,
   splitProps,
   useContext,
 } from 'solid-js';

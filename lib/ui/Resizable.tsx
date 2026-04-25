@@ -1,13 +1,4 @@
-import { makeEventListener } from '@solid-primitives/event-listener';
-import {
-  type JSX,
-  createContext,
-  createMemo,
-  createSignal,
-  onMount,
-  splitProps,
-  useContext,
-} from 'solid-js';
+import { createContext, createSignal, type JSX, onMount, splitProps, useContext } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { uid } from '../uid';
 
@@ -59,7 +50,7 @@ export const ResizablePanelGroup = (
 
     const isVertical = direction() === 'vertical';
     const groupRect = groupRef.getBoundingClientRect();
-    const handleIdx = panelOrder().findIndex((id, index) => {
+    const _handleIdx = panelOrder().findIndex((_id, _index) => {
       // Logic to find which panel is before this handle
       // For now, we assume handles are placed between panels in the children tree
       return true; // Simplified for this implementation
@@ -81,7 +72,7 @@ export const ResizablePanelGroup = (
       const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
       const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
 
-      const delta = isVertical
+      const _delta = isVertical
         ? ((clientY - groupRect.top) / groupRect.height) * 100
         : ((clientX - groupRect.left) / groupRect.width) * 100;
 

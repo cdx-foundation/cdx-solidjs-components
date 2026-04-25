@@ -58,7 +58,6 @@ export const Progress = (props: ProgressProps) => {
       aria-valuenow={local.value}
       aria-valuemin={0}
       aria-valuemax={max()}
-      tabIndex={0}
       class={twMerge('w-full h-1 bg-gray-200 dark:bg-white/10 overflow-hidden', local.class)}
       {...others}
     >

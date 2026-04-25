@@ -1,4 +1,4 @@
-import { For, type JSX, Show, createContext, splitProps, useContext } from 'solid-js';
+import { createContext, For, type JSX, Show, splitProps, useContext } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
 /**

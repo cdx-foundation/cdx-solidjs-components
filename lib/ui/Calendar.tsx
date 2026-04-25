@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-solid';
-import { For, type JSX, Show, createEffect, createMemo, createSignal, splitProps } from 'solid-js';
+import { createEffect, createMemo, createSignal, For, type JSX, Show, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
 // --- Types & Constants ---

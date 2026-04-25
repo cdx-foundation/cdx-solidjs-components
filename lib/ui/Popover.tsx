@@ -1,5 +1,5 @@
 import { createShortcut } from '@solid-primitives/keyboard';
-import { type JSX, createSignal, onCleanup } from 'solid-js';
+import { createSignal, type JSX, onCleanup } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { Floating } from './Floating';
 

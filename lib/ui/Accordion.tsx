@@ -1,5 +1,5 @@
 import { ChevronDown } from 'lucide-solid';
-import { type JSX, Show, createContext, createSignal, splitProps, useContext } from 'solid-js';
+import { createContext, createSignal, type JSX, Show, splitProps, useContext } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { uid } from '../uid';
 

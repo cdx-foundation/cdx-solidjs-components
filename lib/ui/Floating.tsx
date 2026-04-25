@@ -1,4 +1,4 @@
-import { type JSX, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js';
+import { createEffect, createSignal, type JSX, onCleanup, onMount, Show } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
@@ -24,7 +24,7 @@ export const Floating = (props: FloatingProps) => {
   const [width, setWidth] = createSignal<string>('auto');
 
   let triggerEl: HTMLElement | undefined;
-  let contentEl: HTMLElement | undefined;
+  let _contentEl: HTMLElement | undefined;
 
   const update = () => {
     if (!props.isOpen || !triggerEl) return;
@@ -109,7 +109,7 @@ export const Floating = (props: FloatingProps) => {
         <Portal>
           <div
             ref={(el) => {
-              contentEl = el;
+              _contentEl = el;
               update();
             }}
             id={props.id}

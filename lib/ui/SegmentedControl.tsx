@@ -1,4 +1,4 @@
-import { For, type JSX, Show, splitProps } from 'solid-js';
+import { For, Show, splitProps } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
@@ -49,7 +49,13 @@ interface SegmentedControlProps {
  * ```
  */
 export const SegmentedControl = (props: SegmentedControlProps) => {
-  const [local, others] = splitProps(props, ['options', 'value', 'onChange', 'class', 'itemClass']);
+  const [local, _others] = splitProps(props, [
+    'options',
+    'value',
+    'onChange',
+    'class',
+    'itemClass',
+  ]);
 
   return (
     <div

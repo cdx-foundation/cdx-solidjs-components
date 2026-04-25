@@ -1,15 +1,15 @@
 import { Search, X } from 'lucide-solid';
 import {
   type Accessor,
-  type JSX,
-  Show,
   createContext,
   createEffect,
   createMemo,
   createSelector,
   createSignal,
+  type JSX,
   onCleanup,
   onMount,
+  Show,
   splitProps,
   useContext,
 } from 'solid-js';
