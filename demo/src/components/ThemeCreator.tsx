@@ -69,6 +69,11 @@ const FONT_OPTIONS: { label: string; value: ThemeFont; family: string }[] = [
   { label: 'Mono', value: 'mono', family: '"JetBrains Mono"' },
   { label: 'Serif', value: 'serif', family: '"Playfair Display"' },
   { label: 'Display', value: 'display', family: '"Archivo Black"' },
+  { label: 'Modern', value: 'modern', family: '"Space Grotesk"' },
+  { label: 'Reading', value: 'reading', family: '"Lexend"' },
+  { label: 'Geometric', value: 'geometric', family: '"Outfit"' },
+  { label: 'Condensed', value: 'condensed', family: '"Bebas Neue"' },
+  { label: 'Soft Serif', value: 'soft-serif', family: '"Fraunces"' },
   { label: 'System', value: 'system', family: 'system-ui' },
 ];
 
@@ -81,6 +86,11 @@ export const ThemeCreator = () => {
      if (f === 'mono') return '"JetBrains Mono", monospace';
      if (f === 'serif') return '"Playfair Display", serif';
      if (f === 'display') return '"Archivo Black", sans-serif';
+     if (f === 'modern') return '"Space Grotesk", sans-serif';
+     if (f === 'reading') return '"Lexend", sans-serif';
+     if (f === 'geometric') return '"Outfit", sans-serif';
+     if (f === 'condensed') return '"Bebas Neue", sans-serif';
+     if (f === 'soft-serif') return '"Fraunces", serif';
      if (f === 'system') return 'system-ui';
      return '"Inter", sans-serif';
   };

@@ -2,7 +2,7 @@ import { createPrefersDark } from '@solid-primitives/media';
 import { makePersisted } from '@solid-primitives/storage';
 import { createEffect, createSignal } from 'solid-js';
 
-export type ThemeFont = 'sans' | 'mono' | 'serif' | 'display' | 'system';
+export type ThemeFont = 'sans' | 'mono' | 'serif' | 'display' | 'system' | 'modern' | 'reading' | 'geometric' | 'condensed' | 'soft-serif';
 export type BaseColor = 'zinc' | 'slate' | 'stone' | 'pure' | 'crimson' | 'ocean' | 'forest' | 'vintage' | 'oled' | 'brutalist';
 export type ShadowLevel = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'neo' | 'flat' | 'hard';
 
@@ -66,7 +66,12 @@ const FONTS = {
   mono: '"JetBrains Mono", ui-monospace, monospace',
   serif: '"Playfair Display", Georgia, serif',
   display: '"Archivo Black", Impact, sans-serif',
-  system: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+  system: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  modern: '"Space Grotesk", sans-serif',
+  reading: '"Lexend", sans-serif',
+  geometric: '"Outfit", sans-serif',
+  condensed: '"Bebas Neue", sans-serif',
+  'soft-serif': '"Fraunces", serif'
 };
 
 export function hexToRgb(hex: string) {
