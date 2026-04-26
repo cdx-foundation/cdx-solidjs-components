@@ -49,7 +49,7 @@ interface SegmentedControlProps {
  * ```
  */
 export const SegmentedControl = (props: SegmentedControlProps) => {
-  const [local, _others] = splitProps(props, [
+  const [local, others] = splitProps(props, [
     'options',
     'value',
     'onChange',
@@ -63,6 +63,7 @@ export const SegmentedControl = (props: SegmentedControlProps) => {
         'inline-flex items-center bg-surface p-1 rounded-input border border-stroke shadow-sm',
         local.class,
       )}
+      {...others}
     >
       <For each={local.options}>
         {(option) => {

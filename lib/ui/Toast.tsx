@@ -55,6 +55,19 @@ export interface ToastData {
 // Global state for toast management
 const [toasts, setToasts] = createSignal<ToastData[]>([]);
 
+/**
+ * Possible positions for the Toaster to appear on the screen.
+ */
+export type ToasterPosition =
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right';
+
+const [toasterPosition, setToasterPosition] = createSignal<ToasterPosition>('bottom-right');
+
 // Global configuration for toast behavior, updated via Toaster component
 const [toastConfig, setToastConfig] = createSignal({
   duration: 4000,
@@ -108,6 +121,9 @@ const createToast = (data: ToastArgs) => {
  * // Simple notification
  * toast("Profile updated");
  *
+ * // Update position
+ * toast.setPosition("top-center");
+ *
  * // Detailed notification with custom duration
  * toast({
  *   title: "Export failed",
@@ -123,6 +139,11 @@ const createToast = (data: ToastArgs) => {
  * ```
  */
 export const toast = Object.assign(createToast, {
+  /**
+   * Dynamically updates the global spawn position of the Toaster.
+   */
+  setPosition: (pos: ToasterPosition) => setToasterPosition(pos),
+
   /**
    * Trigger an info notification.
    */
@@ -157,22 +178,12 @@ export const toast = Object.assign(createToast, {
 });
 
 /**
- * Possible positions for the Toaster to appear on the screen.
- */
-export type ToasterPosition =
-  | 'top-left'
-  | 'top-center'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-center'
-  | 'bottom-right';
-
-/**
  * Configuration options for the Toaster component.
  */
 export interface ToasterProps {
   /**
    * The corner of the screen where notifications will appear.
+   * If provided, overrides the global `toast.setPosition()` value.
    * @default "bottom-right"
    */
   position?: ToasterPosition;
@@ -217,13 +228,16 @@ export interface ToasterProps {
  * - **Custom Placement:** Support for six screen positions.
  * - **Capacity Control:** Limit the number of concurrent notifications via `maxToasts`.
  */
-export const Toaster = (props: ToasterProps) => {
+export const Toaster = (props: ToasterProps & { class?: string }) => {
   const id = Math.random().toString(36).substring(2, 9);
-  const [local] = splitProps(props, ['position', 'duration', 'maxToasts']);
-  const position = () => local.position || 'bottom-right';
+  const [local, others] = splitProps(props, ['position', 'duration', 'maxToasts', 'class']);
+  const position = () => local.position || toasterPosition();
 
   onMount(() => {
     setActiveToasters((prev) => [...prev, id]);
+    if (local.position) {
+      setToasterPosition(local.position);
+    }
   });
 
   onCleanup(() => {
@@ -236,11 +250,8 @@ export const Toaster = (props: ToasterProps) => {
   };
 
   createEffect(() => {
-    if (isMaster()) {
-      setToastConfig({
-        duration: local.duration ?? 4000,
-        maxToasts: local.maxToasts ?? 5,
-      });
+    if (local.position) {
+      setToasterPosition(local.position);
     }
   });
 
@@ -276,7 +287,9 @@ export const Toaster = (props: ToasterProps) => {
           class={twMerge(
             'fixed z-100 flex gap-2 w-full max-w-sm pointer-events-none',
             positionClasses[position()],
+            local.class,
           )}
+          {...others}
         >
           <TransitionGroup
             onEnter={(el, done) => {

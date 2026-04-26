@@ -1,12 +1,11 @@
-import { type JSX, splitProps } from 'solid-js';
+import { createSignal, createUniqueId, type JSX, splitProps, mergeProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
-import { uid } from '../uid';
 
 /**
  * Configuration and behavior properties for the Switch component.
  * Inherits all standard HTML checkbox attributes except `type`.
  */
-interface SwitchProps extends Omit<JSX.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+export interface SwitchProps extends Omit<JSX.InputHTMLAttributes<HTMLInputElement>, 'type'> {
   /**
    * An optional text label displayed to the right of the switch toggle.
    */
@@ -27,27 +26,6 @@ interface SwitchProps extends Omit<JSX.InputHTMLAttributes<HTMLInputElement>, 't
  * ### Switch Component
  *
  * A high-fidelity toggle control that allows users to switch between two states (e.g., On/Off).
- * It is built with an invisible native checkbox for full accessibility support, while providing a
- * premium sliding visual interface.
- *
- * @example
- * ```tsx
- * const [isDark, setIsDark] = createSignal(false);
- *
- * <Switch
- *   label="Enable Dark Mode"
- *   checked={isDark()}
- *   onCheckedChange={setIsDark}
- * />
- * ```
- *
- * **Key Features:**
- * - **Accessibility:** Uses `role="switch"` and `sr-only` native input to ensure it is detectable by screen readers.
- * - **Transitions:** Employs CSS-based transforms for the thumb slider and background color shifts.
- * - **Interactive Grouping:** Clicking the label automatically toggles the switch via the `id/for` relationship.
- * - **State Sync:** Supports `peer` classes to link the native input state to the visual toggle div.
- *
- * @param props - Customization options including `label`, `checked`, and `onCheckedChange`.
  */
 export const Switch = (props: SwitchProps) => {
   const [local, others] = splitProps(props, [
@@ -56,8 +34,22 @@ export const Switch = (props: SwitchProps) => {
     'containerClass',
     'id',
     'onCheckedChange',
+    'checked',
+    'defaultChecked',
   ]);
-  const id = local.id || uid('switch');
+
+  const id = local.id || `switch-${createUniqueId()}`;
+
+  const [internalChecked, setInternalChecked] = createSignal(local.defaultChecked ?? false);
+  const isChecked = () => (local.checked !== undefined ? local.checked : internalChecked());
+
+  const handleChange = (e: Event & { currentTarget: HTMLInputElement }) => {
+    const next = e.currentTarget.checked;
+    if (local.checked === undefined) {
+      setInternalChecked(next);
+    }
+    local.onCheckedChange?.(next);
+  };
 
   return (
     <div class={twMerge('flex items-center gap-3 group', local.containerClass)}>
@@ -67,12 +59,10 @@ export const Switch = (props: SwitchProps) => {
             type="checkbox"
             id={id}
             role="switch"
-            aria-checked={props.checked}
+            checked={isChecked()}
+            aria-checked={isChecked()}
             class="sr-only peer"
-            onInput={(e) => {
-              if (others.disabled) return;
-              local.onCheckedChange?.(e.currentTarget.checked);
-            }}
+            onChange={handleChange}
             {...others}
           />
           <div

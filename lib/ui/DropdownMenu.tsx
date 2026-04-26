@@ -59,6 +59,7 @@ interface DropdownMenuProps {
  * @param props - Root configuration including the `trigger` element.
  */
 export const DropdownMenu = (props: DropdownMenuProps) => {
+  const [local, others] = splitProps(props, ['trigger', 'children', 'class']);
   const [isOpen, setIsOpen] = createSignal(false);
 
   createShortcut(['Escape'], () => {
@@ -68,17 +69,18 @@ export const DropdownMenu = (props: DropdownMenuProps) => {
   return (
     <div class="relative inline-block text-left" use:clickOutside={() => setIsOpen(false)}>
       <div onClick={() => setIsOpen(!isOpen())} class="cursor-pointer">
-        {props.trigger}
+        {local.trigger}
       </div>
       <Show when={isOpen()}>
         <div
           class={twMerge(
             'absolute right-0 z-50 mt-2 w-48 border border-stroke bg-panel p-1 shadow-md animate-in fade-in duration-100',
-            props.class,
+            local.class,
           )}
           onClick={() => setIsOpen(false)}
+          {...others}
         >
-          {props.children}
+          {local.children}
         </div>
       </Show>
     </div>
@@ -105,5 +107,6 @@ export const DropdownMenuItem = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
  * A visual horizontal separator for grouping items within the `DropdownMenu`.
  */
 export const DropdownMenuSeparator = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
-  return <div class="my-1 h-px bg-stroke" {...props} />;
+  const [local, others] = splitProps(props, ['class']);
+  return <div class={twMerge('my-1 h-px bg-stroke', local.class)} {...others} />;
 };

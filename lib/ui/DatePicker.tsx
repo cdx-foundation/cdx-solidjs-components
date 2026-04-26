@@ -28,6 +28,12 @@ interface DatePickerProps extends JSX.HTMLAttributes<HTMLDivElement> {
    * Callback fired when a user selects a date from the calendar.
    */
   onValueChange?: (date: Date) => void;
+
+  /**
+   * If `true`, shows a time picker in the calendar and displays time in the input.
+   * @default false
+   */
+  showTime?: boolean;
 }
 
 /**
@@ -45,11 +51,12 @@ interface DatePickerProps extends JSX.HTMLAttributes<HTMLDivElement> {
  *   label="Preferred Delivery Date"
  *   value={deliveryDate()}
  *   onValueChange={setDeliveryDate}
+ *   showTime
  * />
  * ```
  *
  * **Behaviors:**
- * - **Formatting:** Automatically formats selected dates using `toLocaleDateString` for a human-readable display.
+ * - **Formatting:** Automatically formats selected dates using `toLocaleDateString` (and `toLocaleTimeString` if `showTime` is true) for a human-readable display.
  * - **Aesthetics:** Uses a monospace font for the date readout to ensure character alignment and consistency with the design system.
  * - **Responsive Alignment:** The calendar popover is anchored to the left of the trigger by default.
  * - **Uncontrolled Support:** Manages its own internal state if a value is provided but not explicitly managed.
@@ -63,6 +70,7 @@ export const DatePicker = (props: DatePickerProps) => {
     'class',
     'value',
     'onValueChange',
+    'showTime',
   ]);
   const [internalDate, setInternalDate] = createSignal<Date | undefined>(local.value);
 
@@ -73,11 +81,22 @@ export const DatePicker = (props: DatePickerProps) => {
 
   const formatDate = (date?: Date) => {
     if (!date) return null;
-    return date.toLocaleDateString('en-US', {
+    const dateStr = date.toLocaleDateString('en-US', {
       month: 'long',
       day: 'numeric',
       year: 'numeric',
     });
+
+    if (local.showTime) {
+      const timeStr = date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+      return `${dateStr} ${timeStr}`;
+    }
+
+    return dateStr;
   };
 
   return (
@@ -104,7 +123,8 @@ export const DatePicker = (props: DatePickerProps) => {
         <Calendar
           mode="single"
           selected={internalDate()}
-          onSelect={handleSelect}
+          onValueChange={handleSelect}
+          showTime={local.showTime}
           class="border-0 shadow-none"
           initialFocus={internalDate()}
         />

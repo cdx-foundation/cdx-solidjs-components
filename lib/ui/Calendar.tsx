@@ -94,7 +94,7 @@ const CalendarHeader = (props: {
 /**
  * Configuration and behavior properties for the Calendar component.
  */
-interface CalendarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onSelect'> {
+interface CalendarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onValueChange'> {
   /**
    * The logic for selecting dates.
    * @default "single"
@@ -113,7 +113,7 @@ interface CalendarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onSele
    * Event handler called whenever a date interaction occurs.
    * Receives the updated selection value corresponding to the current `mode`.
    */
-  onSelect?: (val: any) => void;
+  onValueChange?: (val: any) => void;
 
   /**
    * A function to restrict selection. If it returns `true` for a given date,
@@ -123,10 +123,16 @@ interface CalendarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onSele
 
   /**
    * If `true`, the calendar will show dates from the preceding and succeeding months
-   * to fill the 7x6 grid.
+   * fill the 7x6 grid.
    * @default false
    */
   showOutsideDays?: boolean;
+
+  /**
+   * If `true`, shows a time picker (hours and minutes) below the calendar.
+   * @default false
+   */
+  showTime?: boolean;
 
   /**
    * The date that should be visible when the calendar first renders.
@@ -143,30 +149,34 @@ interface CalendarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onSele
  *
  * @example
  * ```tsx
- * // Single selection
- * const [date, setDate] = createSignal<Date>();
- * <Calendar mode="single" selected={date()} onSelect={setDate} />
+ * // Single selection with time
+ * const [dateTime, setDateTime] = createSignal<Date>(new Date());
+ * <Calendar
+ *   mode="single"
+ *   selected={dateTime()}
+ *   onValueChange={setDateTime}
+ *   showTime
+ * />
  *
  * // Range selection
  * const [range, setRange] = createSignal<DateRange>({ from: new Date() });
- * <Calendar mode="range" selected={range()} onSelect={setRange} />
- *
- * // Disabled weekends
  * <Calendar
- *   disabled={(d) => d.getDay() === 0 || d.getDay() === 6}
- *   onSelect={(d) => console.log(d)}
+ *   mode="range"
+ *   selected={range()}
+ *   onValueChange={setRange}
  * />
  * ```
  *
- * @param props - Includes `mode`, `selected`, `onSelect`, and custom `disabled` logic.
+ * @param props - Includes `mode`, `selected`, `onValueChange`, and custom `disabled` logic.
  */
 export const Calendar = (props: CalendarProps) => {
   const [local, others] = splitProps(props, [
     'mode',
     'selected',
-    'onSelect',
+    'onValueChange',
     'disabled',
     'showOutsideDays',
+    'showTime',
     'class',
     'initialFocus',
   ]);
@@ -216,7 +226,7 @@ export const Calendar = (props: CalendarProps) => {
 
   const handleDateClick = (date: Date) => {
     if (local.disabled?.(date)) return;
-    if (!local.onSelect) return;
+    if (!local.onValueChange) return;
 
     const clickedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
@@ -225,17 +235,17 @@ export const Calendar = (props: CalendarProps) => {
       const { from, to } = s;
 
       if (!from || (from && to)) {
-        local.onSelect({ from: clickedDate, to: undefined });
+        local.onValueChange({ from: clickedDate, to: undefined });
       } else {
         if (isSameDay(clickedDate, from)) {
-          local.onSelect({ from: undefined, to: undefined });
+          local.onValueChange({ from: undefined, to: undefined });
         } else {
           const tFrom = getDayTimestamp(from);
           const tClick = getDayTimestamp(clickedDate);
           if (tClick < tFrom) {
-            local.onSelect({ from: clickedDate, to: new Date(tFrom) });
+            local.onValueChange({ from: clickedDate, to: new Date(tFrom) });
           } else {
-            local.onSelect({ from: new Date(tFrom), to: clickedDate });
+            local.onValueChange({ from: new Date(tFrom), to: clickedDate });
           }
         }
       }
@@ -243,13 +253,54 @@ export const Calendar = (props: CalendarProps) => {
       const s = Array.isArray(local.selected) ? local.selected : [];
       const existsIdx = s.findIndex((d) => isSameDay(d, clickedDate));
       if (existsIdx !== -1) {
-        local.onSelect(s.filter((_, i) => i !== existsIdx));
+        local.onValueChange(s.filter((_, i) => i !== existsIdx));
       } else {
-        local.onSelect([...s, clickedDate]);
+        local.onValueChange([...s, clickedDate]);
       }
     } else {
-      local.onSelect(clickedDate);
+      // Preserve time if showTime is enabled and we have a selected date
+      if (local.showTime && local.selected instanceof Date) {
+        clickedDate.setHours(local.selected.getHours());
+        clickedDate.setMinutes(local.selected.getMinutes());
+        clickedDate.setSeconds(local.selected.getSeconds());
+      }
+      local.onValueChange(clickedDate);
     }
+  };
+
+  const handleTimeChange = (type: 'hours' | 'minutes', value: number) => {
+    if (!local.onValueChange) return;
+    const current = local.selected instanceof Date ? new Date(local.selected) : new Date();
+    if (type === 'hours') current.setHours(value);
+    else current.setMinutes(value);
+    local.onValueChange(current);
+  };
+
+  const adjustTime = (type: 'hours' | 'minutes', delta: number) => {
+    if (!local.onValueChange) return;
+    const current = local.selected instanceof Date ? new Date(local.selected) : new Date();
+    if (type === 'hours') {
+      const h = (current.getHours() + delta + 24) % 24;
+      current.setHours(h);
+    } else {
+      const m = (current.getMinutes() + delta + 60) % 60;
+      current.setMinutes(m);
+    }
+    local.onValueChange(current);
+  };
+
+  const handleTimeInput = (type: 'hours' | 'minutes', value: string) => {
+    if (!local.onValueChange) return;
+    let val = parseInt(value, 10);
+    if (isNaN(val)) val = 0;
+
+    const current = local.selected instanceof Date ? new Date(local.selected) : new Date();
+    if (type === 'hours') {
+      current.setHours(Math.max(0, Math.min(23, val)));
+    } else {
+      current.setMinutes(Math.max(0, Math.min(59, val)));
+    }
+    local.onValueChange(current);
   };
 
   const changeMonth = (offset: number) => {
@@ -320,7 +371,7 @@ export const Calendar = (props: CalendarProps) => {
                   class={twMerge(
                     'relative z-10 flex items-center justify-center w-10 h-10 text-sm font-mono cursor-pointer transition-all outline-none',
                     !isCurrentMonth &&
-                      (local.showOutsideDays ? 'text-muted/40' : 'invisible pointer-events-none'),
+                    (local.showOutsideDays ? 'text-muted/40' : 'invisible pointer-events-none'),
                     isToday && !selected() && 'text-primary font-bold underline underline-offset-4',
                     selected()
                       ? 'bg-primary text-white font-semibold'
@@ -335,6 +386,70 @@ export const Calendar = (props: CalendarProps) => {
           }}
         </For>
       </div>
+
+      <Show when={local.showTime}>
+        <div class="pt-4 border-t border-stroke flex flex-col items-center gap-4">
+          <div class="flex items-center gap-2 font-mono">
+            <div class="flex flex-col items-center gap-1 group">
+              <button
+                type="button"
+                onClick={() => adjustTime('hours', 1)}
+                class="p-1 text-muted hover:text-primary transition-colors"
+              >
+                <ChevronLeft size={14} class="rotate-90" />
+              </button>
+              <div class="relative w-12 h-10 border border-stroke flex items-center justify-center bg-surface/30 group-hover:border-muted transition-colors">
+                <input
+                  type="text"
+                  class="w-full h-full bg-transparent text-center text-lg font-bold outline-none border-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  value={(local.selected instanceof Date ? local.selected.getHours() : 0)
+                    .toString()
+                    .padStart(2, '0')}
+                  onInput={(e) => handleTimeInput('hours', e.currentTarget.value)}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => adjustTime('hours', -1)}
+                class="p-1 text-muted hover:text-primary transition-colors"
+              >
+                <ChevronLeft size={14} class="-rotate-90" />
+              </button>
+              <span class="text-[9px] text-muted uppercase font-bold tracking-tighter">Hours</span>
+            </div>
+
+            <span class="text-xl font-bold text-muted mt-[-18px]">:</span>
+
+            <div class="flex flex-col items-center gap-1 group">
+              <button
+                type="button"
+                onClick={() => adjustTime('minutes', 1)}
+                class="p-1 text-muted hover:text-primary transition-colors"
+              >
+                <ChevronLeft size={14} class="rotate-90" />
+              </button>
+              <div class="relative w-12 h-10 border border-stroke flex items-center justify-center bg-surface/30 group-hover:border-muted transition-colors">
+                <input
+                  type="text"
+                  class="w-full h-full bg-transparent text-center text-lg font-bold outline-none border-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  value={(local.selected instanceof Date ? local.selected.getMinutes() : 0)
+                    .toString()
+                    .padStart(2, '0')}
+                  onInput={(e) => handleTimeInput('minutes', e.currentTarget.value)}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => adjustTime('minutes', -1)}
+                class="p-1 text-muted hover:text-primary transition-colors"
+              >
+                <ChevronLeft size={14} class="-rotate-90" />
+              </button>
+              <span class="text-[9px] text-muted uppercase font-bold tracking-tighter">Min</span>
+            </div>
+          </div>
+        </div>
+      </Show>
     </div>
   );
 };

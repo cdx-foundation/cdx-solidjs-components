@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=JetBrains+Mono:wght@400..800&family=Playfair+Display:wght@400..900&family=Archivo+Black&display=swap");
 @plugin "tailwindcss-animate";
 @source "./ui/**/*.tsx";
 
@@ -10,16 +11,16 @@
 
   --color-bg: var(--bg-main, #ffffff);
   --color-fg: var(--fg-main, #1a1a1a);
-  --color-stroke: var(--border-main, #e5e5e5);
+  --color-stroke: var(--stroke, #e5e5e5);
   --color-panel: var(--bg-panel, #ffffff);
   --color-muted: var(--text-muted, #888888);
   --color-surface: var(--bg-surface, #f7f7f7);
   --color-positive: #10b981;
 
   /* Typography */
-  --font-display: "Inter", system-ui, sans-serif;
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-display: var(--font-display, "Inter", system-ui, sans-serif);
+  --font-sans: var(--font-sans, "Inter", system-ui, sans-serif);
+  --font-mono: var(--font-mono, "JetBrains Mono", ui-monospace, monospace);
 
   /* Radii */
   --radius-card: var(--radius-card, 0px);
@@ -27,12 +28,19 @@
   --radius-pill: var(--radius-pill, 9999px);
   --radius-input: var(--radius-input, 0px);
   --radius-badge: var(--radius-badge, 0px);
+  --shadow-btn: var(--shadow-btn, none);
+  --shadow-main: var(--shadow-main, none);
 }
 
 @layer base {
   * {
-    border-color: var(--border-main);
-    box-shadow: none;
+    border-color: var(--border-main, var(--stroke));
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--fg-main);
+    font-family: var(--font-sans);
   }
 
   /* Thin scrollbar standard for the library */

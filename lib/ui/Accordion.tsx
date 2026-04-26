@@ -1,46 +1,123 @@
 import { ChevronDown } from 'lucide-solid';
-import { createContext, createSignal, type JSX, Show, splitProps, useContext } from 'solid-js';
+import {
+  createContext,
+  createSignal,
+  type JSX,
+  Show,
+  splitProps,
+  useContext,
+  mergeProps,
+} from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { uid } from '../uid';
 
-const AccordionItemContext = createContext<{
-  isOpen: () => boolean;
-  setIsOpen: (v: boolean) => void;
+interface AccordionContextValue {
+  isExpanded: (id: string) => boolean;
+  toggleItem: (id: string) => void;
+  collapsible: boolean;
+}
+
+const AccordionContext = createContext<AccordionContextValue>();
+
+interface AccordionItemContextValue {
   id: string;
-}>();
+}
+
+const AccordionItemContext = createContext<AccordionItemContextValue>();
+
+interface AccordionProps extends JSX.HTMLAttributes<HTMLDivElement> {
+  /**
+   * If true, multiple items can be expanded at once.
+   * @default false
+   */
+  multiple?: boolean;
+  /**
+   * If true, an expanded item can be collapsed by clicking its trigger.
+   * @default true
+   */
+  collapsible?: boolean;
+  /**
+   * The value of the expanded item(s).
+   */
+  value?: string | string[];
+  /**
+   * Callback fired when the expanded item(s) change.
+   */
+  onValueChange?: (value: string | string[]) => void;
+}
+
+/**
+ * ### Accordion Component
+ *
+ * A vertically stacked set of interactive headings that each reveal a section of content.
+ */
+export const Accordion = (props: AccordionProps) => {
+  const merged = mergeProps({ multiple: false, collapsible: true }, props);
+  const [local, others] = splitProps(merged, [
+    'multiple',
+    'collapsible',
+    'value',
+    'onValueChange',
+    'class',
+    'children',
+  ]);
+
+  const [internalValue, setInternalValue] = createSignal<string | string[]>(
+    local.value ?? (local.multiple ? [] : ''),
+  );
+
+  const value = () => local.value ?? internalValue();
+
+  const isExpanded = (id: string) => {
+    const current = value();
+    return Array.isArray(current) ? current.includes(id) : current === id;
+  };
+
+  const toggleItem = (id: string) => {
+    const current = value();
+    let next: string | string[];
+
+    if (local.multiple) {
+      const arr = Array.isArray(current) ? current : [current].filter(Boolean) as string[];
+      next = arr.includes(id) ? arr.filter((i) => i !== id) : [...arr, id];
+    } else {
+      next = current === id ? (local.collapsible ? '' : id) : id;
+    }
+
+    setInternalValue(next);
+    local.onValueChange?.(next);
+  };
+
+  return (
+    <AccordionContext.Provider value={{ isExpanded, toggleItem, collapsible: local.collapsible }}>
+      <div class={twMerge('w-full border-t border-stroke', local.class)} {...others}>
+        {local.children}
+      </div>
+    </AccordionContext.Provider>
+  );
+};
 
 /**
  * Configuration properties for an individual accordion section.
  */
 interface AccordionItemProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /**
-   * If true, the accordion item will start in its expanded state upon mounting.
-   * @default false
+   * Unique value for the item. If not provided, a random ID is generated.
    */
-  isOpen?: boolean;
+  value?: string;
 }
 
 /**
  * ### AccordionItem Component
  *
- * An individual collapsible section. It manages its own expanded state and provides
- * a smooth transition for its content.
- *
- * @example
- * ```tsx
- * <AccordionItem isOpen={true}>
- *   <AccordionTrigger>Is it accessible?</AccordionTrigger>
- *   <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
- * </AccordionItem>
- * ```
+ * An individual collapsible section.
  */
 export const AccordionItem = (props: AccordionItemProps) => {
-  const [local, others] = splitProps(props, ['children', 'isOpen', 'class']);
-  const [isOpen, setIsOpen] = createSignal(local.isOpen || false);
-  const id = uid('accordion');
+  const [local, others] = splitProps(props, ['children', 'value', 'class']);
+  const id = local.value || uid('accordion');
 
   return (
-    <AccordionItemContext.Provider value={{ isOpen, setIsOpen, id }}>
+    <AccordionItemContext.Provider value={{ id }}>
       <div class={twMerge('border-b border-stroke', local.class)} {...others}>
         {local.children}
       </div>
@@ -48,74 +125,30 @@ export const AccordionItem = (props: AccordionItemProps) => {
   );
 };
 
-interface AccordionProps extends JSX.HTMLAttributes<HTMLDivElement> {
-  /**
-   * Defines whether an open accordion item can be closed by clicking its trigger.
-   * In a multiple-open accordion (which this component implements implicitly),
-   * this controls whether items can be toggled closed at all.
-   * @default true
-   */
-  collapsible?: boolean;
-}
-
-/**
- * ### Accordion Component
- *
- * A vertically stacked set of interactive headings that each reveal a section of content.
- * Ideal for FAQs, settings groups, or collapsing complex information.
- *
- * @example
- * ```tsx
- * <Accordion collapsible>
- *   <AccordionItem>
- *     <AccordionTrigger>Section 1</AccordionTrigger>
- *     <AccordionContent>Detailed content for section 1.</AccordionContent>
- *   </AccordionItem>
- * </Accordion>
- * ```
- *
- * **Design Patterns:**
- * - **Uncontrolled:** Each item manages its own state by default.
- * - **Aesthetics:** Uses a subtle bottom border and rotation chevron.
- *
- * @param props - Root container options for the accordion group.
- */
-export const Accordion = (props: AccordionProps) => {
-  const [local, others] = splitProps(props, ['collapsible', 'class', 'children']);
-  return (
-    <div class={twMerge('w-full border-t border-stroke', local.class)} {...others}>
-      {local.children}
-    </div>
-  );
-};
-
 /**
  * ### AccordionTrigger Component
  *
  * The trigger button for the accordion item.
- *
- * @example
- * ```tsx
- * <AccordionTrigger>Is it accessible?</AccordionTrigger>
- * ```
- *
- * @param props - Standard HTML button attributes.
  */
 export const AccordionTrigger = (props: JSX.HTMLAttributes<HTMLButtonElement>) => {
   const [local, others] = splitProps(props, ['class', 'children', 'onClick']);
-  const ctx = useContext(AccordionItemContext);
+  const root = useContext(AccordionContext);
+  const item = useContext(AccordionItemContext);
 
-  if (!ctx) throw new Error('AccordionTrigger must be used within an AccordionItem');
+  if (!root || !item)
+    throw new Error('AccordionTrigger must be used within Accordion and AccordionItem');
+
+  const isOpen = () => root.isExpanded(item.id);
 
   return (
     <button
       type="button"
-      id={`${ctx.id}-trigger`}
-      aria-controls={`${ctx.id}-content`}
-      aria-expanded={ctx.isOpen()}
-      data-state={ctx.isOpen() ? 'open' : 'closed'}
+      id={`${item.id}-trigger`}
+      aria-controls={`${item.id}-content`}
+      aria-expanded={isOpen()}
+      data-state={isOpen() ? 'open' : 'closed'}
       onClick={(e) => {
-        ctx.setIsOpen(!ctx.isOpen());
+        root.toggleItem(item.id);
         if (typeof local.onClick === 'function') {
           local.onClick(e);
         } else if (local.onClick) {
@@ -138,30 +171,26 @@ export const AccordionTrigger = (props: JSX.HTMLAttributes<HTMLButtonElement>) =
  * ### AccordionContent Component
  *
  * The content section for the accordion item.
- *
- * @example
- * ```tsx
- * <AccordionContent>
- *   Yes. It adheres to the WAI-ARIA design pattern.
- * </AccordionContent>
- * ```
- *
- * @param props - Standard HTML div attributes.
  */
 export const AccordionContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
-  const ctx = useContext(AccordionItemContext);
+  const root = useContext(AccordionContext);
+  const item = useContext(AccordionItemContext);
 
-  if (!ctx) throw new Error('AccordionContent must be used within an AccordionItem');
+  if (!root || !item)
+    throw new Error('AccordionContent must be used within Accordion and AccordionItem');
+
+  const isOpen = () => root.isExpanded(item.id);
 
   return (
-    <Show when={ctx.isOpen()}>
+    <Show when={isOpen()}>
       <div
-        id={`${ctx.id}-content`}
-        aria-labelledby={`${ctx.id}-trigger`}
-        data-state={ctx.isOpen() ? 'open' : 'closed'}
+        id={`${item.id}-content`}
+        role="region"
+        aria-labelledby={`${item.id}-trigger`}
+        data-state={isOpen() ? 'open' : 'closed'}
         class={twMerge(
-          'overflow-hidden text-sm transition-all animate-in fade-in text-muted',
+          'overflow-hidden text-sm transition-all animate-in fade-in slide-in-from-top-2 text-muted',
           local.class,
         )}
         {...others}

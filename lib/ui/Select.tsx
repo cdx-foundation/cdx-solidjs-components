@@ -1,6 +1,6 @@
 import { makeEventListener } from '@solid-primitives/event-listener';
 import { Check, ChevronDown } from 'lucide-solid';
-import { createEffect, createSelector, createSignal, For, Show } from 'solid-js';
+import { createEffect, createSelector, createSignal, For, Show, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { uid } from '../uid';
 import { Floating } from './Floating';
@@ -38,7 +38,7 @@ interface SelectProps {
   /**
    * Callback fired when a user selects a new option.
    */
-  onChange?: (value: string | number) => void;
+  onValueChange?: (value: string | number) => void;
 
   /**
    * Text shown when no value is selected and no default exists.
@@ -75,19 +75,46 @@ interface SelectProps {
  * It automatically handles complex interactions like outside clicking, keyboard escaping, and overflow management.
  * Now uses a Portal and dynamic positioning to avoid being cut off by parent containers.
  *
- * @param props - Customization options including `options`, `value`, and `error`.
+ * @example
+ * ```tsx
+ * const [env, setEnv] = createSignal('prod');
+ *
+ * <Select
+ *   label="Environment"
+ *   value={env()}
+ *   onValueChange={setEnv}
+ *   options={[
+ *     { label: 'Production', value: 'prod' },
+ *     { label: 'Staging', value: 'stage' },
+ *     { label: 'Development', value: 'dev' }
+ *   ]}
+ * />
+ * ```
+ *
+ * @param props - Customization options including `options`, `value`, and `onValueChange`.
  */
 export const Select = (props: SelectProps) => {
+  const [local, others] = splitProps(props, [
+    'options',
+    'value',
+    'onValueChange',
+    'placeholder',
+    'error',
+    'label',
+    'class',
+    'containerClass',
+    'id',
+  ]);
   const [isOpen, setIsOpen] = createSignal(false);
   const [focusedIndex, setFocusedIndex] = createSignal(-1);
   const isFocused = createSelector(focusedIndex);
   let triggerRef!: HTMLButtonElement;
-  const id = props.id || uid('select');
+  const id = local.id || uid('select');
 
-  const selectedOption = () => props.options.find((o) => o.value === props.value);
+  const selectedOption = () => local.options.find((o: SelectOption) => o.value === local.value);
 
   const handleSelect = (option: SelectOption) => {
-    props.onChange?.(option.value);
+    local.onValueChange?.(option.value);
     setIsOpen(false);
     triggerRef?.focus();
   };
@@ -95,7 +122,7 @@ export const Select = (props: SelectProps) => {
   // Sync focused index with selected option when opening
   createEffect(() => {
     if (isOpen()) {
-      const idx = props.options.findIndex((o) => o.value === props.value);
+      const idx = local.options.findIndex((o: SelectOption) => o.value === local.value);
       setFocusedIndex(idx !== -1 ? idx : 0);
     }
   });
@@ -128,16 +155,16 @@ export const Select = (props: SelectProps) => {
         break;
       case 'ArrowDown':
         e.preventDefault();
-        setFocusedIndex((prev) => (prev + 1) % props.options.length);
+        setFocusedIndex((prev) => (prev + 1) % local.options.length);
         break;
       case 'ArrowUp':
         e.preventDefault();
-        setFocusedIndex((prev) => (prev - 1 + props.options.length) % props.options.length);
+        setFocusedIndex((prev) => (prev - 1 + local.options.length) % local.options.length);
         break;
       case 'Enter':
         e.preventDefault();
         if (focusedIndex() >= 0) {
-          handleSelect(props.options[focusedIndex()]);
+          handleSelect(local.options[focusedIndex()]);
         }
         break;
       case 'Tab':
@@ -147,10 +174,10 @@ export const Select = (props: SelectProps) => {
   };
 
   return (
-    <div class={twMerge('flex flex-col gap-1.5 w-full text-left', props.containerClass)}>
-      <Show when={props.label}>
+    <div class={twMerge('flex flex-col gap-1.5 w-full text-left', local.containerClass)}>
+      <Show when={local.label}>
         <label for={id} class="text-xs font-semibold text-fg">
-          {props.label}
+          {local.label}
         </label>
       </Show>
 
@@ -178,12 +205,13 @@ export const Select = (props: SelectProps) => {
             class={twMerge(
               'w-full flex items-center justify-between border border-stroke bg-transparent rounded-input px-3 py-2.5 text-sm font-mono text-fg outline-none transition-colors duration-150 cursor-pointer hover:border-muted focus:border-fg',
               isOpen() && 'border-fg',
-              props.error && 'border-primary',
-              props.class,
+              local.error && 'border-primary',
+              local.class,
             )}
+            {...others}
           >
             <span class={!selectedOption() ? 'text-muted' : ''}>
-              {selectedOption()?.label ?? props.placeholder ?? 'Select...'}
+              {selectedOption()?.label ?? local.placeholder ?? 'Select...'}
             </span>
             <ChevronDown
               size={15}
@@ -201,9 +229,9 @@ export const Select = (props: SelectProps) => {
           aria-activedescendant={focusedIndex() >= 0 ? `${id}-opt-${focusedIndex()}` : undefined}
           class="max-h-48 overflow-y-auto py-1"
         >
-          <For each={props.options}>
+          <For each={local.options}>
             {(option, i) => {
-              const isSelected = () => props.value === option.value;
+              const isSelected = () => local.value === option.value;
 
               return (
                 <button
@@ -230,8 +258,8 @@ export const Select = (props: SelectProps) => {
         </div>
       </Floating>
 
-      <Show when={props.error}>
-        <p class="text-xs font-medium text-primary mt-0.5">{props.error}</p>
+      <Show when={local.error}>
+        <p class="text-xs font-medium text-primary mt-0.5">{local.error}</p>
       </Show>
     </div>
   );

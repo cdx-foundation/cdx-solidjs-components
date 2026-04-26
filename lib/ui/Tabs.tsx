@@ -38,16 +38,10 @@ interface TabsProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'children'>
    */
   value?: string;
 
-  /** Alias for value, used in some projects. */
-  activeTab?: string;
-
   /**
    * Callback fired whenever the active tab selection changes.
    */
   onValueChange?: (v: string) => void;
-
-  /** Alias for onValueChange, used in some projects. */
-  onTabChange?: (v: string) => void;
 
   /**
    * A combination of `TabsList`, `TabsTrigger`, and `TabsContent`.
@@ -77,17 +71,20 @@ interface TabsProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'children'>
  * <Tabs defaultValue="account">
  *   <TabsList>
  *     <TabsTrigger value="account">Account</TabsTrigger>
+ *     <TabsTrigger value="password">Password</TabsTrigger>
  *   </TabsList>
  *   <TabsContent value="account">Account Content</TabsContent>
+ *   <TabsContent value="password">Password Content</TabsContent>
  * </Tabs>
  *
  * // Shorthand Pattern (Clean)
  * <Tabs
  *   items={[
- *     { id: 'account', label: 'Account', icon: UserIcon }
+ *     { id: 'account', label: 'Account', icon: UserIcon },
+ *     { id: 'security', label: 'Security', icon: LockIcon }
  *   ]}
- *   activeTab={active()}
- *   onTabChange={setActive}
+ *   value={active()}
+ *   onValueChange={setActive}
  * />
  * ```
  *
@@ -97,9 +94,7 @@ export const Tabs = (props: TabsProps) => {
   const [local, others] = splitProps(props, [
     'defaultValue',
     'value',
-    'activeTab',
     'onValueChange',
-    'onTabChange',
     'children',
     'items',
     'class',
@@ -109,17 +104,16 @@ export const Tabs = (props: TabsProps) => {
     local.defaultValue || local.items?.[0]?.id || '',
   );
 
-  const value = () => local.value ?? local.activeTab ?? internalValue();
+  const value = () => local.value ?? internalValue();
 
   const setValue = (v: string) => {
     setInternalValue(v);
     local.onValueChange?.(v);
-    local.onTabChange?.(v);
   };
 
   return (
     <TabsContext.Provider value={{ value, setValue }}>
-      <div class={local.class} {...others}>
+      <div class={twMerge('', local.class)} {...others}>
         <Show when={local.items}>
           <TabsList class="mb-4">
             <For each={local.items}>

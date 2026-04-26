@@ -264,14 +264,19 @@ export const CommandGroup = (props: {
   heading: string;
   /** A collection of `CommandItem` components. */
   children: JSX.Element;
-}) => (
-  <div class="overflow-hidden px-1 py-2">
-    <div class="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-muted/60">
-      {props.heading}
+  /** Custom CSS classes for the group container. */
+  class?: string;
+}) => {
+  const [local, others] = splitProps(props, ['heading', 'children', 'class']);
+  return (
+    <div class={twMerge('overflow-hidden px-1 py-2', local.class)} {...others}>
+      <div class="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-muted/60">
+        {local.heading}
+      </div>
+      <div class="flex flex-col gap-0.5">{local.children}</div>
     </div>
-    <div class="flex flex-col gap-0.5">{props.children}</div>
-  </div>
-);
+  );
+};
 
 /**
  * Customization options for individual palette items.

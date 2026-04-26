@@ -72,7 +72,10 @@ export const MenubarMenu = (props: {
   trigger: JSX.Element;
   /** The content of the dropdown menu. */
   children: JSX.Element;
+  /** Custom CSS classes for the menu container. */
+  class?: string;
 }) => {
+  const [local, others] = splitProps(props, ['trigger', 'children', 'class']);
   const [isOpen, setIsOpen] = createSignal(false);
 
   createShortcut(['Escape'], () => {
@@ -80,7 +83,7 @@ export const MenubarMenu = (props: {
   });
 
   return (
-    <div class="relative" use:clickOutside={() => setIsOpen(false)}>
+    <div class={twMerge('relative', local.class)} use:clickOutside={() => setIsOpen(false)} {...others}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen())}
@@ -89,14 +92,14 @@ export const MenubarMenu = (props: {
           isOpen() ? 'bg-surface text-fg' : 'text-muted',
         )}
       >
-        {props.trigger}
+        {local.trigger}
       </button>
       <Show when={isOpen()}>
         <div
           class="absolute left-0 top-full z-50 mt-1 min-w-48 border border-stroke bg-panel p-1 shadow-md animate-in fade-in"
           onClick={() => setIsOpen(false)}
         >
-          {props.children}
+          {local.children}
         </div>
       </Show>
     </div>
@@ -122,4 +125,7 @@ export const MenubarItem = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
 /**
  * A visual horizontal separator used to group items within a `MenubarMenu`.
  */
-export const MenubarSeparator = () => <div class="-mx-1 my-1 h-px bg-stroke" />;
+export const MenubarSeparator = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const [local, others] = splitProps(props, ['class']);
+  return <div class={twMerge('-mx-1 my-1 h-px bg-stroke', local.class)} {...others} />;
+};

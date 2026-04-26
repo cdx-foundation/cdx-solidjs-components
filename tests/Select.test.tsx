@@ -22,20 +22,20 @@ describe('Select', () => {
     expect(screen.getByText('Option 2')).toBeInTheDocument();
   });
 
-  it('calls onChange and closes when an option is selected', () => {
-    const onChange = vi.fn();
-    render(() => <Select options={options} placeholder="Choose..." onChange={onChange} />);
+  it('calls onValueChange and closes when an option is selected', () => {
+    const onValueChange = vi.fn();
+    render(() => <Select options={options} placeholder="Choose..." onValueChange={onValueChange} />);
 
     fireEvent.click(screen.getByText('Choose...'));
     fireEvent.click(screen.getByText('Option 2'));
 
-    expect(onChange).toHaveBeenCalledWith('opt2');
+    expect(onValueChange).toHaveBeenCalledWith('opt2');
     expect(screen.queryByText('Option 1')).not.toBeInTheDocument();
   });
 
   it('supports keyboard navigation', () => {
-    const onChange = vi.fn();
-    render(() => <Select options={options} placeholder="Choose..." onChange={onChange} />);
+    const onValueChange = vi.fn();
+    render(() => <Select options={options} placeholder="Choose..." onValueChange={onValueChange} />);
 
     const trigger = screen.getByRole('combobox');
     fireEvent.keyDown(trigger, { key: 'Enter' });
@@ -44,6 +44,6 @@ describe('Select', () => {
     fireEvent.keyDown(trigger, { key: 'ArrowDown' });
     fireEvent.keyDown(trigger, { key: 'Enter' });
 
-    expect(onChange).toHaveBeenCalledWith('opt2');
+    expect(onValueChange).toHaveBeenCalledWith('opt2');
   });
 });

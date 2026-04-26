@@ -1,0 +1,170 @@
+import { createSignal, Show } from 'solid-js';
+import { Shield, Zap, Sparkles } from 'lucide-solid';
+import { Button } from '../../../lib/ui/Button';
+import { SegmentedControl } from '../../../lib/ui/SegmentedControl';
+import { Select } from '../../../lib/ui/Select';
+import { Input } from '../../../lib/ui/Input';
+import { Switch } from '../../../lib/ui/Switch';
+import { Label } from '../../../lib/ui/Label';
+import { Textarea } from '../../../lib/ui/Textarea';
+import { Slider } from '../../../lib/ui/Slider';
+import { Preview } from './Preview';
+
+interface FormsSectionProps {
+  currentTheme: string;
+  onThemeChange: (theme: any) => void;
+  themes: any[];
+}
+
+export const FormsSection = (props: FormsSectionProps) => {
+  const [sliderVal, setSliderVal] = createSignal(65);
+  const [selectVal, setSelectVal] = createSignal<string | number>('prod');
+  const [numVal, setNumVal] = createSignal(10);
+  const [textareaAutoResize, setTextareaAutoResize] = createSignal(true);
+  const [inputPreventRegex, setInputPreventRegex] = createSignal(true);
+  const [inputHideButtons, setInputHideButtons] = createSignal(false);
+
+  return (
+    <section class="space-y-12">
+      <div>
+        <h1 class="text-4xl font-extrabold tracking-tight mb-4">Forms & Inputs</h1>
+        <p class="text-lg text-muted">Precision primitives for user data entry.</p>
+      </div>
+
+      <Preview
+        title="Button"
+        description="Primary, secondary, and destructive actions."
+        code={`import { Button } from 'starling-components/ui/Button';\n\n<div class="flex flex-wrap gap-4">\n  <Button variant="primary">Default</Button>\n  <Button variant="secondary">Secondary</Button>\n  <Button variant="destructive">Delete</Button>\n  <Button isLoading variant="outline">Processing</Button>\n</div>`}
+      >
+        <div class="flex flex-wrap gap-4">
+          <Button>Default</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="destructive">Delete</Button>
+          <Button isLoading variant="outline">
+            Processing
+          </Button>
+        </div>
+      </Preview>
+
+      <Preview
+        title="Segmented Control"
+        description="A pill-styled toggle group for compact value switching."
+        code={`import { SegmentedControl } from 'starling-components/ui/SegmentedControl';\nimport { Shield, Zap, Sparkles } from 'lucide-solid';\n\nconst options = [\n  { value: 'pro', label: 'Pro', icon: Shield },\n  { value: 'brutal', label: 'Brutal', icon: Zap },\n  { value: 'midnight', label: 'Midnight', icon: Sparkles }\n];\n\n<SegmentedControl \n  value={val()} \n  onValueChange={setVal}\n  options={options} \n/>`}
+      >
+        <SegmentedControl
+          value={props.currentTheme}
+          onChange={props.onThemeChange}
+          options={props.themes}
+        />
+      </Preview>
+
+      <Preview
+        title="Select"
+        description="A fully themeable replacement for the native dropdown."
+        code={`import { Select } from 'starling-components/ui/Select';\n\n<Select \n  label="Environment"\n  value={env()} \n  onValueChange={setEnv}\n  options={[\n    { label: 'Production', value: 'prod' },\n    { label: 'Staging', value: 'stage' }\n  ]}\n/>`}
+      >
+        <div class="w-full max-w-xs">
+          <Select
+            label="Deployment Environment"
+            value={selectVal()}
+            onValueChange={setSelectVal}
+            options={[
+              { label: 'Production (US-EAST)', value: 'prod' },
+              { label: 'Staging (EU-WEST)', value: 'stage' },
+              { label: 'Development (LOCAL)', value: 'dev' },
+            ]}
+          />
+        </div>
+      </Preview>
+
+      <Preview
+        title="Inputs & Toggles"
+        description="Standard text inputs with optional descriptions and switches. Now supports regex validation."
+        code={`import { Input } from 'starling-components/ui/Input';\nimport { Switch } from 'starling-components/ui/Switch';\nimport { Label } from 'starling-components/ui/Label';\n\n<div class="flex flex-col gap-6">\n  <Input \n    label="Username" \n    placeholder="yanis" \n    regex={/^[a-z0-9_]+$/} \n    preventInvalidRegex={${inputPreventRegex()}}\n    description="Lowercase letters, numbers, and underscores only." \n  />\n</div>`}
+      >
+        <div class="w-full max-sm flex flex-col gap-6 transition-all duration-400">
+          <div class="flex items-center justify-between w-full px-2 py-1 bg-surface rounded-lg border border-stroke">
+            <Label class="text-xs font-bold uppercase tracking-wider text-muted">
+              Prevent Invalid Regex Input
+            </Label>
+            <Switch checked={inputPreventRegex()} onCheckedChange={setInputPreventRegex} />
+          </div>
+          <Input
+            label="Username"
+            placeholder="yanis"
+            regex={/^[a-z0-9_]+$/}
+            preventInvalidRegex={inputPreventRegex()}
+            description="Lowercase letters, numbers, and underscores only."
+          />
+          <Input
+            label="Pin Code"
+            placeholder="0000"
+            regex={/^\d*$/}
+            preventInvalidRegex={inputPreventRegex()}
+            description="Only digits allowed."
+          />
+        </div>
+      </Preview>
+
+      <Preview
+        title="Number Input"
+        description="A specialized input for numeric values with increment/decrement buttons."
+        code={`import { Input } from 'starling-components/ui/Input';\n\n<Input\n  type="number"\n  label="Quantity"\n  value={${numVal()}}\n  min={1}\n  max={32}\n  hideButtons={${inputHideButtons()}}\n  onValueChange={setNumVal}\n/>`}
+      >
+        <div class="w-full max-w-xs flex flex-col gap-6">
+          <div class="flex items-center justify-between w-full px-2 py-1 bg-surface rounded-lg border border-stroke">
+            <Label class="text-xs font-bold uppercase tracking-wider text-muted">
+              Hide Control Buttons
+            </Label>
+            <Switch checked={inputHideButtons()} onCheckedChange={setInputHideButtons} />
+          </div>
+          <Input
+            type="number"
+            label="Cluster Instances"
+            value={numVal()}
+            onValueChange={setNumVal}
+            min={1}
+            max={32}
+            hideButtons={inputHideButtons()}
+            description="Adjust number of active instances (1-32)."
+          />
+        </div>
+      </Preview>
+
+      <Preview
+        title="Textarea"
+        description="Multi-line text input with optional auto-resizing."
+        code={`import { Textarea } from 'starling-components/ui/Textarea';\n\n<div class="flex items-center justify-between w-full px-2 py-1 bg-surface rounded-lg border border-stroke">\n  <Label class="text-xs font-bold uppercase tracking-wider text-muted">\n    Enable Auto-Resize\n  </Label>\n  <Switch checked={textareaAutoResize()} onCheckedChange={setTextareaAutoResize} />\n</div>\n\n<Textarea\n  label="Deployment Script"\n  placeholder="Enter bash script..."\n  autoResize={${textareaAutoResize()}}\n/>`}
+      >
+        <div class="w-full max-w-md flex flex-col gap-6">
+          <div class="flex items-center justify-between w-full px-2 py-1 bg-surface rounded-lg border border-stroke">
+            <Label class="text-xs font-bold uppercase tracking-wider text-muted">
+              Enable Auto-Resize
+            </Label>
+            <Switch checked={textareaAutoResize()} onCheckedChange={setTextareaAutoResize} />
+          </div>
+          <Textarea
+            label="Deployment Script"
+            placeholder="Type to see auto-resize in action..."
+            autoResize={textareaAutoResize()}
+            class="min-h-[120px]"
+          />
+        </div>
+      </Preview>
+
+      <Preview
+        title="Range Slider"
+        description="Granular control for numeric values."
+        code={`import { Slider } from 'starling-components/ui/Slider';\n\n<div class="w-full max-w-sm flex flex-col gap-4">\n  <Label>Memory Allocation</Label>\n  <Slider value={sliderVal()} onValueChange={setSliderVal} max={100} />\n</div>`}
+      >
+        <div class="w-full max-w-sm flex flex-col gap-4">
+          <div class="flex justify-between font-mono text-xs">
+            <Label class="text-muted">Memory Allocation</Label>
+            <span class="text-primary font-bold">{sliderVal()}%</span>
+          </div>
+          <Slider value={sliderVal()} onValueChange={setSliderVal} max={100} />
+        </div>
+      </Preview>
+    </section>
+  );
+};

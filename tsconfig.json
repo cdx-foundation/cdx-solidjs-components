@@ -12,6 +12,7 @@
     "emitDeclarationOnly": true,
     "outDir": "./dist",
     "baseUrl": ".",
+    "types": ["vite/client"],
     "ignoreDeprecations": "6.0",
     "paths": {
       "@/*": ["./*"]

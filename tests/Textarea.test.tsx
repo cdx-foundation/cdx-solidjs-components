@@ -33,4 +33,11 @@ describe('Textarea', () => {
     const textarea = screen.getByPlaceholderText('No typing');
     expect(textarea).toBeDisabled();
   });
+
+  it('applies correct classes when autoResize is enabled', () => {
+    render(() => <Textarea autoResize placeholder="Auto" />);
+    const textarea = screen.getByPlaceholderText('Auto');
+    expect(textarea).toHaveClass('resize-none');
+    expect(textarea).toHaveClass('overflow-hidden');
+  });
 });

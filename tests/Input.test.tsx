@@ -29,4 +29,55 @@ describe('Input', () => {
     const input = screen.getByRole('textbox');
     expect(label).toHaveAttribute('for', input.id);
   });
+
+  it('validates with regex', () => {
+    const onRegexMismatch = vi.fn();
+    render(() => <Input regex={/^\d*$/} onRegexMismatch={onRegexMismatch} />);
+    const input = screen.getByRole('textbox') as HTMLInputElement;
+    fireEvent.input(input, { target: { value: 'abc' } });
+    expect(onRegexMismatch).toHaveBeenCalledWith('abc');
+  });
+
+  it('prevents invalid input with preventInvalidRegex', () => {
+    render(() => <Input regex={/^\d*$/} preventInvalidRegex />);
+    const input = screen.getByRole('textbox') as HTMLInputElement;
+    
+    // Set an initial valid value so lastValidValue is updated
+    fireEvent.input(input, { target: { value: '123' } });
+    expect(input.value).toBe('123');
+    
+    // Try invalid value
+    fireEvent.input(input, { target: { value: '123a' } });
+    expect(input.value).toBe('123');
+  });
+
+  it('handles type="number" with increment/decrement', () => {
+    const onValueChange = vi.fn();
+    render(() => <Input type="number" value={10} onValueChange={onValueChange} />);
+    
+    const buttons = screen.getAllByRole('button');
+    expect(buttons).toHaveLength(2);
+    
+    // Increment
+    fireEvent.click(buttons[1]);
+    expect(onValueChange).toHaveBeenCalledWith(11);
+    
+    // Decrement
+    fireEvent.click(buttons[0]);
+    expect(onValueChange).toHaveBeenCalledWith(10);
+  });
+
+  it('blocks typing values exceeding max', () => {
+    const onValueChange = vi.fn();
+    render(() => <Input type="number" max={99} onValueChange={onValueChange} />);
+    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    
+    // Type a valid value first
+    fireEvent.input(input, { target: { value: '9' } });
+    expect(input.value).toBe('9');
+    
+    // Try to type something that makes it 999 (exceeding 99)
+    fireEvent.input(input, { target: { value: '999' } });
+    expect(input.value).toBe('9'); // Should stay at 9 because 999 > 99
+  });
 });

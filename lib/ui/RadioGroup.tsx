@@ -24,7 +24,7 @@ export interface RadioOption {
 
 interface RadioGroupContextValue {
   value: () => string;
-  onChange: (value: string) => void;
+  onValueChange: (value: string) => void;
   name: string;
 }
 
@@ -47,7 +47,7 @@ interface RadioGroupProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onCh
   /**
    * Callback fired when a user selects a new option.
    */
-  onChange: (value: string) => void;
+  onValueChange: (value: string) => void;
 
   /**
    * The unique name for the radio input group, ensuring exclusive selection within the browser.
@@ -69,7 +69,7 @@ interface RadioGroupProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onCh
  * @example
  * ```tsx
  * // Composable Pattern (Flexible)
- * <RadioGroup name="plan" value={plan()} onChange={setPlan}>
+ * <RadioGroup name="plan" value={plan()} onValueChange={setPlan}>
  *   <div class="flex items-center gap-2">
  *     <RadioGroupItem value="1" id="r1" />
  *     <Label for="r1">Option 1</Label>
@@ -81,7 +81,7 @@ interface RadioGroupProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onCh
  *   name="pricing-plan"
  *   label="Choose a Plan"
  *   value={plan()}
- *   onChange={setPlan}
+ *   onValueChange={setPlan}
  *   options={[
  *     { value: "hobby", label: "Hobby", description: "Free for side projects." }
  *   ]}
@@ -94,7 +94,7 @@ export const RadioGroup = (props: RadioGroupProps) => {
   const [local, others] = splitProps(props, [
     'options',
     'value',
-    'onChange',
+    'onValueChange',
     'name',
     'label',
     'class',
@@ -103,7 +103,7 @@ export const RadioGroup = (props: RadioGroupProps) => {
 
   const contextValue: RadioGroupContextValue = {
     value: () => local.value,
-    onChange: local.onChange,
+    onValueChange: local.onValueChange,
     name: local.name,
   };
 
@@ -155,7 +155,7 @@ const RadioGroupItemCard = (props: RadioOption) => {
         name={context.name}
         value={props.value}
         checked={isSelected()}
-        onChange={() => context.onChange(props.value)}
+        onChange={() => context.onValueChange(props.value)}
         class="sr-only"
       />
       <div
@@ -202,7 +202,7 @@ export const RadioGroupItem = (props: JSX.InputHTMLAttributes<HTMLInputElement>)
         name={context.name}
         value={local.value}
         checked={isSelected()}
-        onChange={() => context.onChange(local.value as string)}
+        onChange={() => context.onValueChange(local.value as string)}
         class={twMerge(
           'peer h-4 w-4 rounded-full border border-stroke text-primary ring-offset-bg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none cursor-pointer checked:border-primary',
           local.class,

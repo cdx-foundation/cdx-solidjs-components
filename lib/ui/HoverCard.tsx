@@ -1,4 +1,4 @@
-import { createSignal, type JSX } from 'solid-js';
+import { createSignal, type JSX, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { Alignment, Floating } from './Floating';
 
@@ -38,6 +38,7 @@ interface HoverCardProps {
  * @param props - Customization options including the `trigger` and `children`.
  */
 export const HoverCard = (props: HoverCardProps) => {
+  const [local, others] = splitProps(props, ['trigger', 'children', 'class', 'align']);
   const [isOpen, setIsOpen] = createSignal(false);
   let timeoutId: number | undefined;
 
@@ -53,9 +54,9 @@ export const HoverCard = (props: HoverCardProps) => {
   return (
     <Floating
       isOpen={isOpen()}
-      align={props.align || 'top'}
+      align={local.align || 'top'}
       sideOffset={8}
-      class={twMerge('w-64 border border-stroke bg-panel p-4 shadow-xl rounded-card', props.class)}
+      class={twMerge('w-64 border border-stroke bg-panel p-4 shadow-xl rounded-card', local.class)}
       trigger={(ref) => (
         <div
           ref={ref}
@@ -63,12 +64,13 @@ export const HoverCard = (props: HoverCardProps) => {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          {props.trigger}
+          {local.trigger}
         </div>
       )}
+      {...others}
     >
       <div onMouseEnter={() => clearTimeout(timeoutId)} onMouseLeave={handleMouseLeave}>
-        {props.children}
+        {local.children}
       </div>
     </Floating>
   );

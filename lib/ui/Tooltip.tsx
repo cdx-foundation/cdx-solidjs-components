@@ -1,4 +1,4 @@
-import { createSignal, type JSX } from 'solid-js';
+import { createSignal, splitProps, type JSX } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { Alignment, Floating } from './Floating';
 
@@ -38,8 +38,9 @@ interface TooltipProps {
  * @param props - Customization options including `trigger`, `content`, and `align`.
  */
 export const Tooltip = (props: TooltipProps) => {
+  const [local, others] = splitProps(props, ['trigger', 'content', 'class', 'align']);
   const [isOpen, setIsOpen] = createSignal(false);
-  const align = props.align || 'top';
+  const align = local.align || 'top';
 
   const getArrowClasses = () => {
     switch (align) {
@@ -62,7 +63,7 @@ export const Tooltip = (props: TooltipProps) => {
       class={twMerge(
         'pointer-events-none whitespace-nowrap rounded-card border border-stroke bg-fg px-2.5 py-1.5 text-xs font-medium text-panel shadow-xl after:absolute after:border-4 after:border-transparent',
         getArrowClasses(),
-        props.class,
+        local.class,
       )}
       trigger={(ref) => (
         <div
@@ -71,11 +72,12 @@ export const Tooltip = (props: TooltipProps) => {
           onMouseEnter={() => setIsOpen(true)}
           onMouseLeave={() => setIsOpen(false)}
         >
-          {props.trigger}
+          {local.trigger}
         </div>
       )}
+      {...others}
     >
-      {props.content}
+      {local.content}
     </Floating>
   );
 };

@@ -5,9 +5,9 @@ import { RadioGroup, RadioGroupItem } from '../lib/ui/RadioGroup';
 
 describe('RadioGroup', () => {
   it('renders correctly using composable pattern', () => {
-    const onChange = vi.fn();
+    const onValueChange = vi.fn();
     render(() => (
-      <RadioGroup name="test" value="1" onChange={onChange}>
+      <RadioGroup name="test" value="1" onValueChange={onValueChange}>
         <div class="flex items-center gap-2">
           <RadioGroupItem value="1" id="r1" />
           <Label for="r1">Option 1</Label>
@@ -29,7 +29,7 @@ describe('RadioGroup', () => {
     expect(radio2.checked).toBe(false);
 
     fireEvent.click(radio2);
-    expect(onChange).toHaveBeenCalledWith('2');
+    expect(onValueChange).toHaveBeenCalledWith('2');
   });
 
   it('renders using shorthand pattern', () => {
@@ -38,7 +38,7 @@ describe('RadioGroup', () => {
       { value: 'opt2', label: 'Option 2' },
     ];
     render(() => (
-      <RadioGroup name="test-shorthand" options={options} value="opt1" onChange={() => {}} />
+      <RadioGroup name="test-shorthand" options={options} value="opt1" onValueChange={() => {}} />
     ));
 
     expect(screen.getByText('Option 1')).toBeInTheDocument();

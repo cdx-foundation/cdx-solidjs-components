@@ -1,5 +1,5 @@
 import { createShortcut } from '@solid-primitives/keyboard';
-import { createSignal, type JSX, onCleanup } from 'solid-js';
+import { createSignal, type JSX, onCleanup, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { Alignment, Floating } from './Floating';
 
@@ -36,6 +36,7 @@ interface PopoverProps {
  * A floating container used to display rich content or additional options without navigating away.
  */
 export const Popover = (props: PopoverProps) => {
+  const [local, others] = splitProps(props, ['trigger', 'children', 'class', 'align']);
   const [isOpen, setIsOpen] = createSignal(false);
   let containerRef: HTMLDivElement | undefined;
   let triggerRef: HTMLDivElement | undefined;
@@ -62,9 +63,9 @@ export const Popover = (props: PopoverProps) => {
   return (
     <Floating
       isOpen={isOpen()}
-      align={props.align || 'bottom'}
+      align={local.align || 'bottom'}
       sideOffset={8}
-      class={twMerge('border border-stroke bg-panel p-4 shadow-xl rounded-card', props.class)}
+      class={twMerge('border border-stroke bg-panel p-4 shadow-xl rounded-card', local.class)}
       trigger={(ref) => (
         <div
           ref={(el) => {
@@ -74,11 +75,12 @@ export const Popover = (props: PopoverProps) => {
           onClick={() => setIsOpen(!isOpen())}
           class="inline-block cursor-pointer"
         >
-          {props.trigger}
+          {local.trigger}
         </div>
       )}
+      {...others}
     >
-      <div ref={containerRef}>{props.children}</div>
+      <div ref={containerRef}>{local.children}</div>
     </Floating>
   );
 };

@@ -1,6 +1,6 @@
 import { createShortcut } from '@solid-primitives/keyboard';
 import { Check } from 'lucide-solid';
-import { createSignal, For, Show } from 'solid-js';
+import { createSignal, For, Show, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { clickOutside } from '../directives';
 
@@ -37,13 +37,17 @@ interface ColorPickerProps {
   value: string;
 
   /**
-   * Callback fired when a color is chosen from the presets or the custom picker.
+   * Callback fired when a color is chosen.
+   */
+  onValueChange?: (color: string) => void;
+
+  /**
+   * @deprecated Use `onValueChange` instead.
    */
   onChange?: (color: string) => void;
 
   /**
-   * @deprecated Use `onChange` instead.
-   * Provided for compatibility with standard input event patterns.
+   * @deprecated Use `onValueChange` instead.
    */
   onInput?: (e: { currentTarget: { value: string } }) => void;
 
@@ -72,29 +76,33 @@ interface ColorPickerProps {
  * <ColorPicker
  *   label="Theme Accent"
  *   value={accent()}
- *   onChange={setAccent}
+ *   onValueChange={setAccent}
  * />
  * ```
- *
- * **Components & Features:**
- * - **Preset Grid:** 12 curated colors representing a wide aesthetic spectrum.
- * - **Custom Input:** Integrates the browser's native `<input type="color">` for infinite selection.
- * - **Visual State:** The trigger button reflects the active color in a circular swatch.
- * - **Dismissal:** Automatically closes on `Escape` or when clicking outside.
  *
  * @param props - Customization options including `label` and `value`.
  */
 export const ColorPicker = (props: ColorPickerProps) => {
+  const [local, others] = splitProps(props, [
+    'label',
+    'value',
+    'onValueChange',
+    'onChange',
+    'onInput',
+    'class',
+    'containerClass',
+  ]);
   const [isOpen, setIsOpen] = createSignal(false);
 
-  const currentColor = () => props.value || '#c62828';
+  const currentColor = () => local.value || '#c62828';
   const currentLabel = () =>
     PRESET_COLORS.find((c) => c.value === currentColor())?.label ?? currentColor().toUpperCase();
 
   const handleSelect = (color: string) => {
-    props.onChange?.(color);
+    local.onValueChange?.(color);
+    local.onChange?.(color);
     // Backward compat with onInput pattern
-    props.onInput?.({ currentTarget: { value: color } });
+    local.onInput?.({ currentTarget: { value: color } });
     setIsOpen(false);
   };
 
@@ -104,11 +112,12 @@ export const ColorPicker = (props: ColorPickerProps) => {
 
   return (
     <div
-      class={twMerge('flex flex-col gap-1.5 w-full text-left', props.containerClass)}
+      class={twMerge('flex flex-col gap-1.5 w-full text-left', local.containerClass)}
       use:clickOutside={() => setIsOpen(false)}
+      {...others}
     >
-      <Show when={props.label}>
-        <span class="text-xs font-semibold text-fg">{props.label}</span>
+      <Show when={local.label}>
+        <span class="text-xs font-semibold text-fg">{local.label}</span>
       </Show>
 
       <div class="relative">
@@ -119,7 +128,7 @@ export const ColorPicker = (props: ColorPickerProps) => {
           class={twMerge(
             'w-full flex items-center gap-3 border border-stroke bg-transparent rounded-input px-3 py-2 text-sm text-fg outline-none transition-colors duration-150 cursor-pointer hover:border-muted',
             isOpen() && 'border-fg',
-            props.class,
+            local.class,
           )}
         >
           <div

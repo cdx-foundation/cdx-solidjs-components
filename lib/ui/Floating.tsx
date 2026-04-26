@@ -1,4 +1,4 @@
-import { createEffect, createSignal, type JSX, onCleanup, onMount, Show } from 'solid-js';
+import { createEffect, createSignal, type JSX, onCleanup, onMount, Show, splitProps } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
@@ -34,6 +34,16 @@ interface FloatingProps {
  * Optimized for zero-latency, zero-animation rendering using fixed positioning.
  */
 export const Floating = (props: FloatingProps) => {
+  const [local, others] = splitProps(props, [
+    'trigger',
+    'children',
+    'isOpen',
+    'align',
+    'sideOffset',
+    'class',
+    'id',
+    'matchTriggerWidth',
+  ]);
   const [coords, setCoords] = createSignal<{ top: number; left: number } | null>(null);
   const [width, setWidth] = createSignal<string>('auto');
 
@@ -41,13 +51,13 @@ export const Floating = (props: FloatingProps) => {
   let _contentEl: HTMLElement | undefined;
 
   const update = () => {
-    if (!props.isOpen || !triggerEl) return;
+    if (!local.isOpen || !triggerEl) return;
 
     const triggerRect = triggerEl.getBoundingClientRect();
-    const offset = props.sideOffset ?? 8;
-    const align = props.align ?? 'bottom';
+    const offset = local.sideOffset ?? 8;
+    const align = local.align ?? 'bottom';
 
-    if (props.matchTriggerWidth) {
+    if (local.matchTriggerWidth) {
       setWidth(`${triggerRect.width}px`);
     }
 
@@ -110,7 +120,7 @@ export const Floating = (props: FloatingProps) => {
   };
 
   createEffect(() => {
-    if (props.isOpen) {
+    if (local.isOpen) {
       update();
       // Ensure positioning is fresh
       requestAnimationFrame(update);
@@ -130,7 +140,7 @@ export const Floating = (props: FloatingProps) => {
   });
 
   const getTransform = () => {
-    const align = props.align ?? 'bottom';
+    const align = local.align ?? 'bottom';
     switch (align) {
       case 'top':
         return 'translate(-50%, -100%)';
@@ -163,18 +173,18 @@ export const Floating = (props: FloatingProps) => {
 
   return (
     <>
-      {props.trigger((el) => {
+      {local.trigger((el) => {
         triggerEl = el;
-        if (props.isOpen) update();
+        if (local.isOpen) update();
       })}
-      <Show when={props.isOpen && coords()}>
+      <Show when={local.isOpen && coords()}>
         <Portal>
           <div
             ref={(el) => {
               _contentEl = el;
               update();
             }}
-            id={props.id}
+            id={local.id}
             style={{
               position: 'fixed',
               top: `${coords()?.top}px`,
@@ -184,9 +194,10 @@ export const Floating = (props: FloatingProps) => {
               'z-index': 100,
               'pointer-events': 'auto',
             }}
-            class={twMerge(props.class)}
+            class={twMerge(local.class)}
+            {...others}
           >
-            {props.children}
+            {local.children}
           </div>
         </Portal>
       </Show>
