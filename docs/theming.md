@@ -60,23 +60,20 @@ The most straightforward way to customize the theme is to define your own values
 
 ### Via `useTheme` Hook
 
-Starling UI provides a built-in `useTheme` hook that handles dark mode persistence and programmatic accent color updates.
+Starling UI provides a built-in `useTheme` hook that manages the dark/light mode state.
 
 ```tsx
 import { useTheme } from 'starling-components/hooks';
 
 function ThemeToggle() {
-  const { isDark, toggleTheme, setAccentColor } = useTheme();
+  const { isDark, toggleTheme } = useTheme();
 
   return (
-    <div class="flex gap-4">
-      <Button onClick={toggleTheme}>
-        Switch to {isDark() ? 'Light' : 'Dark'} Mode
-      </Button>
-      <Button onClick={() => setAccentColor('#3b82f6')}>
-        Set Blue Theme
-      </Button>
-    </div>
+    <Button onClick={toggleTheme}>
+      Switch to {isDark() ? 'Light' : 'Dark'} Mode
+    </Button>
   );
 }
 ```
+
+Other theme properties like primary color, radii, and fonts should be managed via CSS variables as shown in the [Global CSS](#via-global-css) section.

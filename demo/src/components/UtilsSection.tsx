@@ -1,7 +1,8 @@
 import { Show, createSignal } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import * as directives from '../../../lib/directives';
-import { useDisclosure, useTheme } from '../../../lib/hooks';
+import { useDisclosure } from '../../../lib/hooks';
+import { useAppTheme } from '../hooks/useAppTheme';
 import { Button } from '../../../lib/ui/Button';
 import { Code } from '../../../lib/ui/Code';
 import { Input } from '../../../lib/ui/Input';
@@ -38,10 +39,10 @@ export const UtilsSection = () => {
       <div class="space-y-4">
         <h2 class="text-xl font-bold">useTheme Hook</h2>
         <p class="text-sm text-muted mb-4">
-          Reactive hook for managing application theme states and persistent storage.
+          Generic reactive hook for managing theme states. Persistence and DOM implementation should be handled by the application.
         </p>
         <Code
-          code={`import { useTheme } from 'starling-components/hooks';\n\nconst { isDark, toggleTheme, setAccentColor } = useTheme();`}
+          code={`import { useTheme } from 'starling-components/hooks';\n\nconst { isDark, toggleTheme } = useTheme({\n  isDark: true\n});`}
           fileName="hooks"
           language="typescript"
         />

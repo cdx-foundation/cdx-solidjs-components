@@ -4,40 +4,26 @@ Shared hooks and directives that power Starling UI's interactive features.
 
 ## useTheme Hook
 
-A reactive hook for managing the application's theme state, including dark mode and accent colors.
+A reactive hook for managing the application's theme state (dark/light mode).
 
 ```tsx
 import { useTheme } from 'starling-components/hooks';
 
 export default function ThemeControl() {
-  const { isDark, toggleTheme, accentColor, setAccentColor } = useTheme();
+  const { isDark, toggleTheme } = useTheme();
 
   return (
     <div class="flex flex-col gap-4">
       <p>Dark Mode: {isDark() ? 'Active' : 'Inactive'}</p>
-      <Button onClick={toggleTheme}>Toggle</Button>
-
-      <div class="flex gap-2">
-        <div 
-          class="w-6 h-6 rounded-full cursor-pointer" 
-          style={{ "background-color": "#c62828" }}
-          onClick={() => setAccentColor('#c62828')}
-        />
-        <div 
-          class="w-6 h-6 rounded-full cursor-pointer" 
-          style={{ "background-color": "#3b82f6" }}
-          onClick={() => setAccentColor('#3b82f6')}
-        />
-      </div>
+      <Button onClick={toggleTheme}>Toggle Mode</Button>
     </div>
   );
 }
 ```
 
 ### Features
-- **Persistence:** Automatically saves user preferences to `localStorage`.
-- **System Sync:** Detects user OS preferences (e.g., `prefers-color-scheme`) on first load.
-- **Dynamic Accent:** Updates the `--primary-color` CSS variable globally in real-time.
+- **System Sync:** Detects user OS preferences (e.g., `prefers-color-scheme`) on first load if no initial value is provided.
+- **Lightweight:** Purely handles mode state. Persistence and DOM application (like toggling a `.dark` class) should be handled by the application logic.
 
 ---
 

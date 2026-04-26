@@ -37,8 +37,8 @@ import {
   type ShadowLevel,
   type ThemeFont,
   hexToRgb,
-  useTheme,
-} from '../../../lib/hooks/useTheme';
+} from '../theme-constants';
+import { useAppTheme } from '../hooks/useAppTheme';
 import {
   Accordion,
   AccordionContent,
@@ -146,7 +146,7 @@ const FONT_OPTIONS: { label: string; value: ThemeFont; family: string }[] = [
 ];
 
 export const ThemeCreator = () => {
-  const theme = useTheme();
+  const theme = useAppTheme();
   const [showExport, setShowExport] = createSignal(false);
   const [hasCopied, setHasCopied] = createSignal(false);
   const [sliderVal, setSliderVal] = createSignal([45]);

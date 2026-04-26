@@ -37,7 +37,7 @@ Starling UI is built for Tailwind CSS v4. In your main CSS entry point, import t
 
 ### 2. Provider Setup (Optional)
 
-If you plan to use the `Toaster` or `useTheme` hook, make sure to add the `Toaster` component at the root of your application.
+If you plan to use toast notifications, make sure to add the `Toaster` component at the root of your application.
 
 ```tsx
 import { Toaster } from 'starling-components/ui/Toast';

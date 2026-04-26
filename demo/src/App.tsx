@@ -20,6 +20,7 @@ import {
 import { Slider } from '../../lib/ui/Slider';
 import { Switch } from '../../lib/ui/Switch';
 import { Toaster, type ToasterPosition, toast } from '../../lib/ui/Toast';
+import { useAppTheme } from './hooks/useAppTheme';
 
 import { DataSection } from './components/DataSection';
 import { DisclosureSection } from './components/DisclosureSection';
@@ -51,6 +52,7 @@ type Section =
 type Theme = 'professional' | 'brutalist' | 'midnight';
 
 export default function App() {
+  useAppTheme();
   const [activeSection, setActiveSection] = createSignal<Section>('intro');
   const [currentTheme, setCurrentTheme] = createSignal<Theme>('professional');
   const [sidebarOpen, setSidebarOpen] = createSignal(false);
