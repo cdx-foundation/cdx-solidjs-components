@@ -21,12 +21,14 @@ import { Slider } from '../../lib/ui/Slider';
 import { Switch } from '../../lib/ui/Switch';
 import { Toaster, type ToasterPosition, toast } from '../../lib/ui/Toast';
 import { useAppTheme } from './hooks/useAppTheme';
+import { BASE_PALETTES, FONTS, SHADOWS, hexToRgb } from './theme-constants';
 
 import { DataSection } from './components/DataSection';
 import { DisclosureSection } from './components/DisclosureSection';
 import { FeedbackSection } from './components/FeedbackSection';
 import { FormsSection } from './components/FormsSection';
 import { GetStartedSection } from './components/GetStartedSection';
+import { HUDSection } from './components/HUDSection';
 // Section Components
 import { IntroSection } from './components/IntroSection';
 import { LayoutSection } from './components/LayoutSection';
@@ -41,6 +43,7 @@ type Section =
   | 'get-started'
   | 'theming'
   | 'theme-creator'
+  | 'hud'
   | 'layout'
   | 'forms'
   | 'nav'
@@ -52,7 +55,67 @@ type Section =
 type Theme = 'professional' | 'brutalist' | 'midnight';
 
 export default function App() {
-  useAppTheme();
+  const {
+    isDark,
+    accentColor,
+    radius,
+    headerFont,
+    bodyFont,
+    baseColor,
+    shadow,
+    btnBoxShadow,
+  } = useAppTheme();
+
+  // App-specific implementation logic (Effects)
+  createEffect(() => {
+    document.documentElement.classList.toggle('dark', isDark());
+    document.documentElement.style.colorScheme = isDark() ? 'dark' : 'light';
+  });
+
+  createEffect(() => {
+    const root = document.documentElement;
+    const palette = BASE_PALETTES[baseColor()][isDark() ? 'dark' : 'light'];
+
+    root.style.setProperty('--primary-color', accentColor());
+    root.style.setProperty('--primary-rgb', hexToRgb(accentColor()));
+
+    root.style.setProperty('--bg-main', palette.bg);
+    root.style.setProperty('--bg-panel', palette.panel);
+    root.style.setProperty('--bg-surface', palette.surface);
+
+    root.style.setProperty('--fg-main', palette.fg);
+    root.style.setProperty('--text-muted', palette.muted);
+
+    root.style.setProperty('--border-main', palette.border);
+    root.style.setProperty('--stroke', palette.border);
+
+    const isDarkVal = isDark();
+    root.style.setProperty(
+      '--ring-main',
+      isDarkVal ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+    );
+    root.style.setProperty(
+      '--glass-border',
+      isDarkVal ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)',
+    );
+
+    root.style.setProperty('--shadow-main', SHADOWS[shadow()]);
+    root.style.setProperty('--shadow-btn', SHADOWS[btnBoxShadow()]);
+
+    const r = radius();
+    root.style.setProperty('--radius-card', r);
+    root.style.setProperty('--radius-lg', r);
+    root.style.setProperty('--radius-btn', `calc(${r} - 0.2rem)`);
+    root.style.setProperty('--radius-input', `calc(${r} - 0.1rem)`);
+    root.style.setProperty('--radius-badge', `calc(${r} - 0.3rem)`);
+
+    root.style.setProperty('--sans-main', FONTS[bodyFont()]);
+    root.style.setProperty('--display-main', FONTS[headerFont()]);
+    root.style.setProperty('--mono-main', FONTS.mono);
+
+    document.body.style.fontFamily = FONTS[bodyFont()];
+  });
+
   const [activeSection, setActiveSection] = createSignal<Section>('intro');
   const [currentTheme, setCurrentTheme] = createSignal<Theme>('professional');
   const [sidebarOpen, setSidebarOpen] = createSignal(false);
@@ -105,6 +168,12 @@ export default function App() {
       label: 'Theme Creator',
       group: 'Getting Started',
       keywords: ['customize', 'editor', 'preview', 'export'],
+    },
+    {
+      id: 'hud',
+      label: 'HUD Variant',
+      group: 'FiveM Specific',
+      keywords: ['hud', 'fivem', 'gaming', 'vitals', 'overlay'],
     },
     {
       id: 'layout',
@@ -314,7 +383,7 @@ export default function App() {
 
         <div
           class={twMerge(
-            activeSection() === 'theme-creator'
+            activeSection() === 'theme-creator' || activeSection() === 'hud'
               ? 'flex-1'
               : 'max-w-4xl w-full mx-auto p-6 md:p-12 lg:p-16',
           )}
@@ -333,6 +402,10 @@ export default function App() {
 
           <Show when={activeSection() === 'theme-creator'}>
             <ThemeCreator />
+          </Show>
+
+          <Show when={activeSection() === 'hud'}>
+            <HUDSection />
           </Show>
 
           <Show when={activeSection() === 'layout'}>

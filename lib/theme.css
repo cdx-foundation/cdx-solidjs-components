@@ -67,6 +67,28 @@
     border-radius: var(--radius-card, 0px);
   }
 
+  /* HUD Variant Overrides */
+  .hud {
+    --bg-main: transparent;
+    --bg-panel: rgba(0, 0, 0, 0.75);
+    --bg-surface: rgba(255, 255, 255, 0.05);
+    --border-main: rgba(255, 255, 255, 0.1);
+    --stroke: rgba(255, 255, 255, 0.1);
+    --fg-main: #ffffff;
+    --text-muted: #ffffff;
+    --radius-card: 0px;
+    --radius-btn: 0px;
+    --radius-input: 0px;
+    --font-display: "Bebas Neue", "Archivo Black", sans-serif;
+    --shadow-main: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    
+    pointer-events: none; /* Default for HUD containers */
+  }
+
+  .hud * {
+    pointer-events: auto; /* Re-enable for components if needed, though usually HUDs are non-interactive */
+  }
+
   .scrollbar-gutter-stable {
     scrollbar-gutter: stable;
   }

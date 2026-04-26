@@ -1,5 +1,6 @@
 export * from './hooks';
 export * from './directives';
+export * from './hud';
 export * from './ui/Accordion';
 export * from './ui/Alert';
 export * from './ui/AspectRatio';
