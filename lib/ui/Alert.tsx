@@ -4,24 +4,27 @@ import { type JSX, splitProps } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
-const alertVariants = cva('relative w-full rounded-card border p-4 pl-12 flex flex-col gap-1 text-sm', {
-  variants: {
-    variant: {
-      info: 'bg-blue-50 border-blue-200/60 text-blue-700 dark:bg-blue-500/8 dark:border-blue-500/20 dark:text-blue-400',
-      warning:
-        'bg-amber-50 border-amber-200/60 text-amber-700 dark:bg-amber-500/8 dark:border-amber-500/20 dark:text-amber-400',
-      error:
-        'bg-red-50 border-red-200/60 text-red-700 dark:bg-red-500/8 dark:border-red-500/20 dark:text-red-400',
-      success:
-        'bg-emerald-50 border-emerald-200/60 text-emerald-700 dark:bg-emerald-500/8 dark:border-emerald-500/20 dark:text-emerald-400',
-      destructive:
-        'bg-red-50 border-red-200/60 text-red-700 dark:bg-red-500/8 dark:border-red-500/20 dark:text-red-400',
+const alertVariants = cva(
+  'relative w-full rounded-card border p-4 pl-12 flex flex-col gap-1 text-sm',
+  {
+    variants: {
+      variant: {
+        info: 'bg-blue-50 border-blue-200/60 text-blue-700 dark:bg-blue-500/8 dark:border-blue-500/20 dark:text-blue-400',
+        warning:
+          'bg-amber-50 border-amber-200/60 text-amber-700 dark:bg-amber-500/8 dark:border-amber-500/20 dark:text-amber-400',
+        error:
+          'bg-red-50 border-red-200/60 text-red-700 dark:bg-red-500/8 dark:border-red-500/20 dark:text-red-400',
+        success:
+          'bg-emerald-50 border-emerald-200/60 text-emerald-700 dark:bg-emerald-500/8 dark:border-emerald-500/20 dark:text-emerald-400',
+        destructive:
+          'bg-red-50 border-red-200/60 text-red-700 dark:bg-red-500/8 dark:border-red-500/20 dark:text-red-400',
+      },
+    },
+    defaultVariants: {
+      variant: 'info',
     },
   },
-  defaultVariants: {
-    variant: 'info',
-  },
-});
+);
 
 /**
  * Configuration and properties for the Alert component.

@@ -6,8 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": false,
-    "includes": ["**", "!**/dist", "!**/node_modules", "!**/bun.lock"]
+    "ignoreUnknown": false
   },
   "formatter": {
     "enabled": true,

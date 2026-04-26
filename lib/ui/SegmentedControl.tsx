@@ -49,13 +49,7 @@ interface SegmentedControlProps {
  * ```
  */
 export const SegmentedControl = (props: SegmentedControlProps) => {
-  const [local, others] = splitProps(props, [
-    'options',
-    'value',
-    'onChange',
-    'class',
-    'itemClass',
-  ]);
+  const [local, others] = splitProps(props, ['options', 'value', 'onChange', 'class', 'itemClass']);
 
   return (
     <div

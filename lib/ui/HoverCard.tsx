@@ -1,6 +1,6 @@
-import { createSignal, type JSX, splitProps } from 'solid-js';
+import { type JSX, createSignal, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
-import { Alignment, Floating } from './Floating';
+import { type Alignment, Floating } from './Floating';
 
 /**
  * Configuration and properties for the HoverCard component.
@@ -74,4 +74,22 @@ export const HoverCard = (props: HoverCardProps) => {
       </div>
     </Floating>
   );
+};
+
+/**
+ * ### HoverCardTrigger Component
+ *
+ * The element that triggers the hover card.
+ */
+export const HoverCardTrigger = (props: { children: JSX.Element; class?: string }) => {
+  return <span class={twMerge('cursor-help underline decoration-dotted', props.class)}>{props.children}</span>;
+};
+
+/**
+ * ### HoverCardContent Component
+ *
+ * The main container for the hover card's primary content.
+ */
+export const HoverCardContent = (props: { children: JSX.Element; class?: string }) => {
+  return <div class={twMerge('flex flex-col gap-2', props.class)}>{props.children}</div>;
 };

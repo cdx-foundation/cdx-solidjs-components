@@ -1,7 +1,7 @@
-import { Cpu, Palette, ChevronRight } from 'lucide-solid';
+import { ChevronRight, Cpu, Palette } from 'lucide-solid';
 import { Badge } from '../../../lib/ui/Badge';
 import { Button } from '../../../lib/ui/Button';
-import { Card, CardHeader, CardTitle, CardDescription } from '../../../lib/ui/Card';
+import { Card, CardDescription, CardHeader, CardTitle } from '../../../lib/ui/Card';
 
 interface IntroSectionProps {
   onGetStarted: () => void;
@@ -18,8 +18,7 @@ export const IntroSection = (props: IntroSectionProps) => {
       </h1>
       <p class="text-xl text-muted leading-relaxed max-w-2xl">
         Starling UI is a meticulously crafted component library for SolidJS, optimized for
-        data-heavy interfaces. It emphasizes precision, accessibility, and professional
-        aesthetics.
+        data-heavy interfaces. It emphasizes precision, accessibility, and professional aesthetics.
       </p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
         <Card class="bg-panel/30 border-dashed">
@@ -36,8 +35,8 @@ export const IntroSection = (props: IntroSectionProps) => {
             <Palette size={24} class="text-primary mb-2" />
             <CardTitle>Multiple Presets</CardTitle>
             <CardDescription>
-              Switch between several theme presets with zero configuration, optimized for
-              all technical scenarios.
+              Switch between several theme presets with zero configuration, optimized for all
+              technical scenarios.
             </CardDescription>
           </CardHeader>
         </Card>

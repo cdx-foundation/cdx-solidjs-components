@@ -17,8 +17,7 @@ export const GetStartedSection = () => {
       <div class="space-y-4">
         <h2 class="text-xl font-bold">2. Add Tailwind Styles</h2>
         <p class="text-sm text-muted">
-          Import the theme and base styles into your CSS entry point (Tailwind v4
-          compatible).
+          Import the theme and base styles into your CSS entry point (Tailwind v4 compatible).
         </p>
         <Code
           code={`@import "tailwindcss";\n@import "starling-components";`}

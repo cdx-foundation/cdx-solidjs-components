@@ -36,7 +36,6 @@ export const Breadcrumb = (props: JSX.HTMLAttributes<HTMLElement>) => {
     <nav
       class={twMerge('flex items-center text-sm font-sans', local.class)}
       aria-label="breadcrumb"
-
       {...others}
     >
       {local.children}

@@ -1,9 +1,9 @@
 import {
+  type JSX,
+  Show,
   createContext,
   createEffect,
   createSignal,
-  type JSX,
-  Show,
   splitProps,
   useContext,
 } from 'solid-js';

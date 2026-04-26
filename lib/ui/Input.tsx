@@ -1,12 +1,12 @@
 import { Minus, Plus } from 'lucide-solid';
 import {
-  createSignal,
-  createUniqueId,
   type JSX,
   Show,
+  createEffect,
+  createSignal,
+  createUniqueId,
   splitProps,
   untrack,
-  createEffect,
 } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
@@ -108,7 +108,7 @@ export const Input = (props: InputProps) => {
     }
 
     if (typeof local.onInput === 'function') {
-      local.onInput(e);
+      (local.onInput as any)(e);
     } else if (Array.isArray(local.onInput)) {
       (local.onInput[0] as any)(local.onInput[1], e);
     }
@@ -163,7 +163,9 @@ export const Input = (props: InputProps) => {
         label={local.label}
         description={local.description}
         error={local.error}
-        value={typeof local.value === 'number' ? local.value : parseFloat(local.value as string)}
+        value={
+          typeof local.value === 'number' ? local.value : Number.parseFloat(local.value as string)
+        }
         onValueChange={local.onValueChange}
         hideButtons={local.hideButtons}
         class={local.class}
@@ -205,7 +207,7 @@ const NumberInputInternal = (props: any) => {
     if (local.max !== undefined) next = Math.min(local.max, next);
 
     const precision = step().toString().split('.')[1]?.length || 0;
-    next = parseFloat(next.toFixed(precision));
+    next = Number.parseFloat(next.toFixed(precision));
 
     if (next !== internalValue()) {
       setInternalValue(next);
@@ -224,7 +226,7 @@ const NumberInputInternal = (props: any) => {
       return;
     }
 
-    const val = parseFloat(rawValue);
+    const val = Number.parseFloat(rawValue);
     if (!isNaN(val)) {
       if (local.max !== undefined && val > local.max) {
         e.currentTarget.value = internalValue().toString();

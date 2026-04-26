@@ -24,7 +24,9 @@ describe('Select', () => {
 
   it('calls onValueChange and closes when an option is selected', () => {
     const onValueChange = vi.fn();
-    render(() => <Select options={options} placeholder="Choose..." onValueChange={onValueChange} />);
+    render(() => (
+      <Select options={options} placeholder="Choose..." onValueChange={onValueChange} />
+    ));
 
     fireEvent.click(screen.getByText('Choose...'));
     fireEvent.click(screen.getByText('Option 2'));
@@ -35,7 +37,9 @@ describe('Select', () => {
 
   it('supports keyboard navigation', () => {
     const onValueChange = vi.fn();
-    render(() => <Select options={options} placeholder="Choose..." onValueChange={onValueChange} />);
+    render(() => (
+      <Select options={options} placeholder="Choose..." onValueChange={onValueChange} />
+    ));
 
     const trigger = screen.getByRole('combobox');
     fireEvent.keyDown(trigger, { key: 'Enter' });

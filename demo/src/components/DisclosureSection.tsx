@@ -24,17 +24,13 @@ export const DisclosureSection = () => {
           class="w-full max-w-sm border border-stroke rounded-xl px-4 bg-panel/30 transition-all duration-400"
         >
           <AccordionItem class="border-b border-stroke">
-            <AccordionTrigger class="py-4 text-sm font-medium">
-              System Security
-              </AccordionTrigger>
+            <AccordionTrigger class="py-4 text-sm font-medium">System Security</AccordionTrigger>
             <AccordionContent class="pb-4 text-sm text-muted font-mono text-xs">
               We use AES-256-GCM encryption at rest for all data chunks.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem class="border-none">
-            <AccordionTrigger class="py-4 text-sm font-medium">
-              Automatic Scaling
-            </AccordionTrigger>
+            <AccordionTrigger class="py-4 text-sm font-medium">Automatic Scaling</AccordionTrigger>
             <AccordionContent class="pb-4 text-sm text-muted font-mono text-xs">
               Nodes scale horizontally based on RPS and latency metrics.
             </AccordionContent>

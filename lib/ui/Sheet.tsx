@@ -1,5 +1,5 @@
 import { X } from 'lucide-solid';
-import { createEffect, type JSX, onCleanup, Show, splitProps } from 'solid-js';
+import { type JSX, Show, createEffect, onCleanup, splitProps } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 

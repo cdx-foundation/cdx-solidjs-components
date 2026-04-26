@@ -1,5 +1,5 @@
 import { createShortcut } from '@solid-primitives/keyboard';
-import { createSignal, type JSX, Show, splitProps } from 'solid-js';
+import { type JSX, Show, createSignal, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { clickOutside } from '../directives';
 
@@ -83,7 +83,11 @@ export const MenubarMenu = (props: {
   });
 
   return (
-    <div class={twMerge('relative', local.class)} use:clickOutside={() => setIsOpen(false)} {...others}>
+    <div
+      class={twMerge('relative', local.class)}
+      use:clickOutside={() => setIsOpen(false)}
+      {...others}
+    >
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen())}

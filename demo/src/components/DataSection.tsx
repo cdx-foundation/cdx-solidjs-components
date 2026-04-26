@@ -1,12 +1,19 @@
 import { createSignal } from 'solid-js';
-import { Code } from '../../../lib/ui/Code';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../lib/ui/Table';
 import { Badge } from '../../../lib/ui/Badge';
 import { Calendar } from '../../../lib/ui/Calendar';
-import { DatePicker } from '../../../lib/ui/DatePicker';
 import { Card } from '../../../lib/ui/Card';
+import { Code } from '../../../lib/ui/Code';
+import { DatePicker } from '../../../lib/ui/DatePicker';
 import { Label } from '../../../lib/ui/Label';
 import { Switch } from '../../../lib/ui/Switch';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../../../lib/ui/Table';
 import { Preview } from './Preview';
 
 export const DataSection = () => {
@@ -61,10 +68,7 @@ export const DataSection = () => {
               <TableRow class="border-none">
                 <TableCell class="font-mono text-xs">EU-WEST-1</TableCell>
                 <TableCell>
-                  <Badge
-                    variant="destructive"
-                    class="bg-red-500/10 text-red-500 border-none"
-                  >
+                  <Badge variant="destructive" class="bg-red-500/10 text-red-500 border-none">
                     Degraded
                   </Badge>
                 </TableCell>

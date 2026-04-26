@@ -1,4 +1,3 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../lib/ui/Tabs';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,6 +5,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '../../../lib/ui/Breadcrumb';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../lib/ui/Tabs';
 import { Preview } from './Preview';
 
 export const NavSection = () => {
@@ -13,9 +13,7 @@ export const NavSection = () => {
     <section class="space-y-12">
       <div>
         <h1 class="text-4xl font-extrabold tracking-tight mb-4">Navigation</h1>
-        <p class="text-lg text-muted">
-          Components for complex site structure and traversal.
-        </p>
+        <p class="text-lg text-muted">Components for complex site structure and traversal.</p>
       </div>
 
       <Preview

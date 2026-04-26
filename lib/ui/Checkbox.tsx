@@ -1,5 +1,5 @@
 import { Check } from 'lucide-solid';
-import { createSignal, createUniqueId, type JSX, splitProps } from 'solid-js';
+import { type JSX, createSignal, createUniqueId, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
 /**
@@ -16,6 +16,11 @@ export interface CheckboxProps extends Omit<JSX.InputHTMLAttributes<HTMLInputEle
    * Callback fired when the checked state changes.
    */
   onCheckedChange?: (checked: boolean) => void;
+
+  /**
+   * The initial checked state when the component is first rendered.
+   */
+  defaultChecked?: boolean;
 
   /**
    * Custom CSS classes applied to the flex container wrapping the checkbox and label.

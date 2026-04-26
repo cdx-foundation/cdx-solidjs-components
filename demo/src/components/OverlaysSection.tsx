@@ -1,7 +1,7 @@
 import { Button } from '../../../lib/ui/Button';
-import { Tooltip } from '../../../lib/ui/Tooltip';
-import { Popover } from '../../../lib/ui/Popover';
 import { HoverCard } from '../../../lib/ui/HoverCard';
+import { Popover } from '../../../lib/ui/Popover';
+import { Tooltip } from '../../../lib/ui/Tooltip';
 import { Preview } from './Preview';
 
 interface OverlaysSectionProps {
@@ -73,52 +73,34 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
       >
         <div class="flex flex-col gap-8 w-full items-center">
           <div class="flex flex-wrap justify-center gap-4">
-            <Popover
-              trigger={<Button variant="outline">Top Left</Button>}
-              align="top-left"
-            >
+            <Popover trigger={<Button variant="outline">Top Left</Button>} align="top-left">
               <div class="p-4 w-48 text-sm">Aligned to trigger's top-left corner.</div>
             </Popover>
             <Popover trigger={<Button variant="outline">Top</Button>} align="top">
               <div class="p-4 w-48 text-sm text-center">Standard top alignment.</div>
             </Popover>
-            <Popover
-              trigger={<Button variant="outline">Top Right</Button>}
-              align="top-right"
-            >
+            <Popover trigger={<Button variant="outline">Top Right</Button>} align="top-right">
               <div class="p-4 w-48 text-sm text-right">Aligned to top-right corner.</div>
             </Popover>
           </div>
 
           <div class="flex flex-wrap justify-center gap-4">
-            <Popover
-              trigger={<Button variant="outline">Bottom Left</Button>}
-              align="bottom-left"
-            >
+            <Popover trigger={<Button variant="outline">Bottom Left</Button>} align="bottom-left">
               <div class="p-4 w-48 text-sm">Aligned to bottom-left corner.</div>
             </Popover>
             <Popover trigger={<Button variant="outline">Bottom</Button>} align="bottom">
               <div class="p-4 w-48 text-sm text-center">Standard bottom alignment.</div>
             </Popover>
-            <Popover
-              trigger={<Button variant="outline">Bottom Right</Button>}
-              align="bottom-right"
-            >
+            <Popover trigger={<Button variant="outline">Bottom Right</Button>} align="bottom-right">
               <div class="p-4 w-48 text-sm text-right">Aligned to bottom-right corner.</div>
             </Popover>
           </div>
 
           <div class="flex flex-wrap justify-center gap-4">
-            <Popover
-              trigger={<Button variant="outline">Left Top</Button>}
-              align="left-top"
-            >
+            <Popover trigger={<Button variant="outline">Left Top</Button>} align="left-top">
               <div class="p-4 w-48 text-sm">Side-aligned to the top.</div>
             </Popover>
-            <Popover
-              trigger={<Button variant="outline">Right Bottom</Button>}
-              align="right-bottom"
-            >
+            <Popover trigger={<Button variant="outline">Right Bottom</Button>} align="right-bottom">
               <div class="p-4 w-48 text-sm">Side-aligned to the bottom.</div>
             </Popover>
           </div>
@@ -134,9 +116,7 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
           <HoverCard
             align="top-left"
             trigger={
-              <span class="text-primary underline cursor-help font-mono text-xs">
-                top-left
-              </span>
+              <span class="text-primary underline cursor-help font-mono text-xs">top-left</span>
             }
           >
             <div class="space-y-2">
@@ -150,9 +130,7 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
           <HoverCard
             align="right-top"
             trigger={
-              <span class="text-primary underline cursor-help font-mono text-xs">
-                right-top
-              </span>
+              <span class="text-primary underline cursor-help font-mono text-xs">right-top</span>
             }
           >
             <div class="space-y-2">
@@ -166,9 +144,7 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
           <HoverCard
             align="bottom-right"
             trigger={
-              <span class="text-primary underline cursor-help font-mono text-xs">
-                bottom-right
-              </span>
+              <span class="text-primary underline cursor-help font-mono text-xs">bottom-right</span>
             }
           >
             <div class="space-y-2">

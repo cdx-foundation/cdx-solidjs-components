@@ -1,6 +1,6 @@
 import { createShortcut } from '@solid-primitives/keyboard';
 import { X } from 'lucide-solid';
-import { createEffect, type JSX, onCleanup, Show, splitProps } from 'solid-js';
+import { type JSX, Show, createEffect, onCleanup, splitProps } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
@@ -177,6 +177,22 @@ export const ModalDescription = (props: JSX.HTMLAttributes<HTMLParagraphElement>
     <p class={twMerge('text-sm text-muted', local.class)} {...others}>
       {local.children}
     </p>
+  );
+};
+
+/**
+ * ### ModalContent Component
+ *
+ * The main container for the modal's primary content.
+ *
+ * @param props - Standard HTML div attributes.
+ */
+export const ModalContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const [local, others] = splitProps(props, ['class', 'children']);
+  return (
+    <div class={twMerge('flex-1', local.class)} {...others}>
+      {local.children}
+    </div>
   );
 };
 

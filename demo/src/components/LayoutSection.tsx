@@ -1,7 +1,14 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../../../lib/ui/Card';
-import { Button } from '../../../lib/ui/Button';
-import { ScrollArea } from '../../../lib/ui/ScrollArea';
 import { AspectRatio } from '../../../lib/ui/AspectRatio';
+import { Button } from '../../../lib/ui/Button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '../../../lib/ui/Card';
+import { ScrollArea } from '../../../lib/ui/ScrollArea';
 import { Preview } from './Preview';
 
 export const LayoutSection = () => {
@@ -9,9 +16,7 @@ export const LayoutSection = () => {
     <section class="space-y-12">
       <div>
         <h1 class="text-4xl font-extrabold tracking-tight mb-4">Layout</h1>
-        <p class="text-lg text-muted">
-          Essential components for structuring application pages.
-        </p>
+        <p class="text-lg text-muted">Essential components for structuring application pages.</p>
       </div>
 
       <Preview
@@ -49,12 +54,8 @@ export const LayoutSection = () => {
           <div class="space-y-4">
             <p class="text-sm text-muted font-mono">[08:42:01] System initializing...</p>
             <p class="text-sm text-muted font-mono">[08:42:05] Loading kernel modules...</p>
-            <p class="text-sm text-muted font-mono">
-              [08:42:10] Database connection established.
-            </p>
-            <p class="text-sm text-muted font-mono">
-              [08:42:12] Web server listening on :4000
-            </p>
+            <p class="text-sm text-muted font-mono">[08:42:10] Database connection established.</p>
+            <p class="text-sm text-muted font-mono">[08:42:12] Web server listening on :4000</p>
             <p class="text-sm text-muted font-mono">[08:42:15] Monitoring agents active.</p>
           </div>
         </ScrollArea>

@@ -1,13 +1,20 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../lib/ui/Table';
 import { Code } from '../../../lib/ui/Code';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../../../lib/ui/Table';
 
 export const ThemingSection = () => {
   return (
     <section class="space-y-8">
       <h1 class="text-4xl font-extrabold tracking-tight">Theming</h1>
       <p class="text-muted leading-relaxed max-w-2xl">
-        Starling UI uses a CSS variable-based design system. You can override these
-        variables in your global CSS to customize the entire library.
+        Starling UI uses a CSS variable-based design system. You can override these variables in
+        your global CSS to customize the entire library.
       </p>
 
       <div class="space-y-10">
@@ -35,16 +42,12 @@ export const ThemingSection = () => {
                 </TableRow>
                 <TableRow>
                   <TableCell class="font-mono text-xs">--color-panel</TableCell>
-                  <TableCell class="text-sm text-muted">
-                    Card & floating backgrounds
-                  </TableCell>
+                  <TableCell class="text-sm text-muted">Card & floating backgrounds</TableCell>
                   <TableCell class="text-right font-mono text-xs">bg-panel</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell class="font-mono text-xs">--color-surface</TableCell>
-                  <TableCell class="text-sm text-muted">
-                    Subtle hover/active surfaces
-                  </TableCell>
+                  <TableCell class="text-sm text-muted">Subtle hover/active surfaces</TableCell>
                   <TableCell class="text-right font-mono text-xs">bg-surface</TableCell>
                 </TableRow>
                 <TableRow>
@@ -54,9 +57,7 @@ export const ThemingSection = () => {
                 </TableRow>
                 <TableRow>
                   <TableCell class="font-mono text-xs">--color-muted</TableCell>
-                  <TableCell class="text-sm text-muted">
-                    Secondary/de-emphasized text
-                  </TableCell>
+                  <TableCell class="text-sm text-muted">Secondary/de-emphasized text</TableCell>
                   <TableCell class="text-right font-mono text-xs">text-muted</TableCell>
                 </TableRow>
                 <TableRow class="border-none">
@@ -83,9 +84,7 @@ export const ThemingSection = () => {
               <TableBody>
                 <TableRow>
                   <TableCell class="font-mono text-xs">--radius-card</TableCell>
-                  <TableCell class="text-sm text-muted">
-                    Radius for Cards and Panels
-                  </TableCell>
+                  <TableCell class="text-sm text-muted">Radius for Cards and Panels</TableCell>
                   <TableCell class="text-right font-mono text-xs">rounded-card</TableCell>
                 </TableRow>
                 <TableRow>
@@ -95,9 +94,7 @@ export const ThemingSection = () => {
                 </TableRow>
                 <TableRow>
                   <TableCell class="font-mono text-xs">--radius-input</TableCell>
-                  <TableCell class="text-sm text-muted">
-                    Radius for Inputs & Selects
-                  </TableCell>
+                  <TableCell class="text-sm text-muted">Radius for Inputs & Selects</TableCell>
                   <TableCell class="text-right font-mono text-xs">rounded-input</TableCell>
                 </TableRow>
                 <TableRow class="border-none">
@@ -129,9 +126,7 @@ export const ThemingSection = () => {
                 </TableRow>
                 <TableRow class="border-none">
                   <TableCell class="font-mono text-xs">--font-mono</TableCell>
-                  <TableCell class="text-sm text-muted">
-                    Technical/data font stack
-                  </TableCell>
+                  <TableCell class="text-sm text-muted">Technical/data font stack</TableCell>
                   <TableCell class="text-right font-mono text-xs">font-mono</TableCell>
                 </TableRow>
               </TableBody>

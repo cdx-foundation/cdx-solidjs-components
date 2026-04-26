@@ -1,6 +1,6 @@
-import { createSignal, splitProps, type JSX } from 'solid-js';
+import { type JSX, createSignal, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
-import { Alignment, Floating } from './Floating';
+import { type Alignment, Floating } from './Floating';
 
 /**
  * Configuration and properties for the Tooltip component.
@@ -80,4 +80,22 @@ export const Tooltip = (props: TooltipProps) => {
       {local.content}
     </Floating>
   );
+};
+
+/**
+ * ### TooltipTrigger Component
+ *
+ * The element that triggers the tooltip.
+ */
+export const TooltipTrigger = (props: { children: JSX.Element; class?: string }) => {
+  return <div class={twMerge('inline-flex', props.class)}>{props.children}</div>;
+};
+
+/**
+ * ### TooltipContent Component
+ *
+ * The main container for the tooltip's primary content.
+ */
+export const TooltipContent = (props: { children: JSX.Element | string; class?: string }) => {
+  return <div class={twMerge('flex flex-col gap-2', props.class)}>{props.children}</div>;
 };

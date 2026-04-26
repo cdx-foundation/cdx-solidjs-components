@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-solid';
-import { createEffect, createMemo, createSignal, For, type JSX, Show, splitProps } from 'solid-js';
+import { For, type JSX, Show, createEffect, createMemo, createSignal, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
 // --- Types & Constants ---
@@ -291,7 +291,7 @@ export const Calendar = (props: CalendarProps) => {
 
   const handleTimeInput = (type: 'hours' | 'minutes', value: string) => {
     if (!local.onValueChange) return;
-    let val = parseInt(value, 10);
+    let val = Number.parseInt(value, 10);
     if (isNaN(val)) val = 0;
 
     const current = local.selected instanceof Date ? new Date(local.selected) : new Date();
@@ -371,7 +371,7 @@ export const Calendar = (props: CalendarProps) => {
                   class={twMerge(
                     'relative z-10 flex items-center justify-center w-10 h-10 text-sm font-mono cursor-pointer transition-all outline-none',
                     !isCurrentMonth &&
-                    (local.showOutsideDays ? 'text-muted/40' : 'invisible pointer-events-none'),
+                      (local.showOutsideDays ? 'text-muted/40' : 'invisible pointer-events-none'),
                     isToday && !selected() && 'text-primary font-bold underline underline-offset-4',
                     selected()
                       ? 'bg-primary text-white font-semibold'

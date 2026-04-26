@@ -1,12 +1,12 @@
 import { ChevronDown } from 'lucide-solid';
 import {
-  createContext,
-  createSignal,
   type JSX,
   Show,
+  createContext,
+  createSignal,
+  mergeProps,
   splitProps,
   useContext,
-  mergeProps,
 } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { uid } from '../uid';
@@ -78,7 +78,7 @@ export const Accordion = (props: AccordionProps) => {
     let next: string | string[];
 
     if (local.multiple) {
-      const arr = Array.isArray(current) ? current : [current].filter(Boolean) as string[];
+      const arr = Array.isArray(current) ? current : ([current].filter(Boolean) as string[]);
       next = arr.includes(id) ? arr.filter((i) => i !== id) : [...arr, id];
     } else {
       next = current === id ? (local.collapsible ? '' : id) : id;

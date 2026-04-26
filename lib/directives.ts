@@ -44,9 +44,8 @@ export function autofocus(el: HTMLElement) {
  */
 export function clipboard(el: HTMLElement, accessor: () => string | (() => string)) {
   const onClick = async () => {
-    const text = typeof accessor() === 'function' 
-      ? (accessor() as () => string)() 
-      : (accessor() as string);
+    const text =
+      typeof accessor() === 'function' ? (accessor() as () => string)() : (accessor() as string);
     try {
       await navigator.clipboard.writeText(text);
     } catch (err) {

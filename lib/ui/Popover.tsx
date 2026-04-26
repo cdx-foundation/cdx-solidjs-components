@@ -1,7 +1,7 @@
 import { createShortcut } from '@solid-primitives/keyboard';
-import { createSignal, type JSX, onCleanup, splitProps } from 'solid-js';
+import { type JSX, createSignal, onCleanup, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
-import { Alignment, Floating } from './Floating';
+import { type Alignment, Floating } from './Floating';
 
 /**
  * Configuration and behavior properties for the Popover component.
@@ -83,4 +83,22 @@ export const Popover = (props: PopoverProps) => {
       <div ref={containerRef}>{local.children}</div>
     </Floating>
   );
+};
+
+/**
+ * ### PopoverTrigger Component
+ *
+ * The element that toggles the popover.
+ */
+export const PopoverTrigger = (props: { children: JSX.Element; class?: string }) => {
+  return <div class={twMerge('inline-block cursor-pointer', props.class)}>{props.children}</div>;
+};
+
+/**
+ * ### PopoverContent Component
+ *
+ * The main container for the popover's primary content.
+ */
+export const PopoverContent = (props: { children: JSX.Element; class?: string }) => {
+  return <div class={twMerge('flex flex-col gap-2', props.class)}>{props.children}</div>;
 };

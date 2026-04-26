@@ -41,11 +41,11 @@ describe('Input', () => {
   it('prevents invalid input with preventInvalidRegex', () => {
     render(() => <Input regex={/^\d*$/} preventInvalidRegex />);
     const input = screen.getByRole('textbox') as HTMLInputElement;
-    
+
     // Set an initial valid value so lastValidValue is updated
     fireEvent.input(input, { target: { value: '123' } });
     expect(input.value).toBe('123');
-    
+
     // Try invalid value
     fireEvent.input(input, { target: { value: '123a' } });
     expect(input.value).toBe('123');
@@ -54,14 +54,14 @@ describe('Input', () => {
   it('handles type="number" with increment/decrement', () => {
     const onValueChange = vi.fn();
     render(() => <Input type="number" value={10} onValueChange={onValueChange} />);
-    
+
     const buttons = screen.getAllByRole('button');
     expect(buttons).toHaveLength(2);
-    
+
     // Increment
     fireEvent.click(buttons[1]);
     expect(onValueChange).toHaveBeenCalledWith(11);
-    
+
     // Decrement
     fireEvent.click(buttons[0]);
     expect(onValueChange).toHaveBeenCalledWith(10);
@@ -71,11 +71,11 @@ describe('Input', () => {
     const onValueChange = vi.fn();
     render(() => <Input type="number" max={99} onValueChange={onValueChange} />);
     const input = screen.getByRole('spinbutton') as HTMLInputElement;
-    
+
     // Type a valid value first
     fireEvent.input(input, { target: { value: '9' } });
     expect(input.value).toBe('9');
-    
+
     // Try to type something that makes it 999 (exceeding 99)
     fireEvent.input(input, { target: { value: '999' } });
     expect(input.value).toBe('9'); // Should stay at 9 because 999 > 99

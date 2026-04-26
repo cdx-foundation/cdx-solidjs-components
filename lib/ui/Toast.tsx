@@ -1,12 +1,12 @@
 import { CircleCheck, CircleX, Info, TriangleAlert, X } from 'lucide-solid';
 import {
-  createEffect,
-  createSignal,
   For,
   type JSX,
+  Show,
+  createEffect,
+  createSignal,
   onCleanup,
   onMount,
-  Show,
   splitProps,
 } from 'solid-js';
 import { Dynamic, Portal } from 'solid-js/web';

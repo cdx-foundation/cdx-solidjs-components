@@ -1,6 +1,6 @@
 import { createShortcut } from '@solid-primitives/keyboard';
 import { Check } from 'lucide-solid';
-import { createSignal, For, Show, splitProps } from 'solid-js';
+import { For, Show, createSignal, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { clickOutside } from '../directives';
 

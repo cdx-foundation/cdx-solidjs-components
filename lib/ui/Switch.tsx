@@ -1,4 +1,4 @@
-import { createSignal, createUniqueId, type JSX, splitProps, mergeProps } from 'solid-js';
+import { type JSX, createSignal, createUniqueId, mergeProps, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
 /**
@@ -15,6 +15,11 @@ export interface SwitchProps extends Omit<JSX.InputHTMLAttributes<HTMLInputEleme
    * Callback fired when the checked state changes.
    */
   onCheckedChange?: (checked: boolean) => void;
+
+  /**
+   * The initial checked state when the component is first rendered.
+   */
+  defaultChecked?: boolean;
 
   /**
    * Custom CSS classes for the horizontal flex container holding the switch and label.

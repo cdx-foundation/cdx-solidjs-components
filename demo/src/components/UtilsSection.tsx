@@ -1,11 +1,11 @@
-import { createSignal, Show } from 'solid-js';
+import { Show, createSignal } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
-import { Code } from '../../../lib/ui/Code';
-import { useTheme, useDisclosure } from '../../../lib/hooks';
+import * as directives from '../../../lib/directives';
+import { useDisclosure, useTheme } from '../../../lib/hooks';
 import { Button } from '../../../lib/ui/Button';
+import { Code } from '../../../lib/ui/Code';
 import { Input } from '../../../lib/ui/Input';
 import { toast } from '../../../lib/ui/Toast';
-import * as directives from '../../../lib/directives';
 
 // Directives registration
 const { autofocus, clipboard, hover } = directives;
@@ -50,9 +50,7 @@ export const UtilsSection = () => {
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8">
         <div class="space-y-4">
           <h2 class="text-xl font-bold">useDisclosure Hook</h2>
-          <p class="text-sm text-muted">
-            Simplified state management for togglable components.
-          </p>
+          <p class="text-sm text-muted">Simplified state management for togglable components.</p>
           <Code
             code={`const { isOpen, onToggle } = useDisclosure();\n\n<Button onClick={onToggle}>\n  {isOpen() ? 'Hide' : 'Show'}\n</Button>`}
             language="tsx"
@@ -91,11 +89,13 @@ export const UtilsSection = () => {
               return (
                 <div class="flex gap-2 w-full">
                   <Input value="npm install starling-ui" readonly class="flex-1" />
-                  <Button 
-                    variant={hasCopied() ? "secondary" : "primary"}
-                    onClick={() => onCopy("npm install starling-ui")}
+                  <Button
+                    variant={hasCopied() ? 'secondary' : 'primary'}
+                    onClick={() => onCopy('npm install starling-ui')}
                   >
-                    <Show when={hasCopied()} fallback="Copy">Copied</Show>
+                    <Show when={hasCopied()} fallback="Copy">
+                      Copied
+                    </Show>
                   </Button>
                 </div>
               );
@@ -105,18 +105,16 @@ export const UtilsSection = () => {
 
         <div class="space-y-4">
           <h2 class="text-xl font-bold">clipboard Directive</h2>
-          <p class="text-sm text-muted">
-            Declarative clipboard support via directives.
-          </p>
+          <p class="text-sm text-muted">Declarative clipboard support via directives.</p>
           <Code
             code={`<button use:clipboard={() => "Copied text!"}>\n  Click to Copy\n</button>`}
             language="tsx"
           />
           <div class="p-6 clean-panel flex flex-col items-center justify-center gap-4">
-            <Button 
+            <Button
               variant="outline"
-              use:clipboard={() => "Hello from Starling Directive!"}
-              onClick={() => toast.success("Copied to clipboard via directive!")}
+              use:clipboard={() => 'Hello from Starling Directive!'}
+              onClick={() => toast.success('Copied to clipboard via directive!')}
             >
               Click to Copy
             </Button>
@@ -125,9 +123,7 @@ export const UtilsSection = () => {
 
         <div class="space-y-4">
           <h2 class="text-xl font-bold">hover Directive</h2>
-          <p class="text-sm text-muted">
-            Track hover state declaratively on any element.
-          </p>
+          <p class="text-sm text-muted">Track hover state declaratively on any element.</p>
           <Code
             code={`const [isHovered, setIsHovered] = createSignal(false);\n\n<div use:hover={setIsHovered}>\n  {isHovered() ? 'Hovering!' : 'Idle'}\n</div>`}
             language="tsx"
@@ -136,14 +132,16 @@ export const UtilsSection = () => {
             {(() => {
               const [isHovered, setIsHovered] = createSignal(false);
               return (
-                <div 
+                <div
                   use:hover={setIsHovered}
                   class={twMerge(
-                    "w-full p-8 rounded-xl border-2 border-dashed transition-all duration-300 flex items-center justify-center font-bold uppercase tracking-widest",
-                    isHovered() ? "bg-primary/10 border-primary text-primary scale-105" : "bg-surface border-stroke text-muted"
+                    'w-full p-8 rounded-xl border-2 border-dashed transition-all duration-300 flex items-center justify-center font-bold uppercase tracking-widest',
+                    isHovered()
+                      ? 'bg-primary/10 border-primary text-primary scale-105'
+                      : 'bg-surface border-stroke text-muted',
                   )}
                 >
-                  {isHovered() ? "Reactive Hover!" : "Hover Me"}
+                  {isHovered() ? 'Reactive Hover!' : 'Hover Me'}
                 </div>
               );
             })()}

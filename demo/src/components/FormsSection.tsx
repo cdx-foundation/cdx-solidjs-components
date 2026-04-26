@@ -1,13 +1,13 @@
-import { createSignal, Show } from 'solid-js';
-import { Shield, Zap, Sparkles } from 'lucide-solid';
+import { Shield, Sparkles, Zap } from 'lucide-solid';
+import { Show, createSignal } from 'solid-js';
 import { Button } from '../../../lib/ui/Button';
+import { Input } from '../../../lib/ui/Input';
+import { Label } from '../../../lib/ui/Label';
 import { SegmentedControl } from '../../../lib/ui/SegmentedControl';
 import { Select } from '../../../lib/ui/Select';
-import { Input } from '../../../lib/ui/Input';
-import { Switch } from '../../../lib/ui/Switch';
-import { Label } from '../../../lib/ui/Label';
-import { Textarea } from '../../../lib/ui/Textarea';
 import { Slider } from '../../../lib/ui/Slider';
+import { Switch } from '../../../lib/ui/Switch';
+import { Textarea } from '../../../lib/ui/Textarea';
 import { Preview } from './Preview';
 
 interface FormsSectionProps {

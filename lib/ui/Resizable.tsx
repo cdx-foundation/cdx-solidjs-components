@@ -1,4 +1,4 @@
-import { createContext, createSignal, type JSX, onMount, splitProps, useContext } from 'solid-js';
+import { type JSX, createContext, createSignal, onMount, splitProps, useContext } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { uid } from '../uid';
 

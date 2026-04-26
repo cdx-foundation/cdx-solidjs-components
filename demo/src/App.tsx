@@ -1,5 +1,5 @@
 import { Cat, ChevronRight, Menu, Search, Shield, Sparkles, Zap } from 'lucide-solid';
-import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js';
+import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
 import { Button } from '../../lib/ui/Button';
@@ -18,22 +18,22 @@ import {
   SheetTitle,
 } from '../../lib/ui/Sheet';
 import { Slider } from '../../lib/ui/Slider';
-import { Toaster, type ToasterPosition, toast } from '../../lib/ui/Toast';
 import { Switch } from '../../lib/ui/Switch';
+import { Toaster, type ToasterPosition, toast } from '../../lib/ui/Toast';
 
+import { DataSection } from './components/DataSection';
+import { DisclosureSection } from './components/DisclosureSection';
+import { FeedbackSection } from './components/FeedbackSection';
+import { FormsSection } from './components/FormsSection';
+import { GetStartedSection } from './components/GetStartedSection';
 // Section Components
 import { IntroSection } from './components/IntroSection';
-import { GetStartedSection } from './components/GetStartedSection';
-import { ThemingSection } from './components/ThemingSection';
 import { LayoutSection } from './components/LayoutSection';
-import { FormsSection } from './components/FormsSection';
 import { NavSection } from './components/NavSection';
-import { DataSection } from './components/DataSection';
-import { FeedbackSection } from './components/FeedbackSection';
 import { OverlaysSection } from './components/OverlaysSection';
-import { DisclosureSection } from './components/DisclosureSection';
-import { UtilsSection } from './components/UtilsSection';
 import { ThemeCreator } from './components/ThemeCreator';
+import { ThemingSection } from './components/ThemingSection';
+import { UtilsSection } from './components/UtilsSection';
 
 type Section =
   | 'intro'
@@ -55,7 +55,7 @@ export default function App() {
   const [currentTheme, setCurrentTheme] = createSignal<Theme>('professional');
   const [sidebarOpen, setSidebarOpen] = createSignal(false);
   const [commandOpen, setCommandOpen] = createSignal(false);
-  
+
   // Toast settings
   const [toastPos, setToastPos] = createSignal<ToasterPosition>('bottom-right');
   const [maxToasts, setMaxToasts] = createSignal(5);
@@ -310,7 +310,13 @@ export default function App() {
           </div>
         </header>
 
-        <div class={twMerge(activeSection() === 'theme-creator' ? "flex-1" : "max-w-4xl w-full mx-auto p-6 md:p-12 lg:p-16")}>
+        <div
+          class={twMerge(
+            activeSection() === 'theme-creator'
+              ? 'flex-1'
+              : 'max-w-4xl w-full mx-auto p-6 md:p-12 lg:p-16',
+          )}
+        >
           <Show when={activeSection() === 'intro'}>
             <IntroSection onGetStarted={() => setActiveSection('get-started')} />
           </Show>
@@ -332,10 +338,10 @@ export default function App() {
           </Show>
 
           <Show when={activeSection() === 'forms'}>
-            <FormsSection 
-              currentTheme={currentTheme()} 
-              onThemeChange={(v) => setCurrentTheme(v as Theme)} 
-              themes={themes} 
+            <FormsSection
+              currentTheme={currentTheme()}
+              onThemeChange={(v) => setCurrentTheme(v as Theme)}
+              themes={themes}
             />
           </Show>
 
@@ -348,8 +354,8 @@ export default function App() {
           </Show>
 
           <Show when={activeSection() === 'feedback'}>
-            <FeedbackSection 
-              toastPos={toastPos()} 
+            <FeedbackSection
+              toastPos={toastPos()}
               setToastPos={setToastPos}
               maxToasts={maxToasts()}
               setMaxToasts={setMaxToasts}
@@ -359,10 +365,7 @@ export default function App() {
           </Show>
 
           <Show when={activeSection() === 'overlays'}>
-            <OverlaysSection 
-              setModalOpen={setModalOpen} 
-              setSheetOpen={setSheetOpen} 
-            />
+            <OverlaysSection setModalOpen={setModalOpen} setSheetOpen={setSheetOpen} />
           </Show>
 
           <Show when={activeSection() === 'disclosure'}>

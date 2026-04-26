@@ -1,4 +1,4 @@
-import { createEffect, onCleanup, type JSX, Show, splitProps } from 'solid-js';
+import { type JSX, Show, createEffect, onCleanup, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { uid } from '../uid';
 
