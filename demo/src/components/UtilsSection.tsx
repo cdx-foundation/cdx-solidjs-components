@@ -39,10 +39,10 @@ export const UtilsSection = () => {
       <div class="space-y-4">
         <h2 class="text-xl font-bold">useTheme Hook</h2>
         <p class="text-sm text-muted mb-4">
-          Generic reactive hook for managing theme states. Persistence and DOM implementation should be handled by the application.
+          Manages application theme state with built-in persistence and DOM synchronization.
         </p>
         <Code
-          code={`import { useTheme } from 'starling-components/hooks';\n\nconst { isDark, toggleTheme } = useTheme({\n  isDark: true\n});`}
+          code={`import { useTheme } from 'starling-components/hooks';\n\nconst { isDark, toggleTheme } = useTheme();`}
           fileName="hooks"
           language="typescript"
         />

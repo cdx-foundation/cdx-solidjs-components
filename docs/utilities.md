@@ -4,7 +4,7 @@ Shared hooks and directives that power Starling UI's interactive features.
 
 ## useTheme Hook
 
-A reactive hook for managing the application's theme state (dark/light mode).
+A reactive hook for managing the application's theme state (dark/light mode) with built-in persistence and DOM synchronization.
 
 ```tsx
 import { useTheme } from 'starling-components/hooks';
@@ -22,8 +22,9 @@ export default function ThemeControl() {
 ```
 
 ### Features
-- **System Sync:** Detects user OS preferences (e.g., `prefers-color-scheme`) on first load if no initial value is provided.
-- **Lightweight:** Purely handles mode state. Persistence and DOM application (like toggling a `.dark` class) should be handled by the application logic.
+- **System Sync:** Detects user OS preferences (e.g., `prefers-color-scheme`) on first load.
+- **Persistence:** Automatically saves the user preference to `localStorage`.
+- **DOM Integration:** Automatically toggles the `.dark` class on the `<html>` element and updates `color-scheme`.
 
 ---
 

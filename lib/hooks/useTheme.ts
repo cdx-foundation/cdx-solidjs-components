@@ -1,9 +1,6 @@
 import { createPrefersDark } from '@solid-primitives/media';
-import { type Accessor, type Setter, createSignal } from 'solid-js';
-
-export type ThemeConfig = {
-  isDark?: boolean;
-};
+import { makePersisted } from '@solid-primitives/storage';
+import { type Accessor, type Setter, createEffect, createSignal } from 'solid-js';
 
 export type ThemeState = {
   isDark: Accessor<boolean>;
@@ -12,20 +9,30 @@ export type ThemeState = {
 };
 
 /**
- * Minimal theme state manager focusing on dark/light mode.
- * The rest of theme configurations (accent colors, radii, etc.)
- * should be handled via CSS variables for better performance and simplicity.
+ * Manages the application's theme state (dark mode).
+ * Persists preferences to localStorage and syncs with the DOM.
+ *
+ * @example
+ * ```tsx
+ * const { isDark, toggleTheme } = useTheme();
+ * ```
  */
-export function useTheme(initial: ThemeConfig = {}): ThemeState {
+export function useTheme(): ThemeState {
   const prefersDark = createPrefersDark();
 
-  const [isDark, setIsDark] = createSignal(initial.isDark ?? prefersDark());
+  const [isDark, setIsDark] = makePersisted(createSignal(prefersDark()), {
+    name: 'startling-theme',
+  });
 
-  const toggleTheme = () => setIsDark((prev) => !prev);
+  // Sync dark mode class and color-scheme to <html>
+  createEffect(() => {
+    const root = document.documentElement;
+    const dark = isDark();
+    root.classList.toggle('dark', dark);
+    root.style.colorScheme = dark ? 'dark' : 'light';
+  });
 
-  return {
-    isDark,
-    setIsDark,
-    toggleTheme,
-  };
+  const toggleTheme = () => setIsDark(!isDark());
+
+  return { isDark, setIsDark, toggleTheme };
 }
