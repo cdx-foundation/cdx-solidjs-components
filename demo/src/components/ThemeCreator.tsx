@@ -6,7 +6,7 @@ import {
   Filter, CalendarDays, Zap, Palette, Type, MousePointer2,
   Waves, Trees, Scroll, Contrast, Ghost, Layers
 } from 'lucide-solid';
-import { useTheme, SHADOWS, BASE_PALETTES, hexToRgb, type ThemeFont, type BaseColor, type ShadowLevel } from '../../../lib/hooks/useTheme';
+import { useTheme, SHADOWS, BASE_PALETTES, hexToRgb, FONTS, type ThemeFont, type BaseColor, type ShadowLevel } from '../../../lib/hooks/useTheme';
 import { Button } from '../../../lib/ui/Button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../../../lib/ui/Card';
 import { Badge } from '../../../lib/ui/Badge';
@@ -82,19 +82,6 @@ export const ThemeCreator = () => {
   const [showExport, setShowExport] = createSignal(false);
   const [hasCopied, setHasCopied] = createSignal(false);
 
-  const getFontVal = (f: ThemeFont) => {
-     if (f === 'mono') return '"JetBrains Mono", monospace';
-     if (f === 'serif') return '"Playfair Display", serif';
-     if (f === 'display') return '"Archivo Black", sans-serif';
-     if (f === 'modern') return '"Space Grotesk", sans-serif';
-     if (f === 'reading') return '"Lexend", sans-serif';
-     if (f === 'geometric') return '"Outfit", sans-serif';
-     if (f === 'condensed') return '"Bebas Neue", sans-serif';
-     if (f === 'soft-serif') return '"Fraunces", serif';
-     if (f === 'system') return 'system-ui';
-     return '"Inter", sans-serif';
-  };
-
   const generateCSS = () => {
     const light = BASE_PALETTES[theme.baseColor()].light;
     const dark = BASE_PALETTES[theme.baseColor()].dark;
@@ -121,8 +108,9 @@ export const ThemeCreator = () => {
     --radius: ${theme.radius()};
     --shadow-main: ${SHADOWS[theme.shadow()]};
     --shadow-btn: ${SHADOWS[theme.btnBoxShadow()]};
-    --font-sans: ${getFontVal(theme.bodyFont())};
-    --font-display: ${getFontVal(theme.headerFont())};
+    --sans-main: ${FONTS[theme.bodyFont()]};
+    --display-main: ${FONTS[theme.headerFont()]};
+    --mono-main: ${FONTS.mono};
 
     color-scheme: light;
   }
@@ -368,7 +356,7 @@ export const ThemeCreator = () => {
       </aside>
 
       {/* Preview Workspace */}
-      <main class="flex-1 overflow-y-auto bg-bg custom-scrollbar relative" style={{ "font-family": "var(--font-sans)" }}>
+      <main class="flex-1 overflow-y-auto bg-bg custom-scrollbar relative" style={{ "font-family": "var(--sans-main)" }}>
         <div class="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
         
         <div class="relative max-w-6xl mx-auto p-12 space-y-12">
@@ -411,7 +399,7 @@ export const ThemeCreator = () => {
                 </div>
                 <div class="space-y-2">
                   <Badge variant="primary" class="font-black px-3 py-1">V2.1.2 STABLE</Badge>
-                  <h1 class="text-5xl font-black tracking-tighter uppercase leading-none" style={{ "font-family": "var(--font-display)" }}>Global Preview</h1>
+                  <h1 class="text-5xl font-black tracking-tighter uppercase leading-none" style={{ "font-family": "var(--display-main)" }}>Global Preview</h1>
                 </div>
               </div>
               <div class="flex gap-3">
@@ -489,7 +477,7 @@ export const ThemeCreator = () => {
               <Card class="border-2 border-fg overflow-hidden" style={{ "box-shadow": "var(--shadow-main)" }}>
                 <CardHeader class="border-b-2 border-stroke flex flex-row items-center justify-between pb-4">
                   <div class="space-y-1">
-                    <CardTitle class="text-xl font-black uppercase" style={{ "font-family": "var(--font-display)" }}>Infrastructure Log</CardTitle>
+                    <CardTitle class="text-xl font-black uppercase" style={{ "font-family": "var(--display-main)" }}>Infrastructure Log</CardTitle>
                     <CardDescription class="text-xs font-bold">Real-time system telemetry and events.</CardDescription>
                   </div>
                   <Button variant="ghost" size="icon" class="rounded-none border-2 border-fg">
@@ -552,7 +540,7 @@ export const ThemeCreator = () => {
               </div>
 
               <div class="space-y-6 pt-10 border-t-4 border-fg">
-                 <h2 class="text-3xl font-black tracking-tighter uppercase" style={{ "font-family": "var(--font-display)" }}>Status Monitor</h2>
+                 <h2 class="text-3xl font-black tracking-tighter uppercase" style={{ "font-family": "var(--display-main)" }}>Status Monitor</h2>
                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Alert variant="success" class="border-2 border-fg rounded-none">
                        <AlertTitle class="font-black uppercase text-[10px]">Backups Completed</AlertTitle>
@@ -577,7 +565,7 @@ export const ThemeCreator = () => {
             <div class="lg:col-span-4 space-y-10">
                <Card class="border-2 border-fg bg-panel" style={{ "box-shadow": "var(--shadow-main)" }}>
                  <CardHeader class="border-b-2 border-stroke">
-                   <CardTitle class="text-lg font-black uppercase" style={{ "font-family": "var(--font-display)" }}>Configuration</CardTitle>
+                   <CardTitle class="text-lg font-black uppercase" style={{ "font-family": "var(--display-main)" }}>Configuration</CardTitle>
                  </CardHeader>
                  <CardContent class="space-y-6 pt-6">
                    <div class="space-y-2">
@@ -644,7 +632,7 @@ export const ThemeCreator = () => {
                </Card>
 
                <Alert variant="warning" class="border-2 border-fg bg-yellow-400/10 text-fg rounded-none">
-                  <AlertTitle class="font-black uppercase text-[11px]" style={{ "font-family": "var(--font-display)" }}>System Warning</AlertTitle>
+                  <AlertTitle class="font-black uppercase text-[11px]" style={{ "font-family": "var(--display-main)" }}>System Warning</AlertTitle>
                   <AlertDescription class="text-[10px] font-bold">Unsaved changes will be lost on cluster reboot.</AlertDescription>
                </Alert>
             </div>

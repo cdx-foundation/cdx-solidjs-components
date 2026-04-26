@@ -18,9 +18,9 @@
   --color-positive: #10b981;
 
   /* Typography */
-  --font-display: var(--font-display, "Inter", system-ui, sans-serif);
-  --font-sans: var(--font-sans, "Inter", system-ui, sans-serif);
-  --font-mono: var(--font-mono, "JetBrains Mono", ui-monospace, monospace);
+  --font-display: var(--display-main, "Inter", system-ui, sans-serif);
+  --font-sans: var(--sans-main, "Inter", system-ui, sans-serif);
+  --font-mono: var(--mono-main, "JetBrains Mono", ui-monospace, monospace);
 
   /* Radii */
   --radius-card: var(--radius-card, 0px);
@@ -40,7 +40,7 @@
   body {
     background-color: var(--bg-main);
     color: var(--fg-main);
-    font-family: var(--font-sans);
+    font-family: var(--sans-main);
   }
 
   /* Thin scrollbar standard for the library */

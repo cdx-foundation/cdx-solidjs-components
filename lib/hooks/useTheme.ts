@@ -61,7 +61,7 @@ export const SHADOWS: Record<ShadowLevel, string> = {
   hard: '6px 6px 0px 0px var(--fg-main)'
 };
 
-const FONTS = {
+export const FONTS = {
   sans: '"Inter", system-ui, sans-serif',
   mono: '"JetBrains Mono", ui-monospace, monospace',
   serif: '"Playfair Display", Georgia, serif',
@@ -131,9 +131,9 @@ export function useTheme() {
     root.style.setProperty('--radius-input', `calc(${r} - 0.1rem)`);
     root.style.setProperty('--radius-badge', `calc(${r} - 0.3rem)`);
     
-    root.style.setProperty('--font-sans', FONTS[bodyFont()]);
-    root.style.setProperty('--font-display', FONTS[headerFont()]);
-    root.style.setProperty('--font-mono', FONTS.mono);
+    root.style.setProperty('--sans-main', FONTS[bodyFont()]);
+    root.style.setProperty('--display-main', FONTS[headerFont()]);
+    root.style.setProperty('--mono-main', FONTS.mono);
     
     document.body.style.fontFamily = FONTS[bodyFont()];
   });
