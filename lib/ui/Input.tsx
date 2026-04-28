@@ -13,7 +13,7 @@ import { twMerge } from 'tailwind-merge';
 /**
  * Configuration and properties for the Input component.
  */
-export interface InputProps extends JSX.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends Omit<JSX.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   /**
    * A descriptive label shown above the input field.
    */

@@ -5,7 +5,7 @@ import { uid } from '../uid';
 /**
  * Configuration and behavior properties for the Slider component.
  */
-interface SliderProps extends JSX.InputHTMLAttributes<HTMLInputElement> {
+interface SliderProps extends Omit<JSX.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   /**
    * A text heading displayed above the slider track.
    */

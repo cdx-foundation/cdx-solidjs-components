@@ -25,7 +25,7 @@ const TabsContext = createContext<TabsContextValue>();
 /**
  * Configuration properties for the Root Tabs container.
  */
-interface TabsProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'children'> {
+interface TabsProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'children' | 'onChange'> {
   /**
    * The value of the tab that should be active when the component initially mounts.
    * Use this for uncontrolled components.

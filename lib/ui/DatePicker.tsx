@@ -7,7 +7,7 @@ import { Popover } from './Popover';
 /**
  * Configuration and properties for the DatePicker component.
  */
-interface DatePickerProps extends JSX.HTMLAttributes<HTMLDivElement> {
+interface DatePickerProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   /**
    * A text label shown above the picker input.
    */

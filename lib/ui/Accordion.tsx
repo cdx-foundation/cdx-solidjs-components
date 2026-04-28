@@ -25,7 +25,7 @@ interface AccordionItemContextValue {
 
 const AccordionItemContext = createContext<AccordionItemContextValue>();
 
-interface AccordionProps extends JSX.HTMLAttributes<HTMLDivElement> {
+interface AccordionProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   /**
    * If true, multiple items can be expanded at once.
    * @default false
