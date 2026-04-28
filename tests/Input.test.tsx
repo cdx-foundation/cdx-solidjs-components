@@ -52,24 +52,24 @@ describe('Input', () => {
   });
 
   it('handles type="number" with increment/decrement', () => {
-    const onValueChange = vi.fn();
-    render(() => <Input type="number" value={10} onValueChange={onValueChange} />);
+    const onChange = vi.fn();
+    render(() => <Input type="number" value={10} onChange={onChange} />);
 
     const buttons = screen.getAllByRole('button');
     expect(buttons).toHaveLength(2);
 
     // Increment
     fireEvent.click(buttons[1]);
-    expect(onValueChange).toHaveBeenCalledWith(11);
+    expect(onChange).toHaveBeenCalledWith(11);
 
     // Decrement
     fireEvent.click(buttons[0]);
-    expect(onValueChange).toHaveBeenCalledWith(10);
+    expect(onChange).toHaveBeenCalledWith(10);
   });
 
   it('blocks typing values exceeding max', () => {
-    const onValueChange = vi.fn();
-    render(() => <Input type="number" max={99} onValueChange={onValueChange} />);
+    const onChange = vi.fn();
+    render(() => <Input type="number" max={99} onChange={onChange} />);
     const input = screen.getByRole('spinbutton') as HTMLInputElement;
 
     // Type a valid value first

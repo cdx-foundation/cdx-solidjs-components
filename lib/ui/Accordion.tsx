@@ -43,7 +43,7 @@ interface AccordionProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /**
    * Callback fired when the expanded item(s) change.
    */
-  onValueChange?: (value: string | string[]) => void;
+  onChange?: (value: string | string[]) => void;
 }
 
 /**
@@ -57,7 +57,7 @@ export const Accordion = (props: AccordionProps) => {
     'multiple',
     'collapsible',
     'value',
-    'onValueChange',
+    'onChange',
     'class',
     'children',
   ]);
@@ -85,7 +85,7 @@ export const Accordion = (props: AccordionProps) => {
     }
 
     setInternalValue(next);
-    local.onValueChange?.(next);
+    local.onChange?.(next);
   };
 
   return (

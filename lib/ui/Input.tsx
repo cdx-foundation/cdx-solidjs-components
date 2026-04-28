@@ -59,7 +59,7 @@ export interface InputProps extends JSX.InputHTMLAttributes<HTMLInputElement> {
   /**
    * For type="number", callback fired when the numeric value changes.
    */
-  onValueChange?: (value: number) => void;
+  onChange?: (value: number) => void;
 }
 
 /**
@@ -80,7 +80,7 @@ export const Input = (props: InputProps) => {
     'preventInvalidRegex',
     'onRegexMismatch',
     'onInput',
-    'onValueChange',
+    'onChange',
     'hideButtons',
     'value',
   ]);
@@ -90,6 +90,10 @@ export const Input = (props: InputProps) => {
   const errorId = `${id}-error`;
 
   const [lastValidValue, setLastValidValue] = createSignal((local.value as string) || '');
+
+  createEffect(() => {
+    setLastValidValue((local.value as string) || '');
+  });
 
   const handleInput = (e: InputEvent & { currentTarget: HTMLInputElement }) => {
     const value = e.currentTarget.value;
@@ -166,7 +170,7 @@ export const Input = (props: InputProps) => {
         value={
           typeof local.value === 'number' ? local.value : Number.parseFloat(local.value as string)
         }
-        onValueChange={local.onValueChange}
+        onChange={local.onChange}
         hideButtons={local.hideButtons}
         class={local.class}
         containerClass={local.containerClass}
@@ -181,7 +185,7 @@ const NumberInputInternal = (props: any) => {
     'description',
     'error',
     'value',
-    'onValueChange',
+    'onChange',
     'step',
     'min',
     'max',
@@ -211,7 +215,7 @@ const NumberInputInternal = (props: any) => {
 
     if (next !== internalValue()) {
       setInternalValue(next);
-      local.onValueChange?.(next);
+      local.onChange?.(next);
     }
   };
 
@@ -222,12 +226,12 @@ const NumberInputInternal = (props: any) => {
     const rawValue = e.currentTarget.value;
     if (rawValue === '') {
       setInternalValue(0);
-      local.onValueChange?.(0);
+      local.onChange?.(0);
       return;
     }
 
     const val = Number.parseFloat(rawValue);
-    if (!isNaN(val)) {
+    if (!Number.isNaN(val)) {
       if (local.max !== undefined && val > local.max) {
         e.currentTarget.value = internalValue().toString();
         return;

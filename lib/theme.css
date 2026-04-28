@@ -81,7 +81,7 @@
     --radius-input: 0px;
     --font-display: "Bebas Neue", "Archivo Black", sans-serif;
     --shadow-main: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    
+
     pointer-events: none; /* Default for HUD containers */
   }
 

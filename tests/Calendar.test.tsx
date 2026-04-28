@@ -10,15 +10,15 @@ describe('Calendar', () => {
   });
 
   it('handles date selection', () => {
-    const onValueChange = vi.fn();
+    const onChange = vi.fn();
     const date = new Date(2023, 0, 1);
-    render(() => <Calendar initialFocus={date} onValueChange={onValueChange} />);
+    render(() => <Calendar initialFocus={date} onChange={onChange} />);
 
     const dayButton = screen.getByLabelText('January 1, 2023');
     fireEvent.click(dayButton);
 
-    expect(onValueChange).toHaveBeenCalled();
-    const selectedDate = onValueChange.mock.calls[0][0];
+    expect(onChange).toHaveBeenCalled();
+    const selectedDate = onChange.mock.calls[0][0];
     expect(selectedDate.getFullYear()).toBe(2023);
     expect(selectedDate.getMonth()).toBe(0);
     expect(selectedDate.getDate()).toBe(1);
@@ -36,33 +36,29 @@ describe('Calendar', () => {
   });
 
   it('updates time when buttons are clicked', () => {
-    const onValueChange = vi.fn();
+    const onChange = vi.fn();
     const date = new Date(2023, 0, 1, 12, 30);
-    render(() => (
-      <Calendar initialFocus={date} selected={date} showTime onValueChange={onValueChange} />
-    ));
+    render(() => <Calendar initialFocus={date} selected={date} showTime onChange={onChange} />);
 
     const buttons = screen.getAllByRole('button');
     const incrementHourBtn = buttons[buttons.length - 4];
     fireEvent.click(incrementHourBtn);
 
-    expect(onValueChange).toHaveBeenCalled();
-    const updatedDate = onValueChange.mock.calls[0][0];
+    expect(onChange).toHaveBeenCalled();
+    const updatedDate = onChange.mock.calls[0][0];
     expect(updatedDate.getHours()).toBe(13);
   });
 
   it('updates time when typing in inputs', () => {
-    const onValueChange = vi.fn();
+    const onChange = vi.fn();
     const date = new Date(2023, 0, 1, 12, 30);
-    render(() => (
-      <Calendar initialFocus={date} selected={date} showTime onValueChange={onValueChange} />
-    ));
+    render(() => <Calendar initialFocus={date} selected={date} showTime onChange={onChange} />);
 
     const hourInput = screen.getByDisplayValue('12') as HTMLInputElement;
     fireEvent.input(hourInput, { target: { value: '15' } });
 
-    expect(onValueChange).toHaveBeenCalled();
-    const updatedDate = onValueChange.mock.calls[0][0];
+    expect(onChange).toHaveBeenCalled();
+    const updatedDate = onChange.mock.calls[0][0];
     expect(updatedDate.getHours()).toBe(15);
   });
 });

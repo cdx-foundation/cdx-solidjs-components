@@ -30,16 +30,6 @@ import {
 import { For, Show, createSignal } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import {
-  BASE_PALETTES,
-  type BaseColor,
-  FONTS,
-  SHADOWS,
-  type ShadowLevel,
-  type ThemeFont,
-  hexToRgb,
-} from '../theme-constants';
-import { useAppTheme } from '../hooks/useAppTheme';
-import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -81,8 +71,7 @@ import {
   ModalHeader,
   ModalTitle,
 } from '../../../lib/ui/Modal';
-import { Popover, PopoverTrigger, PopoverContent } from '../../../lib/ui/Popover';
-import { Tooltip, TooltipTrigger, TooltipContent } from '../../../lib/ui/Tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../lib/ui/Popover';
 import { Progress } from '../../../lib/ui/Progress';
 import { RadioGroup, RadioGroupItem } from '../../../lib/ui/RadioGroup';
 import { SegmentedControl } from '../../../lib/ui/SegmentedControl';
@@ -100,6 +89,17 @@ import {
 } from '../../../lib/ui/Table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../lib/ui/Tabs';
 import { toast } from '../../../lib/ui/Toast';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../lib/ui/Tooltip';
+import { useAppTheme } from '../hooks/useAppTheme';
+import {
+  BASE_PALETTES,
+  type BaseColor,
+  FONTS,
+  SHADOWS,
+  type ShadowLevel,
+  type ThemeFont,
+  hexToRgb,
+} from '../theme-constants';
 
 const BASE_COLORS: { name: string; value: BaseColor; icon: any }[] = [
   { name: 'Pure', value: 'pure', icon: Palette },
@@ -232,6 +232,7 @@ export const ThemeCreator = () => {
               <For each={BASE_COLORS}>
                 {(color) => (
                   <button
+                    type="button"
                     onClick={() => theme.setBaseColor(color.value)}
                     class={twMerge(
                       'flex items-center gap-2 px-3 py-2 rounded-md border text-[10px] font-bold transition-all text-left',
@@ -256,7 +257,7 @@ export const ThemeCreator = () => {
             <Label class="text-[10px] font-bold uppercase tracking-widest text-muted">
               Primary Accent
             </Label>
-            <ColorPicker value={theme.accentColor()} onValueChange={theme.setAccentColor} />
+            <ColorPicker value={theme.accentColor()} onChange={theme.setAccentColor} />
           </div>
 
           {/* Typography - Header */}
@@ -269,6 +270,7 @@ export const ThemeCreator = () => {
               <For each={FONT_OPTIONS}>
                 {(opt) => (
                   <button
+                    type="button"
                     onClick={() => theme.setHeaderFont(opt.value)}
                     class={twMerge(
                       'px-2 py-1.5 rounded-md border text-[10px] font-bold transition-all truncate',
@@ -295,6 +297,7 @@ export const ThemeCreator = () => {
               <For each={FONT_OPTIONS}>
                 {(opt) => (
                   <button
+                    type="button"
                     onClick={() => theme.setBodyFont(opt.value)}
                     class={twMerge(
                       'px-2 py-1.5 rounded-md border text-[10px] font-bold transition-all truncate',
@@ -322,6 +325,7 @@ export const ThemeCreator = () => {
                 <For each={RADIUS_OPTIONS}>
                   {(opt) => (
                     <button
+                      type="button"
                       onClick={() => theme.setRadius(opt.value)}
                       class={twMerge(
                         'py-1.5 rounded text-[10px] font-mono transition-all',
@@ -346,6 +350,7 @@ export const ThemeCreator = () => {
                 <For each={SHADOW_OPTIONS}>
                   {(opt) => (
                     <button
+                      type="button"
                       onClick={() => theme.setShadow(opt.value)}
                       class={twMerge(
                         'py-1.5 rounded border text-[10px] font-bold transition-all truncate',
@@ -370,6 +375,7 @@ export const ThemeCreator = () => {
                 <For each={SHADOW_OPTIONS}>
                   {(opt) => (
                     <button
+                      type="button"
                       onClick={() => theme.setBtnBoxShadow(opt.value)}
                       class={twMerge(
                         'py-1.5 rounded border text-[10px] font-bold transition-all truncate',
@@ -420,6 +426,7 @@ export const ThemeCreator = () => {
             <DownloadCloud size={14} /> Get Snippet
           </Button>
           <button
+            type="button"
             class="w-full text-[10px] font-bold text-muted hover:text-primary transition-colors flex items-center justify-center gap-1.5"
             onClick={() => {
               theme.setAccentColor('#e11d48');
@@ -555,56 +562,72 @@ export const ThemeCreator = () => {
               </div>
 
               <div class="grid grid-cols-2 gap-6">
-                <Card class="border-2 border-fg" style={{ "box-shadow": "var(--shadow-main)" }}>
-                   <CardHeader class="pb-4">
-                     <div class="flex items-center justify-between">
-                       <CardTitle class="text-[10px] font-black uppercase text-muted">Core 01</CardTitle>
-                       <Badge variant="success">Primary</Badge>
-                     </div>
-                   </CardHeader>
-                   <CardContent class="space-y-4">
-                     <div class="space-y-2">
-                       <Skeleton class="h-4 w-full border border-stroke" />
-                       <Skeleton class="h-4 w-[80%] border border-stroke" />
-                     </div>
-                     <div class="flex items-center justify-between pt-2">
-                        <div class="flex items-center gap-2">
-                          <span class="text-[10px] font-bold uppercase">Encrypted</span>
-                          <Tooltip align="top">
-                            <TooltipTrigger><Plus size={10} class="text-primary cursor-help" /></TooltipTrigger>
-                            <TooltipContent>AES-256 Bit Encryption Active</TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <Switch checked />
-                     </div>
-                   </CardContent>
-                </Card>
-                
-                <Card class="border-2 border-fg" style={{ "box-shadow": "var(--shadow-main)" }}>
+                <Card class="border-2 border-fg" style={{ 'box-shadow': 'var(--shadow-main)' }}>
                   <CardHeader class="pb-4">
-                    <CardTitle class="text-[10px] font-black uppercase text-muted">Cluster Activity</CardTitle>
+                    <div class="flex items-center justify-between">
+                      <CardTitle class="text-[10px] font-black uppercase text-muted">
+                        Core 01
+                      </CardTitle>
+                      <Badge variant="success">Primary</Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent class="space-y-4">
+                    <div class="space-y-2">
+                      <Skeleton class="h-4 w-full border border-stroke" />
+                      <Skeleton class="h-4 w-[80%] border border-stroke" />
+                    </div>
+                    <div class="flex items-center justify-between pt-2">
+                      <div class="flex items-center gap-2">
+                        <span class="text-[10px] font-bold uppercase">Encrypted</span>
+                        <Tooltip align="top">
+                          <TooltipTrigger>
+                            <Plus size={10} class="text-primary cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent>AES-256 Bit Encryption Active</TooltipContent>
+                        </Tooltip>
+                      </div>
+                      <Switch checked />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card class="border-2 border-fg" style={{ 'box-shadow': 'var(--shadow-main)' }}>
+                  <CardHeader class="pb-4">
+                    <CardTitle class="text-[10px] font-black uppercase text-muted">
+                      Cluster Activity
+                    </CardTitle>
                   </CardHeader>
                   <CardContent class="flex flex-col items-center justify-center py-6 space-y-4">
-                     <p class="text-[10px] font-bold text-center">Node synchronization in progress.</p>
-                     <Popover align="bottom">
-                        <PopoverTrigger>
-                           <Button size="sm" variant="outline" class="h-8 text-[10px] font-bold">View Details</Button>
-                        </PopoverTrigger>
-                        <PopoverContent class="w-64 p-4 border-2 border-fg bg-panel shadow-xl">
-                           <h4 class="text-xs font-black uppercase mb-2">Active Syncs</h4>
-                           <div class="space-y-2">
-                              <div class="flex items-center justify-between text-[9px] font-bold">
-                                 <span>Global-Edge-01</span>
-                                 <Badge variant="success" class="text-[8px]">Syncing</Badge>
-                              </div>
-                              <div class="flex items-center justify-between text-[9px] font-bold">
-                                 <span>Global-Edge-02</span>
-                                 <Badge variant="warning" class="text-[8px]">Pending</Badge>
-                              </div>
-                           </div>
-                           <Button size="sm" class="w-full mt-4 h-7 text-[9px] font-bold">Restart Sync</Button>
-                        </PopoverContent>
-                     </Popover>
+                    <p class="text-[10px] font-bold text-center">
+                      Node synchronization in progress.
+                    </p>
+                    <Popover align="bottom">
+                      <PopoverTrigger>
+                        <Button size="sm" variant="outline" class="h-8 text-[10px] font-bold">
+                          View Details
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent class="w-64 p-4 border-2 border-fg bg-panel shadow-xl">
+                        <h4 class="text-xs font-black uppercase mb-2">Active Syncs</h4>
+                        <div class="space-y-2">
+                          <div class="flex items-center justify-between text-[9px] font-bold">
+                            <span>Global-Edge-01</span>
+                            <Badge variant="success" class="text-[8px]">
+                              Syncing
+                            </Badge>
+                          </div>
+                          <div class="flex items-center justify-between text-[9px] font-bold">
+                            <span>Global-Edge-02</span>
+                            <Badge variant="warning" class="text-[8px]">
+                              Pending
+                            </Badge>
+                          </div>
+                        </div>
+                        <Button size="sm" class="w-full mt-4 h-7 text-[9px] font-bold">
+                          Restart Sync
+                        </Button>
+                      </PopoverContent>
+                    </Popover>
                   </CardContent>
                 </Card>
               </div>
@@ -789,7 +812,7 @@ export const ThemeCreator = () => {
                     </Label>
                     <DatePicker
                       value={new Date()}
-                      onValueChange={() => {}}
+                      onChange={() => {}}
                       class="border-2 border-fg rounded-none font-mono"
                     />
                   </div>
@@ -814,7 +837,7 @@ export const ThemeCreator = () => {
                       </Label>
                       <span class="text-[10px] font-mono font-bold">{sliderVal()[0]}%</span>
                     </div>
-                    <Slider value={sliderVal()} max={100} step={1} onValueChange={setSliderVal} />
+                    <Slider value={sliderVal()} max={100} step={1} onChange={setSliderVal} />
                   </div>
 
                   <div class="space-y-4 pt-2">
@@ -836,7 +859,7 @@ export const ThemeCreator = () => {
 
                   <div class="space-y-3">
                     <Label class="text-[10px] font-black uppercase">Region Selection</Label>
-                    <RadioGroup defaultValue="us-east" name="region" onValueChange={() => {}}>
+                    <RadioGroup defaultValue="us-east" name="region" onChange={() => {}}>
                       <div class="flex items-center gap-2">
                         <RadioGroupItem value="us-east" id="r1" />
                         <Label for="r1" class="text-[10px] font-bold">
@@ -899,13 +922,14 @@ export const ThemeCreator = () => {
       <Modal isOpen={showExport()} onClose={() => setShowExport(false)}>
         <ModalHeader>
           <ModalTitle class="font-black uppercase">Architecture Export</ModalTitle>
-          <ModalDescription class="font-bold">Inject these variables into your global root.</ModalDescription>
+          <ModalDescription class="font-bold">
+            Inject these variables into your global root.
+          </ModalDescription>
         </ModalHeader>
         <ModalContent class="mt-4">
           <Code code={generateCSS()} language="css" fileName="theme.css" />
         </ModalContent>
         <ModalFooter>
-
           <Button variant="outline" class="font-bold" onClick={() => setShowExport(false)}>
             Close
           </Button>

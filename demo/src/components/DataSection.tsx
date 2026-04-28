@@ -82,7 +82,7 @@ export const DataSection = () => {
       <Preview
         title="Calendar"
         description="Single, range, and multiple date selection. Now with optional time picker."
-        code={`import { Calendar } from 'starling-components/ui/Calendar';\n\nconst [date, setDate] = createSignal(new Date());\n\n<Calendar \n  mode="single" \n  selected={date()} \n  onValueChange={setDate} \n  showTime\n/>`}
+        code={`import { Calendar } from 'starling-components/ui/Calendar';\n\nconst [date, setDate] = createSignal(new Date());\n\n<Calendar \n  mode="single" \n  selected={date()} \n  onChange={setDate} \n  showTime\n/>`}
       >
         <div class="flex flex-col items-center gap-6 w-full max-w-sm transition-all duration-400">
           <div class="flex items-center justify-between w-full px-2 py-1 bg-surface rounded-lg border border-stroke">
@@ -95,7 +95,7 @@ export const DataSection = () => {
             <Calendar
               mode="single"
               selected={date()}
-              onValueChange={setDate}
+              onChange={setDate}
               showTime={calendarShowTime()}
               class="border-none p-6"
             />
@@ -106,13 +106,13 @@ export const DataSection = () => {
       <Preview
         title="Date & Time Picker"
         description="A popover-based picker for dates and times."
-        code={`import { DatePicker } from 'starling-components/ui/DatePicker';\n\n<DatePicker\n  label="Schedule Maintenance"\n  value={date()}\n  onValueChange={setDate}\n  showTime\n/>`}
+        code={`import { DatePicker } from 'starling-components/ui/DatePicker';\n\n<DatePicker\n  label="Schedule Maintenance"\n  value={date()}\n  onChange={setDate}\n  showTime\n/>`}
       >
         <div class="w-full max-w-xs">
           <DatePicker
             label="Schedule Maintenance"
             value={date()}
-            onValueChange={setDate}
+            onChange={setDate}
             showTime
             placeholder="Select date and time"
           />

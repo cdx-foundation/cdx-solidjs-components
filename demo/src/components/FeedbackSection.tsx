@@ -65,7 +65,7 @@ export const FeedbackSection = (props: FeedbackSectionProps) => {
           <Select
             label="Toaster Position"
             value={props.toastPos}
-            onValueChange={(v) => {
+            onChange={(v) => {
               props.setToastPos(v as ToasterPosition);
               toast.setPosition(v as ToasterPosition);
             }}

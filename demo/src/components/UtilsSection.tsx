@@ -2,11 +2,11 @@ import { Show, createSignal } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import * as directives from '../../../lib/directives';
 import { useDisclosure } from '../../../lib/hooks';
-import { useAppTheme } from '../hooks/useAppTheme';
 import { Button } from '../../../lib/ui/Button';
 import { Code } from '../../../lib/ui/Code';
 import { Input } from '../../../lib/ui/Input';
 import { toast } from '../../../lib/ui/Toast';
+import { useAppTheme } from '../hooks/useAppTheme';
 
 // Directives registration
 const { autofocus, clipboard, hover } = directives;

@@ -39,17 +39,7 @@ interface ColorPickerProps {
   /**
    * Callback fired when a color is chosen.
    */
-  onValueChange?: (color: string) => void;
-
-  /**
-   * @deprecated Use `onValueChange` instead.
-   */
   onChange?: (color: string) => void;
-
-  /**
-   * @deprecated Use `onValueChange` instead.
-   */
-  onInput?: (e: { currentTarget: { value: string } }) => void;
 
   /**
    * Custom CSS classes for the trigger button.
@@ -76,7 +66,7 @@ interface ColorPickerProps {
  * <ColorPicker
  *   label="Theme Accent"
  *   value={accent()}
- *   onValueChange={setAccent}
+ *   onChange={setAccent}
  * />
  * ```
  *
@@ -86,9 +76,7 @@ export const ColorPicker = (props: ColorPickerProps) => {
   const [local, others] = splitProps(props, [
     'label',
     'value',
-    'onValueChange',
     'onChange',
-    'onInput',
     'class',
     'containerClass',
   ]);
@@ -99,10 +87,7 @@ export const ColorPicker = (props: ColorPickerProps) => {
     PRESET_COLORS.find((c) => c.value === currentColor())?.label ?? currentColor().toUpperCase();
 
   const handleSelect = (color: string) => {
-    local.onValueChange?.(color);
     local.onChange?.(color);
-    // Backward compat with onInput pattern
-    local.onInput?.({ currentTarget: { value: color } });
     setIsOpen(false);
   };
 

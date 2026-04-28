@@ -1,11 +1,7 @@
 import { createPrefersDark } from '@solid-primitives/media';
 import { makePersisted } from '@solid-primitives/storage';
 import { createSignal } from 'solid-js';
-import {
-  type BaseColor,
-  type ShadowLevel,
-  type ThemeFont,
-} from '../theme-constants';
+import type { BaseColor, ShadowLevel, ThemeFont } from '../theme-constants';
 
 const prefersDark = createPrefersDark();
 

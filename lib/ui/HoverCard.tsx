@@ -82,7 +82,11 @@ export const HoverCard = (props: HoverCardProps) => {
  * The element that triggers the hover card.
  */
 export const HoverCardTrigger = (props: { children: JSX.Element; class?: string }) => {
-  return <span class={twMerge('cursor-help underline decoration-dotted', props.class)}>{props.children}</span>;
+  return (
+    <span class={twMerge('cursor-help underline decoration-dotted', props.class)}>
+      {props.children}
+    </span>
+  );
 };
 
 /**

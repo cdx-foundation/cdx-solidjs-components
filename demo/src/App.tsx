@@ -28,7 +28,6 @@ import { DisclosureSection } from './components/DisclosureSection';
 import { FeedbackSection } from './components/FeedbackSection';
 import { FormsSection } from './components/FormsSection';
 import { GetStartedSection } from './components/GetStartedSection';
-import { HUDSection } from './components/HUDSection';
 // Section Components
 import { IntroSection } from './components/IntroSection';
 import { LayoutSection } from './components/LayoutSection';
@@ -55,16 +54,8 @@ type Section =
 type Theme = 'professional' | 'brutalist' | 'midnight';
 
 export default function App() {
-  const {
-    isDark,
-    accentColor,
-    radius,
-    headerFont,
-    bodyFont,
-    baseColor,
-    shadow,
-    btnBoxShadow,
-  } = useAppTheme();
+  const { isDark, accentColor, radius, headerFont, bodyFont, baseColor, shadow, btnBoxShadow } =
+    useAppTheme();
 
   // App-specific implementation logic (Effects)
   createEffect(() => {
@@ -402,10 +393,6 @@ export default function App() {
 
           <Show when={activeSection() === 'theme-creator'}>
             <ThemeCreator />
-          </Show>
-
-          <Show when={activeSection() === 'hud'}>
-            <HUDSection />
           </Show>
 
           <Show when={activeSection() === 'layout'}>

@@ -108,7 +108,7 @@ A range input with a custom track and square thumb.
 ```tsx
 import { Slider } from 'starling-components/ui/Slider';
 
-<Slider label="Volume" min={0} max={100} value={vol()} onValueChange={setVol} />
+<Slider label="Volume" min={0} max={100} value={vol()} onChange={setVol} />
 ```
 
 ---
@@ -144,7 +144,7 @@ A combination of Popover and Calendar for selecting specific dates.
 ```tsx
 import { DatePicker } from 'starling-components/ui/DatePicker';
 
-<DatePicker label="Start Date" value={date()} onValueChange={setDate} />
+<DatePicker label="Start Date" value={date()} onChange={setDate} />
 ```
 
 ---

@@ -38,7 +38,7 @@ interface SelectProps {
   /**
    * Callback fired when a user selects a new option.
    */
-  onValueChange?: (value: string | number) => void;
+  onChange?: (value: string | number) => void;
 
   /**
    * Text shown when no value is selected and no default exists.
@@ -63,6 +63,11 @@ interface SelectProps {
   containerClass?: string;
 
   /**
+   * If provided, adds an option to clear the selection with this label.
+   */
+  clearLabel?: string;
+
+  /**
    * Unique ID for the select component.
    */
   id?: string;
@@ -82,7 +87,7 @@ interface SelectProps {
  * <Select
  *   label="Environment"
  *   value={env()}
- *   onValueChange={setEnv}
+ *   onChange={setEnv}
  *   options={[
  *     { label: 'Production', value: 'prod' },
  *     { label: 'Staging', value: 'stage' },
@@ -91,18 +96,19 @@ interface SelectProps {
  * />
  * ```
  *
- * @param props - Customization options including `options`, `value`, and `onValueChange`.
+ * @param props - Customization options including `options`, `value`, and `onChange`.
  */
 export const Select = (props: SelectProps) => {
   const [local, others] = splitProps(props, [
     'options',
     'value',
-    'onValueChange',
+    'onChange',
     'placeholder',
     'error',
     'label',
     'class',
     'containerClass',
+    'clearLabel',
     'id',
   ]);
   const [isOpen, setIsOpen] = createSignal(false);
@@ -111,10 +117,18 @@ export const Select = (props: SelectProps) => {
   let triggerRef!: HTMLButtonElement;
   const id = local.id || uid('select');
 
-  const selectedOption = () => local.options.find((o: SelectOption) => o.value === local.value);
+  const allOptions = () => {
+    if (!local.clearLabel) return local.options;
+    return [{ label: local.clearLabel, value: '' }, ...local.options];
+  };
+
+  const selectedOption = () => {
+    if (local.value === '' || local.value === undefined || local.value === null) return null;
+    return local.options.find((o: SelectOption) => o.value === local.value);
+  };
 
   const handleSelect = (option: SelectOption) => {
-    local.onValueChange?.(option.value);
+    local.onChange?.(option.value);
     setIsOpen(false);
     triggerRef?.focus();
   };
@@ -122,7 +136,7 @@ export const Select = (props: SelectProps) => {
   // Sync focused index with selected option when opening
   createEffect(() => {
     if (isOpen()) {
-      const idx = local.options.findIndex((o: SelectOption) => o.value === local.value);
+      const idx = allOptions().findIndex((o: SelectOption) => o.value === local.value);
       setFocusedIndex(idx !== -1 ? idx : 0);
     }
   });
@@ -148,6 +162,8 @@ export const Select = (props: SelectProps) => {
       return;
     }
 
+    const optionsList = allOptions();
+
     switch (e.key) {
       case 'Escape':
         setIsOpen(false);
@@ -155,16 +171,16 @@ export const Select = (props: SelectProps) => {
         break;
       case 'ArrowDown':
         e.preventDefault();
-        setFocusedIndex((prev) => (prev + 1) % local.options.length);
+        setFocusedIndex((prev) => (prev + 1) % optionsList.length);
         break;
       case 'ArrowUp':
         e.preventDefault();
-        setFocusedIndex((prev) => (prev - 1 + local.options.length) % local.options.length);
+        setFocusedIndex((prev) => (prev - 1 + optionsList.length) % optionsList.length);
         break;
       case 'Enter':
         e.preventDefault();
         if (focusedIndex() >= 0) {
-          handleSelect(local.options[focusedIndex()]);
+          handleSelect(optionsList[focusedIndex()]);
         }
         break;
       case 'Tab':
@@ -229,7 +245,7 @@ export const Select = (props: SelectProps) => {
           aria-activedescendant={focusedIndex() >= 0 ? `${id}-opt-${focusedIndex()}` : undefined}
           class="max-h-48 overflow-y-auto py-1"
         >
-          <For each={local.options}>
+          <For each={allOptions()}>
             {(option, i) => {
               const isSelected = () => local.value === option.value;
 

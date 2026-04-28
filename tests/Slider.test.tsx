@@ -9,12 +9,12 @@ describe('Slider', () => {
     expect(screen.getByRole('slider')).toHaveValue('50');
   });
 
-  it('calls onValueChange on input', () => {
-    const onValueChange = vi.fn();
-    render(() => <Slider onValueChange={onValueChange} />);
+  it('calls onChange on input', () => {
+    const onChange = vi.fn();
+    render(() => <Slider onChange={onChange} />);
     const slider = screen.getByRole('slider');
 
     fireEvent.input(slider, { target: { value: '75' } });
-    expect(onValueChange).toHaveBeenCalledWith(75);
+    expect(onChange).toHaveBeenCalledWith(75);
   });
 });

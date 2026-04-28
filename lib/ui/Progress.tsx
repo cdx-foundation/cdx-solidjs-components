@@ -55,6 +55,7 @@ export const Progress = (props: ProgressProps) => {
   return (
     <div
       role="progressbar"
+      tabIndex={0}
       aria-valuenow={local.value}
       aria-valuemin={0}
       aria-valuemax={max()}

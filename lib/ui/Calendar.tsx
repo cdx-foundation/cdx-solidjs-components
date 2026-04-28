@@ -94,7 +94,7 @@ const CalendarHeader = (props: {
 /**
  * Configuration and behavior properties for the Calendar component.
  */
-interface CalendarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onValueChange'> {
+interface CalendarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   /**
    * The logic for selecting dates.
    * @default "single"
@@ -113,7 +113,7 @@ interface CalendarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onValu
    * Event handler called whenever a date interaction occurs.
    * Receives the updated selection value corresponding to the current `mode`.
    */
-  onValueChange?: (val: any) => void;
+  onChange?: (val: any) => void;
 
   /**
    * A function to restrict selection. If it returns `true` for a given date,
@@ -154,7 +154,7 @@ interface CalendarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onValu
  * <Calendar
  *   mode="single"
  *   selected={dateTime()}
- *   onValueChange={setDateTime}
+ *   onChange={setDateTime}
  *   showTime
  * />
  *
@@ -163,17 +163,17 @@ interface CalendarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onValu
  * <Calendar
  *   mode="range"
  *   selected={range()}
- *   onValueChange={setRange}
+ *   onChange={setRange}
  * />
  * ```
  *
- * @param props - Includes `mode`, `selected`, `onValueChange`, and custom `disabled` logic.
+ * @param props - Includes `mode`, `selected`, `onChange`, and custom `disabled` logic.
  */
 export const Calendar = (props: CalendarProps) => {
   const [local, others] = splitProps(props, [
     'mode',
     'selected',
-    'onValueChange',
+    'onChange',
     'disabled',
     'showOutsideDays',
     'showTime',
@@ -194,6 +194,8 @@ export const Calendar = (props: CalendarProps) => {
   createEffect(() => {
     if (local.initialFocus instanceof Date) {
       setViewDate(local.initialFocus);
+    } else if (local.mode === 'single' && local.selected instanceof Date) {
+      setViewDate(local.selected);
     }
   });
 
@@ -226,7 +228,7 @@ export const Calendar = (props: CalendarProps) => {
 
   const handleDateClick = (date: Date) => {
     if (local.disabled?.(date)) return;
-    if (!local.onValueChange) return;
+    if (!local.onChange) return;
 
     const clickedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
@@ -235,17 +237,17 @@ export const Calendar = (props: CalendarProps) => {
       const { from, to } = s;
 
       if (!from || (from && to)) {
-        local.onValueChange({ from: clickedDate, to: undefined });
+        local.onChange({ from: clickedDate, to: undefined });
       } else {
         if (isSameDay(clickedDate, from)) {
-          local.onValueChange({ from: undefined, to: undefined });
+          local.onChange({ from: undefined, to: undefined });
         } else {
           const tFrom = getDayTimestamp(from);
           const tClick = getDayTimestamp(clickedDate);
           if (tClick < tFrom) {
-            local.onValueChange({ from: clickedDate, to: new Date(tFrom) });
+            local.onChange({ from: clickedDate, to: new Date(tFrom) });
           } else {
-            local.onValueChange({ from: new Date(tFrom), to: clickedDate });
+            local.onChange({ from: new Date(tFrom), to: clickedDate });
           }
         }
       }
@@ -253,9 +255,9 @@ export const Calendar = (props: CalendarProps) => {
       const s = Array.isArray(local.selected) ? local.selected : [];
       const existsIdx = s.findIndex((d) => isSameDay(d, clickedDate));
       if (existsIdx !== -1) {
-        local.onValueChange(s.filter((_, i) => i !== existsIdx));
+        local.onChange(s.filter((_, i) => i !== existsIdx));
       } else {
-        local.onValueChange([...s, clickedDate]);
+        local.onChange([...s, clickedDate]);
       }
     } else {
       // Preserve time if showTime is enabled and we have a selected date
@@ -264,20 +266,20 @@ export const Calendar = (props: CalendarProps) => {
         clickedDate.setMinutes(local.selected.getMinutes());
         clickedDate.setSeconds(local.selected.getSeconds());
       }
-      local.onValueChange(clickedDate);
+      local.onChange(clickedDate);
     }
   };
 
   const handleTimeChange = (type: 'hours' | 'minutes', value: number) => {
-    if (!local.onValueChange) return;
+    if (!local.onChange) return;
     const current = local.selected instanceof Date ? new Date(local.selected) : new Date();
     if (type === 'hours') current.setHours(value);
     else current.setMinutes(value);
-    local.onValueChange(current);
+    local.onChange(current);
   };
 
   const adjustTime = (type: 'hours' | 'minutes', delta: number) => {
-    if (!local.onValueChange) return;
+    if (!local.onChange) return;
     const current = local.selected instanceof Date ? new Date(local.selected) : new Date();
     if (type === 'hours') {
       const h = (current.getHours() + delta + 24) % 24;
@@ -286,13 +288,13 @@ export const Calendar = (props: CalendarProps) => {
       const m = (current.getMinutes() + delta + 60) % 60;
       current.setMinutes(m);
     }
-    local.onValueChange(current);
+    local.onChange(current);
   };
 
   const handleTimeInput = (type: 'hours' | 'minutes', value: string) => {
-    if (!local.onValueChange) return;
+    if (!local.onChange) return;
     let val = Number.parseInt(value, 10);
-    if (isNaN(val)) val = 0;
+    if (Number.isNaN(val)) val = 0;
 
     const current = local.selected instanceof Date ? new Date(local.selected) : new Date();
     if (type === 'hours') {
@@ -300,7 +302,7 @@ export const Calendar = (props: CalendarProps) => {
     } else {
       current.setMinutes(Math.max(0, Math.min(59, val)));
     }
-    local.onValueChange(current);
+    local.onChange(current);
   };
 
   const changeMonth = (offset: number) => {

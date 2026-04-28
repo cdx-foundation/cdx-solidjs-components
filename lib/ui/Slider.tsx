@@ -20,7 +20,7 @@ interface SliderProps extends JSX.InputHTMLAttributes<HTMLInputElement> {
   /**
    * Callback fired when the slider value changes.
    */
-  onValueChange?: (value: number) => void;
+  onChange?: (value: number) => void;
 
   /**
    * Custom CSS classes applied to the flex container wrapping the label and track.
@@ -44,7 +44,7 @@ interface SliderProps extends JSX.InputHTMLAttributes<HTMLInputElement> {
  *   max={100}
  *   step={1}
  *   value={volume()}
- *   onValueChange={setVolume}
+ *   onChange={setVolume}
  * />
  * ```
  *
@@ -62,7 +62,7 @@ export const Slider = (props: SliderProps) => {
     'value',
     'id',
     'containerClass',
-    'onValueChange',
+    'onChange',
   ]);
   const id = local.id || uid('slider');
 
@@ -88,7 +88,7 @@ export const Slider = (props: SliderProps) => {
         style={{
           background: `linear-gradient(to right, var(--color-primary) ${percentage()}%, var(--color-stroke) ${percentage()}%)`,
         }}
-        onInput={(e) => local.onValueChange?.(Number(e.currentTarget.value))}
+        onInput={(e) => local.onChange?.(Number(e.currentTarget.value))}
         class={twMerge(
           'w-full h-1 appearance-none cursor-pointer outline-none',
           // Custom WebKit Thumb (Square)

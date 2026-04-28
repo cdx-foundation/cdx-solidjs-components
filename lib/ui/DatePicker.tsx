@@ -1,5 +1,5 @@
 import { Calendar as CalendarIcon } from 'lucide-solid';
-import { type JSX, Show, createSignal, splitProps } from 'solid-js';
+import { type JSX, Show, createEffect, createSignal, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { Calendar } from './Calendar';
 import { Popover } from './Popover';
@@ -27,7 +27,7 @@ interface DatePickerProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /**
    * Callback fired when a user selects a date from the calendar.
    */
-  onValueChange?: (date: Date) => void;
+  onChange?: (date: Date) => void;
 
   /**
    * If `true`, shows a time picker in the calendar and displays time in the input.
@@ -50,7 +50,7 @@ interface DatePickerProps extends JSX.HTMLAttributes<HTMLDivElement> {
  * <DatePicker
  *   label="Preferred Delivery Date"
  *   value={deliveryDate()}
- *   onValueChange={setDeliveryDate}
+ *   onChange={setDeliveryDate}
  *   showTime
  * />
  * ```
@@ -61,7 +61,7 @@ interface DatePickerProps extends JSX.HTMLAttributes<HTMLDivElement> {
  * - **Responsive Alignment:** The calendar popover is anchored to the left of the trigger by default.
  * - **Uncontrolled Support:** Manages its own internal state if a value is provided but not explicitly managed.
  *
- * @param props - Customization options including `label`, `value`, and `onValueChange`.
+ * @param props - Customization options including `label`, `value`, and `onChange`.
  */
 export const DatePicker = (props: DatePickerProps) => {
   const [local, others] = splitProps(props, [
@@ -69,14 +69,18 @@ export const DatePicker = (props: DatePickerProps) => {
     'placeholder',
     'class',
     'value',
-    'onValueChange',
+    'onChange',
     'showTime',
   ]);
   const [internalDate, setInternalDate] = createSignal<Date | undefined>(local.value);
 
+  createEffect(() => {
+    setInternalDate(local.value);
+  });
+
   const handleSelect = (date: Date) => {
     setInternalDate(date);
-    local.onValueChange?.(date);
+    local.onChange?.(date);
   };
 
   const formatDate = (date?: Date) => {
@@ -109,21 +113,22 @@ export const DatePicker = (props: DatePickerProps) => {
         align="left"
         class="p-0 w-max"
         trigger={
-          <div
+          <button
+            type="button"
             class={twMerge(
-              'flex items-center gap-2 w-full border border-stroke bg-transparent rounded-none px-3 py-2.5 text-sm font-mono transition-colors duration-150 hover:border-muted cursor-pointer',
+              'flex items-center gap-2 w-full border border-stroke bg-transparent rounded-none px-3 py-2.5 text-sm font-mono transition-colors duration-150 hover:border-muted cursor-pointer outline-none focus-visible:border-fg focus-visible:ring-1 focus-visible:ring-fg',
               !internalDate() ? 'text-muted/80' : 'text-fg',
             )}
           >
             <CalendarIcon size={16} class="opacity-50" />
             <span>{formatDate(internalDate()) || local.placeholder || 'Pick a date'}</span>
-          </div>
+          </button>
         }
       >
         <Calendar
           mode="single"
           selected={internalDate()}
-          onValueChange={handleSelect}
+          onChange={handleSelect}
           showTime={local.showTime}
           class="border-0 shadow-none"
           initialFocus={internalDate()}

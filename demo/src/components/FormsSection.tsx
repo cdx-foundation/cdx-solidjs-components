@@ -49,7 +49,7 @@ export const FormsSection = (props: FormsSectionProps) => {
       <Preview
         title="Segmented Control"
         description="A pill-styled toggle group for compact value switching."
-        code={`import { SegmentedControl } from 'starling-components/ui/SegmentedControl';\nimport { Shield, Zap, Sparkles } from 'lucide-solid';\n\nconst options = [\n  { value: 'pro', label: 'Pro', icon: Shield },\n  { value: 'brutal', label: 'Brutal', icon: Zap },\n  { value: 'midnight', label: 'Midnight', icon: Sparkles }\n];\n\n<SegmentedControl \n  value={val()} \n  onValueChange={setVal}\n  options={options} \n/>`}
+        code={`import { SegmentedControl } from 'starling-components/ui/SegmentedControl';\nimport { Shield, Zap, Sparkles } from 'lucide-solid';\n\nconst options = [\n  { value: 'pro', label: 'Pro', icon: Shield },\n  { value: 'brutal', label: 'Brutal', icon: Zap },\n  { value: 'midnight', label: 'Midnight', icon: Sparkles }\n];\n\n<SegmentedControl \n  value={val()} \n  onChange={setVal}\n  options={options} \n/>`}
       >
         <SegmentedControl
           value={props.currentTheme}
@@ -60,14 +60,15 @@ export const FormsSection = (props: FormsSectionProps) => {
 
       <Preview
         title="Select"
-        description="A fully themeable replacement for the native dropdown."
-        code={`import { Select } from 'starling-components/ui/Select';\n\n<Select \n  label="Environment"\n  value={env()} \n  onValueChange={setEnv}\n  options={[\n    { label: 'Production', value: 'prod' },\n    { label: 'Staging', value: 'stage' }\n  ]}\n/>`}
+        description="A fully themeable replacement for the native dropdown. Now supports an optional clearable state via the clearLabel prop."
+        code={`import { Select } from 'starling-components/ui/Select';\n\n<Select \n  label="Environment"\n  value={env()} \n  onChange={setEnv}\n  clearLabel="None"\n  options={[\n    { label: 'Production', value: 'prod' },\n    { label: 'Staging', value: 'stage' }\n  ]}\n/>`}
       >
         <div class="w-full max-w-xs">
           <Select
             label="Deployment Environment"
             value={selectVal()}
-            onValueChange={setSelectVal}
+            onChange={setSelectVal}
+            clearLabel="None"
             options={[
               { label: 'Production (US-EAST)', value: 'prod' },
               { label: 'Staging (EU-WEST)', value: 'stage' },
@@ -109,7 +110,7 @@ export const FormsSection = (props: FormsSectionProps) => {
       <Preview
         title="Number Input"
         description="A specialized input for numeric values with increment/decrement buttons."
-        code={`import { Input } from 'starling-components/ui/Input';\n\n<Input\n  type="number"\n  label="Quantity"\n  value={${numVal()}}\n  min={1}\n  max={32}\n  hideButtons={${inputHideButtons()}}\n  onValueChange={setNumVal}\n/>`}
+        code={`import { Input } from 'starling-components/ui/Input';\n\n<Input\n  type="number"\n  label="Quantity"\n  value={${numVal()}}\n  min={1}\n  max={32}\n  hideButtons={${inputHideButtons()}}\n  onChange={setNumVal}\n/>`}
       >
         <div class="w-full max-w-xs flex flex-col gap-6">
           <div class="flex items-center justify-between w-full px-2 py-1 bg-surface rounded-lg border border-stroke">
@@ -122,7 +123,7 @@ export const FormsSection = (props: FormsSectionProps) => {
             type="number"
             label="Cluster Instances"
             value={numVal()}
-            onValueChange={setNumVal}
+            onChange={setNumVal}
             min={1}
             max={32}
             hideButtons={inputHideButtons()}
@@ -155,14 +156,14 @@ export const FormsSection = (props: FormsSectionProps) => {
       <Preview
         title="Range Slider"
         description="Granular control for numeric values."
-        code={`import { Slider } from 'starling-components/ui/Slider';\n\n<div class="w-full max-w-sm flex flex-col gap-4">\n  <Label>Memory Allocation</Label>\n  <Slider value={sliderVal()} onValueChange={setSliderVal} max={100} />\n</div>`}
+        code={`import { Slider } from 'starling-components/ui/Slider';\n\n<div class="w-full max-w-sm flex flex-col gap-4">\n  <Label>Memory Allocation</Label>\n  <Slider value={sliderVal()} onChange={setSliderVal} max={100} />\n</div>`}
       >
         <div class="w-full max-w-sm flex flex-col gap-4">
           <div class="flex justify-between font-mono text-xs">
             <Label class="text-muted">Memory Allocation</Label>
             <span class="text-primary font-bold">{sliderVal()}%</span>
           </div>
-          <Slider value={sliderVal()} onValueChange={setSliderVal} max={100} />
+          <Slider value={sliderVal()} onChange={setSliderVal} max={100} />
         </div>
       </Preview>
     </section>

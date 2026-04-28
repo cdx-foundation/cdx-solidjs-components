@@ -73,6 +73,12 @@ export const Popover = (props: PopoverProps) => {
             ref(el);
           }}
           onClick={() => setIsOpen(!isOpen())}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              setIsOpen(!isOpen());
+            }
+          }}
           class="inline-block cursor-pointer"
         >
           {local.trigger}

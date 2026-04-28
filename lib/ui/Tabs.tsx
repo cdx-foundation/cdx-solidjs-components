@@ -41,7 +41,7 @@ interface TabsProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'children'>
   /**
    * Callback fired whenever the active tab selection changes.
    */
-  onValueChange?: (v: string) => void;
+  onChange?: (v: string) => void;
 
   /**
    * A combination of `TabsList`, `TabsTrigger`, and `TabsContent`.
@@ -84,7 +84,7 @@ interface TabsProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'children'>
  *     { id: 'security', label: 'Security', icon: LockIcon }
  *   ]}
  *   value={active()}
- *   onValueChange={setActive}
+ *   onChange={setActive}
  * />
  * ```
  *
@@ -94,7 +94,7 @@ export const Tabs = (props: TabsProps) => {
   const [local, others] = splitProps(props, [
     'defaultValue',
     'value',
-    'onValueChange',
+    'onChange',
     'children',
     'items',
     'class',
@@ -108,7 +108,7 @@ export const Tabs = (props: TabsProps) => {
 
   const setValue = (v: string) => {
     setInternalValue(v);
-    local.onValueChange?.(v);
+    local.onChange?.(v);
   };
 
   return (

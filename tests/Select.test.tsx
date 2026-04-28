@@ -22,24 +22,20 @@ describe('Select', () => {
     expect(screen.getByText('Option 2')).toBeInTheDocument();
   });
 
-  it('calls onValueChange and closes when an option is selected', () => {
-    const onValueChange = vi.fn();
-    render(() => (
-      <Select options={options} placeholder="Choose..." onValueChange={onValueChange} />
-    ));
+  it('calls onChange and closes when an option is selected', () => {
+    const onChange = vi.fn();
+    render(() => <Select options={options} placeholder="Choose..." onChange={onChange} />);
 
     fireEvent.click(screen.getByText('Choose...'));
     fireEvent.click(screen.getByText('Option 2'));
 
-    expect(onValueChange).toHaveBeenCalledWith('opt2');
+    expect(onChange).toHaveBeenCalledWith('opt2');
     expect(screen.queryByText('Option 1')).not.toBeInTheDocument();
   });
 
   it('supports keyboard navigation', () => {
-    const onValueChange = vi.fn();
-    render(() => (
-      <Select options={options} placeholder="Choose..." onValueChange={onValueChange} />
-    ));
+    const onChange = vi.fn();
+    render(() => <Select options={options} placeholder="Choose..." onChange={onChange} />);
 
     const trigger = screen.getByRole('combobox');
     fireEvent.keyDown(trigger, { key: 'Enter' });
@@ -48,6 +44,24 @@ describe('Select', () => {
     fireEvent.keyDown(trigger, { key: 'ArrowDown' });
     fireEvent.keyDown(trigger, { key: 'Enter' });
 
-    expect(onValueChange).toHaveBeenCalledWith('opt2');
+    expect(onChange).toHaveBeenCalledWith('opt2');
+  });
+
+  it('supports clearLabel to enable a clear option', () => {
+    const onChange = vi.fn();
+    render(() => (
+      <Select
+        options={options}
+        placeholder="Choose..."
+        onChange={onChange}
+        clearLabel="Clear Selection"
+      />
+    ));
+
+    fireEvent.click(screen.getByText('Choose...'));
+    expect(screen.getByText('Clear Selection')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('Clear Selection'));
+    expect(onChange).toHaveBeenCalledWith('');
   });
 });
