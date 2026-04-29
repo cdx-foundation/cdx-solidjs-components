@@ -304,7 +304,7 @@ export default function App() {
 
         <div class="mt-auto pt-8 border-t border-stroke/50">
           <a
-            href="https://github.com/StarlingCityDevelopment/starling-components"
+            href="https://github.com/StarlingCityDevelopment/starling-fivem-components"
             class="flex items-center gap-2 text-sm text-muted hover:text-fg transition-colors"
           >
             <Cat size={16} />

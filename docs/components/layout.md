@@ -7,7 +7,7 @@ Essential components for structuring your application's pages and content areas.
 A fundamental layout container for grouping related information and actions.
 
 ```tsx
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'starling-components/ui/Card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'starling-fivem-components/ui/Card';
 
 <Card class="max-w-md">
   <CardHeader>
@@ -37,7 +37,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 A clean visual divider for separating content sections.
 
 ```tsx
-import { Separator } from 'starling-components/ui/Separator';
+import { Separator } from 'starling-fivem-components/ui/Separator';
 
 <div>
   <h4>Settings</h4>
@@ -63,7 +63,7 @@ import { Separator } from 'starling-components/ui/Separator';
 Ensures an element maintains a specific width-to-height ratio.
 
 ```tsx
-import { AspectRatio } from 'starling-components/ui/AspectRatio';
+import { AspectRatio } from 'starling-fivem-components/ui/AspectRatio';
 
 <AspectRatio ratio={16 / 9}>
   <img src="landscape.jpg" class="object-cover w-full h-full" />
@@ -80,7 +80,7 @@ import { AspectRatio } from 'starling-components/ui/AspectRatio';
 A replacement for native scrollbars with a consistent, minimal visual style.
 
 ```tsx
-import { ScrollArea } from 'starling-components/ui/ScrollArea';
+import { ScrollArea } from 'starling-fivem-components/ui/ScrollArea';
 
 <ScrollArea maxHeight="200px" class="border p-4">
   <p>Long content goes here...</p>
@@ -97,7 +97,7 @@ import { ScrollArea } from 'starling-components/ui/ScrollArea';
 A modular system for building multi-pane layouts with draggable handles.
 
 ```tsx
-import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from 'starling-components/ui/Resizable';
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from 'starling-fivem-components/ui/Resizable';
 
 <ResizablePanelGroup direction="horizontal" class="min-h-[200px] border">
   <ResizablePanel defaultSize={30}>

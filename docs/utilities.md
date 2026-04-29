@@ -7,7 +7,7 @@ Shared hooks and directives that power Starling UI's interactive features.
 A reactive hook for managing the application's theme state (dark/light mode) with built-in persistence and DOM synchronization.
 
 ```tsx
-import { useTheme } from 'starling-components/hooks';
+import { useTheme } from 'starling-fivem-components/hooks';
 
 export default function ThemeControl() {
   const { isDark, toggleTheme } = useTheme();
@@ -33,7 +33,7 @@ export default function ThemeControl() {
 A SolidJS directive that detects clicks outside of the element it is attached to.
 
 ```tsx
-import { clickOutside } from 'starling-components/directives';
+import { clickOutside } from 'starling-fivem-components/directives';
 
 // Required for JIT scanning/bundlers if not used elsewhere
 false && clickOutside;

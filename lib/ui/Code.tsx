@@ -29,7 +29,7 @@ interface CodeProps extends JSX.HTMLAttributes<HTMLDivElement> {
  * @example
  * ```tsx
  * <Code
- *   code="npm install starling-components"
+ *   code="npm install starling-fivem-components"
  *   fileName="terminal"
  *   language="bash"
  * />

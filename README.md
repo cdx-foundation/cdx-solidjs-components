@@ -1,4 +1,4 @@
-# Startling Components
+# Starling FiveM Components
 
 An elegant and feature-rich UI component library for Solid.js, meticulously crafted for the Starling City ecosystem. It provides a set of highly accessible, performant, and customizable primitives built with Tailwind CSS and Solid primitives.
 
@@ -14,22 +14,9 @@ An elegant and feature-rich UI component library for Solid.js, meticulously craf
 ## Installation
 
 ```bash
-npm install starling-components
+bun install starling-fivem-components
 # or
-bun add starling-components
-```
-
-### Peer Dependencies
-
-Ensure you have the following installed in your project:
-
-```json
-{
-  "peerDependencies": {
-    "solid-js": "^1.9.0",
-    "tailwindcss": "^4.0.0"
-  }
-}
+bun add starling-fivem-components
 ```
 
 ## Setup
@@ -40,7 +27,7 @@ To ensure styles are computed correctly, import the library in your main CSS fil
 
 ```css
 @import "tailwindcss";
-@import "starling-components";
+@import "starling-fivem-components";
 ```
 
 ## Component List
@@ -93,8 +80,8 @@ The library includes 41 high-fidelity components:
 
 ```tsx
 import { createSignal } from "solid-js";
-import { Button, Modal } from "starling-components";
-import { useTheme } from "starling-components/hooks";
+import { Button, Modal } from "starling-fivem-components";
+import { useTheme } from "starling-fivem-components/hooks";
 
 export const MyComponent = () => {
   const [isOpen, setIsOpen] = createSignal(false);

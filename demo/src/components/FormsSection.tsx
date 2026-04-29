@@ -34,7 +34,7 @@ export const FormsSection = (props: FormsSectionProps) => {
       <Preview
         title="Button"
         description="Primary, secondary, and destructive actions."
-        code={`import { Button } from 'starling-components/ui/Button';\n\n<div class="flex flex-wrap gap-4">\n  <Button variant="primary">Default</Button>\n  <Button variant="secondary">Secondary</Button>\n  <Button variant="destructive">Delete</Button>\n  <Button isLoading variant="outline">Processing</Button>\n</div>`}
+        code={`import { Button } from 'starling-fivem-components/ui/Button';\n\n<div class="flex flex-wrap gap-4">\n  <Button variant="primary">Default</Button>\n  <Button variant="secondary">Secondary</Button>\n  <Button variant="destructive">Delete</Button>\n  <Button isLoading variant="outline">Processing</Button>\n</div>`}
       >
         <div class="flex flex-wrap gap-4">
           <Button>Default</Button>
@@ -49,7 +49,7 @@ export const FormsSection = (props: FormsSectionProps) => {
       <Preview
         title="Segmented Control"
         description="A pill-styled toggle group for compact value switching."
-        code={`import { SegmentedControl } from 'starling-components/ui/SegmentedControl';\nimport { Shield, Zap, Sparkles } from 'lucide-solid';\n\nconst options = [\n  { value: 'pro', label: 'Pro', icon: Shield },\n  { value: 'brutal', label: 'Brutal', icon: Zap },\n  { value: 'midnight', label: 'Midnight', icon: Sparkles }\n];\n\n<SegmentedControl \n  value={val()} \n  onChange={setVal}\n  options={options} \n/>`}
+        code={`import { SegmentedControl } from 'starling-fivem-components/ui/SegmentedControl';\nimport { Shield, Zap, Sparkles } from 'lucide-solid';\n\nconst options = [\n  { value: 'pro', label: 'Pro', icon: Shield },\n  { value: 'brutal', label: 'Brutal', icon: Zap },\n  { value: 'midnight', label: 'Midnight', icon: Sparkles }\n];\n\n<SegmentedControl \n  value={val()} \n  onChange={setVal}\n  options={options} \n/>`}
       >
         <SegmentedControl
           value={props.currentTheme}
@@ -61,7 +61,7 @@ export const FormsSection = (props: FormsSectionProps) => {
       <Preview
         title="Select"
         description="A fully themeable replacement for the native dropdown. Now supports an optional clearable state via the clearLabel prop."
-        code={`import { Select } from 'starling-components/ui/Select';\n\n<Select \n  label="Environment"\n  value={env()} \n  onChange={setEnv}\n  clearLabel="None"\n  options={[\n    { label: 'Production', value: 'prod' },\n    { label: 'Staging', value: 'stage' }\n  ]}\n/>`}
+        code={`import { Select } from 'starling-fivem-components/ui/Select';\n\n<Select \n  label="Environment"\n  value={env()} \n  onChange={setEnv}\n  clearLabel="None"\n  options={[\n    { label: 'Production', value: 'prod' },\n    { label: 'Staging', value: 'stage' }\n  ]}\n/>`}
       >
         <div class="w-full max-w-xs">
           <Select
@@ -81,7 +81,7 @@ export const FormsSection = (props: FormsSectionProps) => {
       <Preview
         title="Inputs & Toggles"
         description="Standard text inputs with optional descriptions and switches. Now supports regex validation."
-        code={`import { Input } from 'starling-components/ui/Input';\nimport { Switch } from 'starling-components/ui/Switch';\nimport { Label } from 'starling-components/ui/Label';\n\n<div class="flex flex-col gap-6">\n  <Input \n    label="Username" \n    placeholder="yanis" \n    regex={/^[a-z0-9_]+$/} \n    preventInvalidRegex={${inputPreventRegex()}}\n    description="Lowercase letters, numbers, and underscores only." \n  />\n</div>`}
+        code={`import { Input } from 'starling-fivem-components/ui/Input';\nimport { Switch } from 'starling-fivem-components/ui/Switch';\nimport { Label } from 'starling-fivem-components/ui/Label';\n\n<div class="flex flex-col gap-6">\n  <Input \n    label="Username" \n    placeholder="yanis" \n    regex={/^[a-z0-9_]+$/} \n    preventInvalidRegex={${inputPreventRegex()}}\n    description="Lowercase letters, numbers, and underscores only." \n  />\n</div>`}
       >
         <div class="w-full max-sm flex flex-col gap-6 transition-all duration-400">
           <div class="flex items-center justify-between w-full px-2 py-1 bg-surface rounded-lg border border-stroke">
@@ -110,7 +110,7 @@ export const FormsSection = (props: FormsSectionProps) => {
       <Preview
         title="Number Input"
         description="A specialized input for numeric values with increment/decrement buttons."
-        code={`import { Input } from 'starling-components/ui/Input';\n\n<Input\n  type="number"\n  label="Quantity"\n  value={${numVal()}}\n  min={1}\n  max={32}\n  hideButtons={${inputHideButtons()}}\n  onChange={setNumVal}\n/>`}
+        code={`import { Input } from 'starling-fivem-components/ui/Input';\n\n<Input\n  type="number"\n  label="Quantity"\n  value={${numVal()}}\n  min={1}\n  max={32}\n  hideButtons={${inputHideButtons()}}\n  onChange={setNumVal}\n/>`}
       >
         <div class="w-full max-w-xs flex flex-col gap-6">
           <div class="flex items-center justify-between w-full px-2 py-1 bg-surface rounded-lg border border-stroke">
@@ -135,7 +135,7 @@ export const FormsSection = (props: FormsSectionProps) => {
       <Preview
         title="Textarea"
         description="Multi-line text input with optional auto-resizing."
-        code={`import { Textarea } from 'starling-components/ui/Textarea';\n\n<div class="flex items-center justify-between w-full px-2 py-1 bg-surface rounded-lg border border-stroke">\n  <Label class="text-xs font-bold uppercase tracking-wider text-muted">\n    Enable Auto-Resize\n  </Label>\n  <Switch checked={textareaAutoResize()} onCheckedChange={setTextareaAutoResize} />\n</div>\n\n<Textarea\n  label="Deployment Script"\n  placeholder="Enter bash script..."\n  autoResize={${textareaAutoResize()}}\n/>`}
+        code={`import { Textarea } from 'starling-fivem-components/ui/Textarea';\n\n<div class="flex items-center justify-between w-full px-2 py-1 bg-surface rounded-lg border border-stroke">\n  <Label class="text-xs font-bold uppercase tracking-wider text-muted">\n    Enable Auto-Resize\n  </Label>\n  <Switch checked={textareaAutoResize()} onCheckedChange={setTextareaAutoResize} />\n</div>\n\n<Textarea\n  label="Deployment Script"\n  placeholder="Enter bash script..."\n  autoResize={${textareaAutoResize()}}\n/>`}
       >
         <div class="w-full max-w-md flex flex-col gap-6">
           <div class="flex items-center justify-between w-full px-2 py-1 bg-surface rounded-lg border border-stroke">
@@ -156,7 +156,7 @@ export const FormsSection = (props: FormsSectionProps) => {
       <Preview
         title="Range Slider"
         description="Granular control for numeric values."
-        code={`import { Slider } from 'starling-components/ui/Slider';\n\n<div class="w-full max-w-sm flex flex-col gap-4">\n  <Label>Memory Allocation</Label>\n  <Slider value={sliderVal()} onChange={setSliderVal} max={100} />\n</div>`}
+        code={`import { Slider } from 'starling-fivem-components/ui/Slider';\n\n<div class="w-full max-w-sm flex flex-col gap-4">\n  <Label>Memory Allocation</Label>\n  <Slider value={sliderVal()} onChange={setSliderVal} max={100} />\n</div>`}
       >
         <div class="w-full max-w-sm flex flex-col gap-4">
           <div class="flex justify-between font-mono text-xs">

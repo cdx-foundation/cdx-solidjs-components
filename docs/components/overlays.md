@@ -7,8 +7,8 @@ Floating UI elements that appear over the main content, such as modals, tooltips
 A composable dialog window for focused interactions.
 
 ```tsx
-import { Modal, ModalHeader, ModalTitle, ModalDescription, ModalFooter } from 'starling-components/ui/Modal';
-import { Button } from 'starling-components/ui/Button';
+import { Modal, ModalHeader, ModalTitle, ModalDescription, ModalFooter } from 'starling-fivem-components/ui/Modal';
+import { Button } from 'starling-fivem-components/ui/Button';
 
 <Modal isOpen={open()} onClose={() => setOpen(false)}>
   <ModalHeader>
@@ -30,8 +30,8 @@ import { Button } from 'starling-components/ui/Button';
 A panel that slides in from the edge of the viewport.
 
 ```tsx
-import { Sheet, SheetHeader, SheetTitle, SheetDescription, SheetContent, SheetFooter } from 'starling-components/ui/Sheet';
-import { Button } from 'starling-components/ui/Button';
+import { Sheet, SheetHeader, SheetTitle, SheetDescription, SheetContent, SheetFooter } from 'starling-fivem-components/ui/Sheet';
+import { Button } from 'starling-fivem-components/ui/Button';
 
 <Sheet isOpen={open()} onClose={() => setOpen(false)} side="right">
   <SheetHeader>
@@ -57,8 +57,8 @@ import { Button } from 'starling-components/ui/Button';
 A floating container for rich content, triggered by a click.
 
 ```tsx
-import { Popover } from 'starling-components/ui/Popover';
-import { Button } from 'starling-components/ui/Button';
+import { Popover } from 'starling-fivem-components/ui/Popover';
+import { Button } from 'starling-fivem-components/ui/Button';
 
 <Popover
   trigger={<Button variant="outline">Open Menu</Button>}
@@ -78,8 +78,8 @@ import { Button } from 'starling-components/ui/Button';
 A small floating label that appears on hover.
 
 ```tsx
-import { Tooltip } from 'starling-components/ui/Tooltip';
-import { Button } from 'starling-components/ui/Button';
+import { Tooltip } from 'starling-fivem-components/ui/Tooltip';
+import { Button } from 'starling-fivem-components/ui/Button';
 
 <Tooltip
   trigger={<Button variant="outline">Hover Me</Button>}
@@ -95,8 +95,8 @@ import { Button } from 'starling-components/ui/Button';
 A non-interactive preview that appears on hover with a slight delay.
 
 ```tsx
-import { HoverCard } from 'starling-components/ui/HoverCard';
-import { Avatar, AvatarFallback } from 'starling-components/ui/Avatar';
+import { HoverCard } from 'starling-fivem-components/ui/HoverCard';
+import { Avatar, AvatarFallback } from 'starling-fivem-components/ui/Avatar';
 
 <HoverCard trigger={<a href="/user" class="underline">@yanis</a>}>
   <div class="flex gap-4 p-2">
@@ -118,7 +118,7 @@ import { Avatar, AvatarFallback } from 'starling-components/ui/Avatar';
 A custom right-click menu.
 
 ```tsx
-import { ContextMenu } from 'starling-components/ui/ContextMenu';
+import { ContextMenu } from 'starling-fivem-components/ui/ContextMenu';
 
 <ContextMenu
   menu={
@@ -143,8 +143,8 @@ import { ContextMenu } from 'starling-components/ui/ContextMenu';
 A standard menu for actions or selection.
 
 ```tsx
-import { DropdownMenu, DropdownMenuItem, DropdownMenuSeparator } from 'starling-components/ui/DropdownMenu';
-import { Button } from 'starling-components/ui/Button';
+import { DropdownMenu, DropdownMenuItem, DropdownMenuSeparator } from 'starling-fivem-components/ui/DropdownMenu';
+import { Button } from 'starling-fivem-components/ui/Button';
 
 <DropdownMenu trigger={<Button>Actions</Button>}>
   <DropdownMenuItem onClick={onEdit}>Edit</DropdownMenuItem>
@@ -161,7 +161,7 @@ import { Button } from 'starling-components/ui/Button';
 A high-performance command palette with fuzzy filtering and keyboard navigation.
 
 ```tsx
-import { Command, CommandGroup, CommandItem } from 'starling-components/ui/Command';
+import { Command, CommandGroup, CommandItem } from 'starling-fivem-components/ui/Command';
 
 <Command 
   isOpen={open()} 

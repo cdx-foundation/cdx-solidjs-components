@@ -8,10 +8,10 @@ Starling UI is distributed via npm. You can install it using your preferred pack
 
 ```bash
 # npm
-npm install starling-components
+npm install starling-fivem-components
 
 # bun
-bun add starling-components
+bun add starling-fivem-components
 ```
 
 ## Peer Dependencies
@@ -29,10 +29,10 @@ Starling UI is built for Tailwind CSS v4. In your main CSS entry point, import t
 
 ```css
 @import "tailwindcss";
-@import "starling-components/theme";
+@import "starling-fivem-components/theme";
 
 /* Optional: Source the components if you are using Tailwind's JIT scanner on the library */
-@source "../node_modules/starling-components/ui/**/*.tsx";
+@source "../node_modules/starling-fivem-components/ui/**/*.tsx";
 ```
 
 ### 2. Provider Setup (Optional)
@@ -40,7 +40,7 @@ Starling UI is built for Tailwind CSS v4. In your main CSS entry point, import t
 If you plan to use toast notifications, make sure to add the `Toaster` component at the root of your application.
 
 ```tsx
-import { Toaster } from 'starling-components/ui/Toast';
+import { Toaster } from 'starling-fivem-components/ui/Toast';
 
 function App() {
   return (
@@ -57,8 +57,8 @@ function App() {
 Import components directly and start building:
 
 ```tsx
-import { Button } from 'starling-components/ui/Button';
-import { Card, CardTitle, CardContent } from 'starling-components/ui/Card';
+import { Button } from 'starling-fivem-components/ui/Button';
+import { Card, CardTitle, CardContent } from 'starling-fivem-components/ui/Card';
 
 export default function Home() {
   return (

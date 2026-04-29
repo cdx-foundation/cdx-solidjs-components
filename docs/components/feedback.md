@@ -7,7 +7,7 @@ Components for communicating system status, progress, and notifications to users
 Provides prominent, non-dismissible feedback with automatic icon injection.
 
 ```tsx
-import { Alert, AlertTitle, AlertDescription } from 'starling-components/ui/Alert';
+import { Alert, AlertTitle, AlertDescription } from 'starling-fivem-components/ui/Alert';
 
 <Alert variant="warning">
   <AlertTitle>Low Disk Space</AlertTitle>
@@ -28,7 +28,7 @@ import { Alert, AlertTitle, AlertDescription } from 'starling-components/ui/Aler
 A visual indicator of task completion.
 
 ```tsx
-import { Progress } from 'starling-components/ui/Progress';
+import { Progress } from 'starling-fivem-components/ui/Progress';
 
 <Progress value={45} max={100} />
 ```
@@ -40,7 +40,7 @@ import { Progress } from 'starling-components/ui/Progress';
 Placeholder shapes for loading states to prevent layout shifts.
 
 ```tsx
-import { Skeleton } from 'starling-components/ui/Skeleton';
+import { Skeleton } from 'starling-fivem-components/ui/Skeleton';
 
 <div class="flex items-center gap-4">
   <Skeleton class="h-12 w-12 rounded-full" />
@@ -58,7 +58,7 @@ import { Skeleton } from 'starling-components/ui/Skeleton';
 A notification system for global alerts. Requires the `Toaster` component at the app root.
 
 ```tsx
-import { toast, Toaster } from 'starling-components/ui/Toast';
+import { toast, Toaster } from 'starling-fivem-components/ui/Toast';
 
 // In your component
 const notify = () => {

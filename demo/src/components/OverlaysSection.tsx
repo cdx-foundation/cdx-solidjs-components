@@ -20,7 +20,7 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
       <Preview
         title="Dialog (Modal)"
         description="Focused interruptions for critical tasks."
-        code={`import { Modal, ModalHeader, ModalTitle, ModalFooter } from 'starling-components/ui/Modal';\n\n<Modal isOpen={open()} onClose={close}>\n  <ModalHeader>\n    <ModalTitle>Confirm Deployment</ModalTitle>\n  </ModalHeader>\n  <ModalFooter>\n    <Button onClick={close}>Cancel</Button>\n    <Button variant="primary">Confirm</Button>\n  </ModalFooter>\n</Modal>`}
+        code={`import { Modal, ModalHeader, ModalTitle, ModalFooter } from 'starling-fivem-components/ui/Modal';\n\n<Modal isOpen={open()} onClose={close}>\n  <ModalHeader>\n    <ModalTitle>Confirm Deployment</ModalTitle>\n  </ModalHeader>\n  <ModalFooter>\n    <Button onClick={close}>Cancel</Button>\n    <Button variant="primary">Confirm</Button>\n  </ModalFooter>\n</Modal>`}
       >
         <Button variant="secondary" onClick={() => props.setModalOpen(true)}>
           Launch Dialog
@@ -30,7 +30,7 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
       <Preview
         title="Slide Overlay (Sheet)"
         description="Lateral panels for detail views."
-        code={`import { Sheet, SheetHeader, SheetTitle, SheetContent, SheetFooter } from 'starling-components/ui/Sheet';\n\n<Sheet isOpen={open()} onClose={close} side="right">\n  <SheetHeader>\n    <SheetTitle>Configuration</SheetTitle>\n  </SheetHeader>\n  <SheetContent>...</SheetContent>\n  <SheetFooter>\n    <Button>Save Changes</Button>\n  </SheetFooter>\n</Sheet>`}
+        code={`import { Sheet, SheetHeader, SheetTitle, SheetContent, SheetFooter } from 'starling-fivem-components/ui/Sheet';\n\n<Sheet isOpen={open()} onClose={close} side="right">\n  <SheetHeader>\n    <SheetTitle>Configuration</SheetTitle>\n  </SheetHeader>\n  <SheetContent>...</SheetContent>\n  <SheetFooter>\n    <Button>Save Changes</Button>\n  </SheetFooter>\n</Sheet>`}
       >
         <Button variant="secondary" onClick={() => props.setSheetOpen(true)}>
           Open Right Sheet
@@ -40,7 +40,7 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
       <Preview
         title="Tooltip"
         description="A small floating label that appears on hover."
-        code={`import { Tooltip } from 'starling-components/ui/Tooltip';\n\n<Tooltip\n  trigger={<Button variant="outline">Hover Me</Button>}\n  content="Archive this resource"\n  align="top"\n/>`}
+        code={`import { Tooltip } from 'starling-fivem-components/ui/Tooltip';\n\n<Tooltip\n  trigger={<Button variant="outline">Hover Me</Button>}\n  content="Archive this resource"\n  align="top"\n/>`}
       >
         <div class="flex gap-4">
           <Tooltip
@@ -69,7 +69,7 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
       <Preview
         title="Popover"
         description="A floating container for rich content. Now supports cardinal and diagonal (corner) alignment."
-        code={`import { Popover } from 'starling-components/ui/Popover';\n\n<div class="grid grid-cols-3 gap-4">\n  <Popover trigger={<Button variant="outline">Bottom Left</Button>} align="bottom-left">...</Popover>\n  <Popover trigger={<Button variant="outline">Bottom Right</Button>} align="bottom-right">...</Popover>\n  <Popover trigger={<Button variant="outline">Top Right</Button>} align="top-right">...</Popover>\n</div>`}
+        code={`import { Popover } from 'starling-fivem-components/ui/Popover';\n\n<div class="grid grid-cols-3 gap-4">\n  <Popover trigger={<Button variant="outline">Bottom Left</Button>} align="bottom-left">...</Popover>\n  <Popover trigger={<Button variant="outline">Bottom Right</Button>} align="bottom-right">...</Popover>\n  <Popover trigger={<Button variant="outline">Top Right</Button>} align="top-right">...</Popover>\n</div>`}
       >
         <div class="flex flex-col gap-8 w-full items-center">
           <div class="flex flex-wrap justify-center gap-4">
@@ -110,7 +110,7 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
       <Preview
         title="Hover Card"
         description="A non-interactive preview that appears on hover. Alignment is now fully configurable."
-        code={`import { HoverCard } from 'starling-components/ui/HoverCard';\n\n<HoverCard trigger={<Button>Bottom Right</Button>} align="bottom-right">\n  Content aligned to corner\n</HoverCard>`}
+        code={`import { HoverCard } from 'starling-fivem-components/ui/HoverCard';\n\n<HoverCard trigger={<Button>Bottom Right</Button>} align="bottom-right">\n  Content aligned to corner\n</HoverCard>`}
       >
         <div class="flex flex-wrap justify-center gap-8">
           <HoverCard

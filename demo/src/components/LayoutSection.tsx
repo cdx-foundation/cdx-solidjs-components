@@ -22,7 +22,7 @@ export const LayoutSection = () => {
       <Preview
         title="Card"
         description="A fundamental layout container for grouping related content."
-        code={`import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'starling-components/ui/Card';\nimport { Button } from 'starling-components/ui/Button';\n\n<Card class="max-w-sm">\n  <CardHeader>\n    <CardTitle>Instance Overview</CardTitle>\n    <CardDescription>Managed by Starling Cloud</CardDescription>\n  </CardHeader>\n  <CardContent>\n    <p class="text-sm text-muted">All systems in us-east-1 are operational.</p>\n  </CardContent>\n  <CardFooter>\n    <Button variant="outline" class="w-full">View Cluster Metrics</Button>\n  </CardFooter>\n</Card>`}
+        code={`import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'starling-fivem-components/ui/Card';\nimport { Button } from 'starling-fivem-components/ui/Button';\n\n<Card class="max-w-sm">\n  <CardHeader>\n    <CardTitle>Instance Overview</CardTitle>\n    <CardDescription>Managed by Starling Cloud</CardDescription>\n  </CardHeader>\n  <CardContent>\n    <p class="text-sm text-muted">All systems in us-east-1 are operational.</p>\n  </CardContent>\n  <CardFooter>\n    <Button variant="outline" class="w-full">View Cluster Metrics</Button>\n  </CardFooter>\n</Card>`}
       >
         <Card class="max-w-sm">
           <CardHeader>
@@ -45,7 +45,7 @@ export const LayoutSection = () => {
       <Preview
         title="Scroll Area"
         description="Custom minimal scrollbars for contained content."
-        code={`import { ScrollArea } from 'starling-components/ui/ScrollArea';\n\n<ScrollArea maxHeight="120px" class="border border-stroke p-4 rounded-lg bg-panel">\n  <div class="space-y-4 font-mono text-sm text-muted">\n    <p>[08:42:01] System initializing...</p>\n    <p>[08:42:05] Loading kernel modules...</p>\n    <p>[08:42:10] Database connection established.</p>\n  </div>\n</ScrollArea>`}
+        code={`import { ScrollArea } from 'starling-fivem-components/ui/ScrollArea';\n\n<ScrollArea maxHeight="120px" class="border border-stroke p-4 rounded-lg bg-panel">\n  <div class="space-y-4 font-mono text-sm text-muted">\n    <p>[08:42:01] System initializing...</p>\n    <p>[08:42:05] Loading kernel modules...</p>\n    <p>[08:42:10] Database connection established.</p>\n  </div>\n</ScrollArea>`}
       >
         <ScrollArea
           maxHeight="120px"
@@ -64,7 +64,7 @@ export const LayoutSection = () => {
       <Preview
         title="AspectRatio"
         description="Maintain specific width-to-height ratios."
-        code={`import { AspectRatio } from 'starling-components/ui/AspectRatio';\n\n<div class="w-full max-w-sm overflow-hidden rounded-xl border border-stroke shadow-lg">\n  <AspectRatio ratio={16/9}>\n    <div class="w-full h-full bg-surface grid-bg flex items-center justify-center">\n       <span class="text-muted font-bold tracking-wider">16:9 Aspect Ratio</span>\n    </div>\n  </AspectRatio>\n</div>`}
+        code={`import { AspectRatio } from 'starling-fivem-components/ui/AspectRatio';\n\n<div class="w-full max-w-sm overflow-hidden rounded-xl border border-stroke shadow-lg">\n  <AspectRatio ratio={16/9}>\n    <div class="w-full h-full bg-surface grid-bg flex items-center justify-center">\n       <span class="text-muted font-bold tracking-wider">16:9 Aspect Ratio</span>\n    </div>\n  </AspectRatio>\n</div>`}
       >
         <div class="w-full max-w-sm overflow-hidden rounded-xl border border-stroke shadow-lg">
           <AspectRatio ratio={16 / 9}>

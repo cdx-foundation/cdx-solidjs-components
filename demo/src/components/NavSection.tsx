@@ -19,7 +19,7 @@ export const NavSection = () => {
       <Preview
         title="Tabs"
         description="Layered content with smooth transitions."
-        code={`import { Tabs, TabsList, TabsTrigger, TabsContent } from 'starling-components/ui/Tabs';\n\n<Tabs defaultValue="account">\n  <TabsList>\n    <TabsTrigger value="account">Account</TabsTrigger>\n    <TabsTrigger value="security">Security</TabsTrigger>\n  </TabsList>\n  <TabsContent value="account">General info...</TabsContent>\n  <TabsContent value="security">MFA settings...</TabsContent>\n</Tabs>`}
+        code={`import { Tabs, TabsList, TabsTrigger, TabsContent } from 'starling-fivem-components/ui/Tabs';\n\n<Tabs defaultValue="account">\n  <TabsList>\n    <TabsTrigger value="account">Account</TabsTrigger>\n    <TabsTrigger value="security">Security</TabsTrigger>\n  </TabsList>\n  <TabsContent value="account">General info...</TabsContent>\n  <TabsContent value="security">MFA settings...</TabsContent>\n</Tabs>`}
       >
         <Tabs defaultValue="account" class="w-full max-w-sm">
           <TabsList class="w-full bg-surface p-1 rounded-lg">
@@ -42,7 +42,7 @@ export const NavSection = () => {
       <Preview
         title="Breadcrumb"
         description="Visualize hierarchy and current location."
-        code={`import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from 'starling-components/ui/Breadcrumb';\n\n<Breadcrumb>\n  <BreadcrumbList>\n    <BreadcrumbItem><BreadcrumbLink href="#">Cluster</BreadcrumbLink></BreadcrumbItem>\n    <BreadcrumbSeparator />\n    <BreadcrumbItem><BreadcrumbLink href="#">Nodes</BreadcrumbLink></BreadcrumbItem>\n  </BreadcrumbList>\n</Breadcrumb>`}
+        code={`import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from 'starling-fivem-components/ui/Breadcrumb';\n\n<Breadcrumb>\n  <BreadcrumbList>\n    <BreadcrumbItem><BreadcrumbLink href="#">Cluster</BreadcrumbLink></BreadcrumbItem>\n    <BreadcrumbSeparator />\n    <BreadcrumbItem><BreadcrumbLink href="#">Nodes</BreadcrumbLink></BreadcrumbItem>\n  </BreadcrumbList>\n</Breadcrumb>`}
       >
         <Breadcrumb>
           <BreadcrumbList>

@@ -17,7 +17,7 @@ export const DisclosureSection = () => {
       <Preview
         title="Accordion"
         description="Vertically stacked collapsible headings."
-        code={`import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from 'starling-components/ui/Accordion';\n\n<Accordion collapsible>\n  <AccordionItem>\n    <AccordionTrigger>How it works?</AccordionTrigger>\n    <AccordionContent>Details...</AccordionContent>\n  </AccordionItem>\n</Accordion>`}
+        code={`import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from 'starling-fivem-components/ui/Accordion';\n\n<Accordion collapsible>\n  <AccordionItem>\n    <AccordionTrigger>How it works?</AccordionTrigger>\n    <AccordionContent>Details...</AccordionContent>\n  </AccordionItem>\n</Accordion>`}
       >
         <Accordion
           collapsible

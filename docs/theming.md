@@ -63,7 +63,7 @@ The most straightforward way to customize the theme is to define your own values
 Starling UI provides a built-in `useTheme` hook that manages the dark/light mode state.
 
 ```tsx
-import { useTheme } from 'starling-components/hooks';
+import { useTheme } from 'starling-fivem-components/hooks';
 
 function ThemeToggle() {
   const { isDark, toggleTheme } = useTheme();
