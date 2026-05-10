@@ -43,3 +43,4 @@ export * from './ui/Tabs';
 export * from './ui/Textarea';
 export * from './ui/Toast';
 export * from './ui/Tooltip';
+export * from './ui/Floating';

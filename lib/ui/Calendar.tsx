@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-solid';
 import { For, type JSX, Show, createEffect, createMemo, createSignal, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
+import type { Alignment } from './Floating';
 
 // --- Types & Constants ---
 
@@ -139,6 +140,12 @@ interface CalendarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChan
    * If not provided, it defaults to the first selected date or today's date.
    */
   initialFocus?: Date;
+
+  /**
+   * The anchor point of the calendar when used in a floating context.
+   * @default "bottom"
+   */
+  align?: Alignment;
 }
 
 /**
@@ -179,6 +186,7 @@ export const Calendar = (props: CalendarProps) => {
     'showTime',
     'class',
     'initialFocus',
+    'align',
   ]);
 
   const [viewDate, setViewDate] = createSignal(
@@ -224,6 +232,15 @@ export const Calendar = (props: CalendarProps) => {
     });
 
     return [...prevMonthDays, ...currentMonthDays, ...nextMonthDays];
+  });
+
+  const calendarRows = createMemo(() => {
+    const data = calendarData();
+    const rows = [];
+    for (let i = 0; i < data.length; i += 7) {
+      rows.push(data.slice(i, i + 7));
+    }
+    return rows;
   });
 
   const handleDateClick = (date: Date) => {
@@ -332,60 +349,72 @@ export const Calendar = (props: CalendarProps) => {
           )}
         </For>
 
-        <For each={calendarData()}>
-          {({ day, date, isCurrentMonth }) => {
-            const s = local.selected;
-            const selected = createMemo(() => {
-              if (!s) return false;
-              if (local.mode === 'range') return isSameDay(date, s.from) || isSameDay(date, s.to);
-              if (local.mode === 'multiple')
-                return Array.isArray(s) && s.some((d) => isSameDay(d, date));
-              return isSameDay(date, s);
-            });
+        <For each={calendarRows()}>
+          {(row) => (
+            <div role="row" class="contents" tabIndex={-1}>
+              <For each={row}>
+                {({ day, date, isCurrentMonth }) => {
+                  const s = local.selected;
+                  const selected = createMemo(() => {
+                    if (!s) return false;
+                    if (local.mode === 'range') return isSameDay(date, s.from) || isSameDay(date, s.to);
+                    if (local.mode === 'multiple')
+                      return Array.isArray(s) && s.some((d) => isSameDay(d, date));
+                    return isSameDay(date, s);
+                  });
 
-            const inRange = createMemo(() => {
-              if (local.mode === 'range' && s?.from && s?.to) {
-                return isWithinRange(date, s.from, s.to);
-              }
-              return false;
-            });
+                  const inRange = createMemo(() => {
+                    if (local.mode === 'range' && s?.from && s?.to) {
+                      return isWithinRange(date, s.from, s.to);
+                    }
+                    return false;
+                  });
 
-            const disabled = local.disabled?.(date);
-            const isToday = isSameDay(date, new Date());
+                  const disabled = local.disabled?.(date);
+                  const isToday = isSameDay(date, new Date());
 
-            const ariaLabel = () => {
-              return `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}${isToday ? ' (Today)' : ''}`;
-            };
+                  const ariaLabel = () => {
+                    return `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}${isToday ? ' (Today)' : ''}`;
+                  };
 
-            return (
-              <div class="flex justify-center w-full relative" role="gridcell" tabIndex={-1}>
-                <Show when={inRange() && !selected()}>
-                  <div class="absolute inset-y-0 inset-x-[-4px] bg-primary/20 z-0" />
-                </Show>
+                  return (
+                    <div
+                      class="flex justify-center w-full relative"
+                      role="gridcell"
+                      tabIndex={-1}
+                      aria-selected={selected()}
+                    >
+                      <Show when={inRange() && !selected()}>
+                        <div class="absolute inset-y-0 inset-x-[-4px] bg-primary/20 z-0" />
+                      </Show>
 
-                <button
-                  type="button"
-                  disabled={disabled || (!isCurrentMonth && !local.showOutsideDays)}
-                  onClick={() => handleDateClick(date)}
-                  aria-label={ariaLabel()}
-                  aria-selected={selected()}
-                  aria-current={isToday ? 'date' : undefined}
-                  class={twMerge(
-                    'relative z-10 flex items-center justify-center w-10 h-10 text-sm font-mono cursor-pointer transition-all outline-none',
-                    !isCurrentMonth &&
-                      (local.showOutsideDays ? 'text-muted/40' : 'invisible pointer-events-none'),
-                    isToday && !selected() && 'text-primary font-bold underline underline-offset-4',
-                    selected()
-                      ? 'bg-primary text-white font-semibold'
-                      : 'text-fg hover:bg-surface hover:text-fg',
-                    disabled && 'opacity-30 cursor-not-allowed grayscale',
-                  )}
-                >
-                  {day}
-                </button>
-              </div>
-            );
-          }}
+                      <button
+                        type="button"
+                        disabled={disabled || (!isCurrentMonth && !local.showOutsideDays)}
+                        onClick={() => handleDateClick(date)}
+                        aria-label={ariaLabel()}
+                        aria-current={isToday ? 'date' : undefined}
+                        class={twMerge(
+                          'relative z-10 flex items-center justify-center w-10 h-10 text-sm font-mono cursor-pointer transition-all outline-none',
+                          !isCurrentMonth &&
+                            (local.showOutsideDays
+                              ? 'text-muted/40'
+                              : 'invisible pointer-events-none'),
+                          isToday && !selected() && 'text-primary font-bold underline underline-offset-4',
+                          selected()
+                            ? 'bg-primary text-white font-semibold'
+                            : 'text-fg hover:bg-surface hover:text-fg',
+                          disabled && 'opacity-30 cursor-not-allowed grayscale',
+                        )}
+                      >
+                        {day}
+                      </button>
+                    </div>
+                  );
+                }}
+              </For>
+            </div>
+          )}
         </For>
       </div>
 

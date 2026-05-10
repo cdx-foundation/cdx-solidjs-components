@@ -15,10 +15,12 @@ import {
   TableRow,
 } from '../../../lib/ui/Table';
 import { Preview } from './Preview';
+import { Select } from '@/lib';
 
 export const DataSection = () => {
   const [date, setDate] = createSignal<Date>(new Date());
   const [calendarShowTime, setCalendarShowTime] = createSignal(true);
+  const [alignment, setAlignment] = createSignal<any>('left');
 
   return (
     <section class="space-y-12">
@@ -91,6 +93,23 @@ export const DataSection = () => {
             </Label>
             <Switch checked={calendarShowTime()} onCheckedChange={setCalendarShowTime} />
           </div>
+          <div class="flex items-center justify-between w-full px-2 py-1 bg-surface rounded-lg border border-stroke">
+            <Label class="text-xs font-bold uppercase tracking-wider text-muted">
+              Calendar Alignment
+            </Label>
+            <div class="w-32">
+              <Select
+                value={alignment()}
+                onChange={setAlignment}
+                options={[
+                  { label: 'Left', value: 'left' },
+                  { label: 'Right', value: 'right' },
+                  { label: 'Top', value: 'top' },
+                  { label: 'Bottom', value: 'bottom' },
+                ]}
+              />
+            </div>
+          </div>
           <Card class="bg-panel w-full transition-all duration-400 overflow-hidden">
             <Calendar
               mode="single"
@@ -98,6 +117,7 @@ export const DataSection = () => {
               onChange={setDate}
               showTime={calendarShowTime()}
               class="border-none p-6"
+              align={alignment()}
             />
           </Card>
         </div>
@@ -115,6 +135,7 @@ export const DataSection = () => {
             onChange={setDate}
             showTime
             placeholder="Select date and time"
+            align={alignment()}
           />
         </div>
       </Preview>

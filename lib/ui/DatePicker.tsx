@@ -2,6 +2,7 @@ import { Calendar as CalendarIcon } from 'lucide-solid';
 import { type JSX, Show, createEffect, createSignal, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { Calendar } from './Calendar';
+import { type Alignment } from './Floating';
 import { Popover } from './Popover';
 
 /**
@@ -34,6 +35,12 @@ interface DatePickerProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onCh
    * @default false
    */
   showTime?: boolean;
+  /**
+   * The anchor point of the calendar popover relative to its trigger.
+   * Supports cardinal and diagonal positions.
+   * @default "left"
+   */
+  align?: Alignment;
 }
 
 /**
@@ -58,7 +65,7 @@ interface DatePickerProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onCh
  * **Behaviors:**
  * - **Formatting:** Automatically formats selected dates using `toLocaleDateString` (and `toLocaleTimeString` if `showTime` is true) for a human-readable display.
  * - **Aesthetics:** Uses a monospace font for the date readout to ensure character alignment and consistency with the design system.
- * - **Responsive Alignment:** The calendar popover is anchored to the left of the trigger by default.
+ * - **Responsive Alignment:** The calendar popover is anchored to the left of the trigger by default but can be customized via the `align` prop.
  * - **Uncontrolled Support:** Manages its own internal state if a value is provided but not explicitly managed.
  *
  * @param props - Customization options including `label`, `value`, and `onChange`.
@@ -71,6 +78,7 @@ export const DatePicker = (props: DatePickerProps) => {
     'value',
     'onChange',
     'showTime',
+    'align',
   ]);
   const [internalDate, setInternalDate] = createSignal<Date | undefined>(local.value);
 
@@ -110,7 +118,7 @@ export const DatePicker = (props: DatePickerProps) => {
       </Show>
 
       <Popover
-        align="left"
+        align={local.align || 'left'}
         class="p-0 w-max"
         trigger={
           <button
@@ -132,6 +140,7 @@ export const DatePicker = (props: DatePickerProps) => {
           showTime={local.showTime}
           class="border-0 shadow-none"
           initialFocus={internalDate()}
+          align={local.align}
         />
       </Popover>
     </div>
