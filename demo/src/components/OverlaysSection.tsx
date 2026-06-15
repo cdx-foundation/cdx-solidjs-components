@@ -1,9 +1,5 @@
 import { Button } from '../../../lib/ui/Button';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '../../../lib/ui/HoverCard';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '../../../lib/ui/HoverCard';
 import { Popover, PopoverContent, PopoverTrigger } from '../../../lib/ui/Popover';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../../lib/ui/Tooltip';
 import { Preview } from './Preview';
@@ -191,9 +187,7 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
 
           <HoverCard align="bottom-right">
             <HoverCardTrigger>
-              <span class="text-primary underline cursor-help font-mono text-xs">
-                bottom-right
-              </span>
+              <span class="text-primary underline cursor-help font-mono text-xs">bottom-right</span>
             </HoverCardTrigger>
             <HoverCardContent>
               <div class="space-y-2">

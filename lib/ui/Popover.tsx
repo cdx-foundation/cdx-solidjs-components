@@ -38,10 +38,7 @@ export const Popover = (props: PopoverProps) => {
     <PopoverContext.Provider value={{ isOpen, setIsOpen, align }}>
       <Floating isOpen={isOpen()}>
         <div class={twMerge('inline-block', local.class)} {...others}>
-          <Show
-            when={local.trigger}
-            fallback={local.children}
-          >
+          <Show when={local.trigger} fallback={local.children}>
             <PopoverTrigger>{local.trigger}</PopoverTrigger>
             <PopoverContent>{local.children}</PopoverContent>
           </Show>
@@ -83,7 +80,7 @@ export const PopoverTrigger = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
       class={twMerge('inline-block cursor-pointer', local.class)}
       {...{
         role: 'button',
-        tabIndex: 0
+        tabIndex: 0,
       }}
       {...others}
     >

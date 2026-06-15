@@ -1,11 +1,4 @@
-import {
-  type JSX,
-  Show,
-  createContext,
-  createSignal,
-  splitProps,
-  useContext,
-} from 'solid-js';
+import { type JSX, createContext, createSignal, splitProps, useContext } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { type Alignment, Floating } from './Floating';
 
@@ -36,10 +29,7 @@ export const HoverCard = (props: HoverCardProps) => {
     <HoverCardContext.Provider value={{ isOpen, setIsOpen, align }}>
       <Floating isOpen={isOpen()}>
         <div class={twMerge('inline-block', local.class)} {...others}>
-          <Show
-            when={local.trigger}
-            fallback={local.children}
-          >
+          <Show when={local.trigger} fallback={local.children}>
             <HoverCardTrigger>{local.trigger}</HoverCardTrigger>
             <HoverCardContent>{local.children}</HoverCardContent>
           </Show>
@@ -56,22 +46,29 @@ export const HoverCardTrigger = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
 
   let timeoutId: number | undefined;
 
-  const callHandler = (handler: any, ev: Event) => {
-    if (typeof handler === 'function') handler(ev);
-    else if (handler) handler[0](handler[1], ev);
+  const handleMouseEnter = (e: any) => {
+    clearTimeout(timeoutId);
+    context.setIsOpen(true);
+    if (typeof local.onMouseEnter === 'function') {
+      local.onMouseEnter(e);
+    } else if (local.onMouseEnter) {
+      (local.onMouseEnter[0] as any)(local.onMouseEnter[1], e);
+    }
+  };
+
+  const handleMouseLeave = (e: any) => {
+    timeoutId = window.setTimeout(() => context.setIsOpen(false), 200);
+    if (typeof local.onMouseLeave === 'function') {
+      local.onMouseLeave(e);
+    } else if (local.onMouseLeave) {
+      (local.onMouseLeave[0] as any)(local.onMouseLeave[1], e);
+    }
   };
 
   return (
     <Floating.Trigger
-      onMouseEnter={(e) => {
-        clearTimeout(timeoutId);
-        context.setIsOpen(true);
-        callHandler(local.onMouseEnter, e);
-      }}
-      onMouseLeave={(e) => {
-        timeoutId = window.setTimeout(() => context.setIsOpen(false), 200);
-        callHandler(local.onMouseLeave, e);
-      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       class={twMerge('inline-block cursor-help', local.class)}
       {...others}
     >
@@ -87,11 +84,6 @@ export const HoverCardContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
 
   let timeoutId: number | undefined;
 
-  const callHandler = (handler: any, ev: Event) => {
-    if (typeof handler === 'function') handler(ev);
-    else if (handler) handler[0](handler[1], ev);
-  };
-
   return (
     <Floating.Content
       isOpen={context.isOpen()}
@@ -103,11 +95,19 @@ export const HoverCardContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
       )}
       onMouseEnter={(e) => {
         clearTimeout(timeoutId);
-        callHandler(local.onMouseEnter, e);
+        if (typeof local.onMouseEnter === 'function') {
+          local.onMouseEnter(e);
+        } else if (local.onMouseEnter) {
+          (local.onMouseEnter[0] as any)(local.onMouseEnter[1], e);
+        }
       }}
       onMouseLeave={(e) => {
         timeoutId = window.setTimeout(() => context.setIsOpen(false), 200);
-        callHandler(local.onMouseLeave, e);
+        if (typeof local.onMouseLeave === 'function') {
+          local.onMouseLeave(e);
+        } else if (local.onMouseLeave) {
+          (local.onMouseLeave[0] as any)(local.onMouseLeave[1], e);
+        }
       }}
       {...others}
     >

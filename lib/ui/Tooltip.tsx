@@ -1,11 +1,4 @@
-import {
-  type JSX,
-  Show,
-  createContext,
-  createSignal,
-  splitProps,
-  useContext,
-} from 'solid-js';
+import { type JSX, createContext, createSignal, splitProps, useContext } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { type Alignment, Floating } from './Floating';
 
@@ -50,10 +43,7 @@ export const Tooltip = (props: TooltipProps) => {
     <TooltipContext.Provider value={{ isOpen, setIsOpen, align }}>
       <Floating isOpen={isOpen()}>
         <div class={twMerge('inline-flex', local.class)} {...others}>
-          <Show
-            when={local.trigger}
-            fallback={local.children}
-          >
+          <Show when={local.trigger} fallback={local.children}>
             <TooltipTrigger>{local.trigger}</TooltipTrigger>
             <TooltipContent>{local.content || local.children}</TooltipContent>
           </Show>

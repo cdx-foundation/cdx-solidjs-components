@@ -1,3 +1,4 @@
+import { Select } from '@/lib';
 import { createSignal } from 'solid-js';
 import { Badge } from '../../../lib/ui/Badge';
 import { Calendar } from '../../../lib/ui/Calendar';
@@ -15,7 +16,6 @@ import {
   TableRow,
 } from '../../../lib/ui/Table';
 import { Preview } from './Preview';
-import { Select } from '@/lib';
 
 export const DataSection = () => {
   const [date, setDate] = createSignal<Date>(new Date());

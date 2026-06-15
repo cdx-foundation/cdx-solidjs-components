@@ -1,11 +1,4 @@
-import {
-  type JSX,
-  Show,
-  createContext,
-  createSignal,
-  splitProps,
-  useContext,
-} from 'solid-js';
+import { type JSX, Show, createContext, createSignal, splitProps, useContext } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
 interface CollapsibleContextValue {
@@ -32,10 +25,7 @@ export const Collapsible = (props: CollapsibleProps) => {
   return (
     <CollapsibleContext.Provider value={{ isOpen, setIsOpen }}>
       <div class={twMerge('flex flex-col', local.class)} {...others}>
-        <Show
-          when={local.trigger}
-          fallback={local.children}
-        >
+        <Show when={local.trigger} fallback={local.children}>
           <CollapsibleTrigger>{local.trigger}</CollapsibleTrigger>
           <CollapsibleContent>{local.children}</CollapsibleContent>
         </Show>
@@ -79,7 +69,7 @@ export const CollapsibleTrigger = (props: JSX.HTMLAttributes<HTMLDivElement>) =>
       class={twMerge('cursor-pointer', local.class)}
       {...{
         role: 'button',
-        tabIndex: 0
+        tabIndex: 0,
       }}
       {...others}
     >
