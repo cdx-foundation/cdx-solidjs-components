@@ -34,7 +34,7 @@ export const Breadcrumb = (props: JSX.HTMLAttributes<HTMLElement>) => {
 
   return (
     <nav
-      class={twMerge('flex items-center text-sm font-sans', local.class)}
+      class={'flex items-center text-sm font-sans ' + (local.class || '')}
       aria-label="breadcrumb"
       {...others}
     >
@@ -54,10 +54,10 @@ export const BreadcrumbList = (props: JSX.HTMLAttributes<HTMLOListElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
     <ol
-      class={twMerge(
-        'flex flex-wrap items-center gap-1.5 wrap-break-word text-sm text-muted-foreground sm:gap-2.5',
-        local.class,
-      )}
+      class={
+        'flex flex-wrap items-center gap-1.5 wrap-break-word text-sm text-muted-foreground sm:gap-2.5 ' +
+        (local.class || '')
+      }
       {...others}
     >
       {local.children}
@@ -75,7 +75,7 @@ export const BreadcrumbList = (props: JSX.HTMLAttributes<HTMLOListElement>) => {
 export const BreadcrumbItem = (props: JSX.HTMLAttributes<HTMLLIElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <li class={twMerge('inline-flex items-center gap-1.5', local.class)} {...others}>
+    <li class={'inline-flex items-center gap-1.5 ' + (local.class || '')} {...others}>
       {local.children}
     </li>
   );
@@ -91,7 +91,7 @@ export const BreadcrumbItem = (props: JSX.HTMLAttributes<HTMLLIElement>) => {
 export const BreadcrumbLink = (props: JSX.AnchorHTMLAttributes<HTMLAnchorElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <a class={twMerge('transition-colors hover:text-foreground', local.class)} {...others}>
+    <a class={'transition-colors hover:text-foreground ' + (local.class || '')} {...others}>
       {local.children}
     </a>
   );
@@ -110,7 +110,7 @@ export const BreadcrumbSeparator = (props: JSX.HTMLAttributes<HTMLLIElement>) =>
     <li
       role="presentation"
       aria-hidden="true"
-      class={twMerge('[&>svg]:w-3.5 [&>svg]:h-3.5', local.class)}
+      class={'[&>svg]:w-3.5 [&>svg]:h-3.5 ' + (local.class || '')}
       {...others}
     >
       {local.children ?? '/'}

@@ -1,31 +1,18 @@
 import {
-  CalendarDays,
   Check,
-  ChevronRight,
-  Contrast,
   Copy,
   Download,
   DownloadCloud,
-  Filter,
-  Ghost,
   Layers,
-  Mail,
-  Moon,
   MoreHorizontal,
   MousePointer2,
   Palette,
   Plus,
   RefreshCw,
-  Scroll,
   Search,
   Settings,
   Settings2,
-  Sun,
-  Trees,
   Type,
-  Waves,
-  X,
-  Zap,
 } from 'lucide-solid';
 import { For, Show, createSignal } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
@@ -98,20 +85,17 @@ import {
   SHADOWS,
   type ShadowLevel,
   type ThemeFont,
+  type StylePreset,
+  STYLE_PRESETS,
   hexToRgb,
 } from '../theme-constants';
 
 const BASE_COLORS: { name: string; value: BaseColor; icon: any }[] = [
-  { name: 'Pure', value: 'pure', icon: Palette },
   { name: 'Zinc', value: 'zinc', icon: Palette },
   { name: 'Slate', value: 'slate', icon: Palette },
   { name: 'Stone', value: 'stone', icon: Palette },
-  { name: 'Crimson', value: 'crimson', icon: Palette },
-  { name: 'Ocean', value: 'ocean', icon: Waves },
-  { name: 'Forest', value: 'forest', icon: Trees },
-  { name: 'Vintage', value: 'vintage', icon: Scroll },
-  { name: 'OLED', value: 'oled', icon: Ghost },
-  { name: 'Brutalist', value: 'brutalist', icon: Contrast },
+  { name: 'Gray', value: 'gray', icon: Palette },
+  { name: 'Neutral', value: 'neutral', icon: Palette },
 ];
 
 const RADIUS_OPTIONS = [
@@ -135,22 +119,36 @@ const SHADOW_OPTIONS: { label: string; value: ShadowLevel }[] = [
 const FONT_OPTIONS: { label: string; value: ThemeFont; family: string }[] = [
   { label: 'Sans', value: 'sans', family: '"Inter"' },
   { label: 'Mono', value: 'mono', family: '"JetBrains Mono"' },
-  { label: 'Serif', value: 'serif', family: '"Playfair Display"' },
   { label: 'Display', value: 'display', family: '"Archivo Black"' },
-  { label: 'Modern', value: 'modern', family: '"Space Grotesk"' },
-  { label: 'Reading', value: 'reading', family: '"Lexend"' },
-  { label: 'Geometric', value: 'geometric', family: '"Outfit"' },
   { label: 'Condensed', value: 'condensed', family: '"Bebas Neue"' },
-  { label: 'Soft Serif', value: 'soft-serif', family: '"Fraunces"' },
+  { label: 'Oxanium', value: 'oxanium', family: '"Oxanium"' },
   { label: 'System', value: 'system', family: 'system-ui' },
 ];
 
 export const ThemeCreator = () => {
   const theme = useAppTheme();
   const [showExport, setShowExport] = createSignal(false);
+  const [exportTab, setExportTab] = createSignal('css');
   const [hasCopied, setHasCopied] = createSignal(false);
   const [sliderVal, setSliderVal] = createSignal(45);
   const [region, setRegion] = createSignal('us-east');
+
+  const generateObject = () => {
+    const common = {
+      accent: theme.accentColor(),
+      base: theme.baseColor(),
+      radius: theme.radius(),
+      font: theme.bodyFont(),
+      shadow: theme.shadow(),
+    };
+
+    const config = {
+      light: { ...common, dark: false },
+      dark: { ...common, dark: true },
+    };
+
+    return JSON.stringify(config, null, 2);
+  };
 
   const generateCSS = () => {
     const light = BASE_PALETTES[theme.baseColor()].light;
@@ -202,9 +200,10 @@ export const ThemeCreator = () => {
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(generateCSS());
+      const content = exportTab() === 'css' ? generateCSS() : generateObject();
+      await navigator.clipboard.writeText(content);
       setHasCopied(true);
-      toast.success('CSS copied!');
+      toast.success(exportTab() === 'css' ? 'CSS copied!' : 'Theme object copied!');
       setTimeout(() => setHasCopied(false), 2000);
     } catch (err) {
       toast.error('Failed to copy');
@@ -224,6 +223,40 @@ export const ThemeCreator = () => {
         </div>
 
         <div class="p-6 space-y-10 flex-1">
+          {/* Style Preset */}
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 text-muted">
+              <Palette size={14} />
+              <Label class="text-[10px] font-bold uppercase tracking-widest">Style</Label>
+            </div>
+            <div class="grid grid-cols-2 gap-1.5">
+              <For each={Object.entries(STYLE_PRESETS)}>
+                {([key, preset]) => (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const s = key as StylePreset;
+                      theme.setStyle(s);
+                      theme.setHeaderFont(preset.headerFont);
+                      theme.setBodyFont(preset.bodyFont);
+                      theme.setRadius(preset.radius);
+                      theme.setShadow(preset.shadow);
+                    }}
+                    class={twMerge(
+                      'px-2 py-2 rounded-md border text-[10px] font-bold transition-all text-left leading-tight',
+                      theme.style() === key
+                        ? 'border-primary bg-primary/5 text-fg shadow-[0_0_0_1px_var(--primary-color)]'
+                        : 'border-stroke bg-surface/50 text-muted hover:border-muted hover:text-fg',
+                    )}
+                  >
+                    <div>{preset.label}</div>
+                    <div class="text-[8px] font-normal text-muted mt-0.5">{preset.description}</div>
+                  </button>
+                )}
+              </For>
+            </div>
+          </div>
+
           {/* Base Palette */}
           <div class="space-y-4">
             <Label class="text-[10px] font-bold uppercase tracking-widest text-muted">
@@ -430,11 +463,12 @@ export const ThemeCreator = () => {
             type="button"
             class="w-full text-[10px] font-bold text-muted hover:text-primary transition-colors flex items-center justify-center gap-1.5"
             onClick={() => {
+              theme.setStyle('vega');
               theme.setAccentColor('#e11d48');
               theme.setRadius('0.5rem');
               theme.setHeaderFont('display');
               theme.setBodyFont('sans');
-              theme.setBaseColor('pure');
+              theme.setBaseColor('zinc');
               theme.setShadow('sm');
               theme.setBtnBoxShadow('none');
               toast.info('Restored');
@@ -447,6 +481,7 @@ export const ThemeCreator = () => {
 
       {/* Preview Workspace */}
       <main
+        data-style={theme.style()}
         class="flex-1 overflow-y-auto bg-bg custom-scrollbar relative"
         style={{ 'font-family': 'var(--sans-main)' }}
       >
@@ -471,10 +506,10 @@ export const ThemeCreator = () => {
               </BreadcrumbList>
             </Breadcrumb>
 
-            <div class="flex items-end justify-between border-b-4 border-fg pb-8">
+            <div class="flex items-end justify-between border-b-4 border-stroke pb-8">
               <div class="space-y-4">
                 <div class="flex items-center gap-4">
-                  <Avatar class="h-12 w-12 border-2 border-fg">
+                  <Avatar class="h-12 w-12 border-2 border-stroke">
                     <AvatarImage
                       src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop"
                       alt="JD"
@@ -536,7 +571,7 @@ export const ThemeCreator = () => {
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
             <div class="lg:col-span-8 space-y-10">
               <div class="grid grid-cols-3 gap-6">
-                <Card class="border-2 border-fg" style={{ 'box-shadow': 'var(--shadow-main)' }}>
+                <Card class="border-2 border-stroke" style={{ 'box-shadow': 'var(--shadow-main)' }}>
                   <CardHeader class="pb-2">
                     <CardTitle class="text-[10px] font-black uppercase text-muted">
                       Traffic
@@ -547,7 +582,7 @@ export const ThemeCreator = () => {
                     <p class="text-[10px] text-positive font-bold mt-1">+24% ↑</p>
                   </CardContent>
                 </Card>
-                <Card class="border-2 border-fg" style={{ 'box-shadow': 'var(--shadow-main)' }}>
+                <Card class="border-2 border-stroke" style={{ 'box-shadow': 'var(--shadow-main)' }}>
                   <CardHeader class="pb-2">
                     <CardTitle class="text-[10px] font-black uppercase text-muted">
                       Uptime
@@ -558,7 +593,7 @@ export const ThemeCreator = () => {
                     <p class="text-[10px] text-primary font-bold mt-1">Critical sync active</p>
                   </CardContent>
                 </Card>
-                <Card class="border-2 border-fg" style={{ 'box-shadow': 'var(--shadow-main)' }}>
+                <Card class="border-2 border-stroke" style={{ 'box-shadow': 'var(--shadow-main)' }}>
                   <CardHeader class="pb-2">
                     <CardTitle class="text-[10px] font-black uppercase text-muted">
                       Servers
@@ -572,7 +607,7 @@ export const ThemeCreator = () => {
               </div>
 
               <div class="grid grid-cols-2 gap-6">
-                <Card class="border-2 border-fg" style={{ 'box-shadow': 'var(--shadow-main)' }}>
+                <Card class="border-2 border-stroke" style={{ 'box-shadow': 'var(--shadow-main)' }}>
                   <CardHeader class="pb-4">
                     <div class="flex items-center justify-between">
                       <CardTitle class="text-[10px] font-black uppercase text-muted">
@@ -601,7 +636,7 @@ export const ThemeCreator = () => {
                   </CardContent>
                 </Card>
 
-                <Card class="border-2 border-fg" style={{ 'box-shadow': 'var(--shadow-main)' }}>
+                <Card class="border-2 border-stroke" style={{ 'box-shadow': 'var(--shadow-main)' }}>
                   <CardHeader class="pb-4">
                     <CardTitle class="text-[10px] font-black uppercase text-muted">
                       Cluster Activity
@@ -617,7 +652,7 @@ export const ThemeCreator = () => {
                           View Details
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent class="w-64 p-4 border-2 border-fg bg-panel shadow-xl">
+                      <PopoverContent class="w-64 p-4 border-2 border-stroke bg-panel shadow-xl">
                         <h4 class="text-xs font-black uppercase mb-2">Active Syncs</h4>
                         <div class="space-y-2">
                           <div class="flex items-center justify-between text-[9px] font-bold">
@@ -643,7 +678,7 @@ export const ThemeCreator = () => {
               </div>
 
               <Card
-                class="border-2 border-fg overflow-hidden"
+                class="border-2 border-stroke overflow-hidden"
                 style={{ 'box-shadow': 'var(--shadow-main)' }}
               >
                 <CardHeader class="border-b-2 border-stroke flex flex-row items-center justify-between pb-4">
@@ -658,7 +693,7 @@ export const ThemeCreator = () => {
                       Real-time system telemetry and events.
                     </CardDescription>
                   </div>
-                  <Button variant="ghost" size="icon" class="rounded-none border-2 border-fg">
+                  <Button variant="ghost" size="icon" class="rounded-none border-2 border-stroke">
                     <MoreHorizontal size={16} />
                   </Button>
                 </CardHeader>
@@ -720,12 +755,12 @@ export const ThemeCreator = () => {
                     ]}
                     value="rt"
                     onChange={() => {}}
-                    class="border-2 border-fg"
+                    class="border-2 border-stroke"
                   />
                 </div>
 
                 <Tabs defaultValue="overview" class="w-full max-w-md">
-                  <TabsList class="grid grid-cols-3 border-2 border-fg p-1 bg-surface rounded-none">
+                  <TabsList class="grid grid-cols-3 border-2 border-stroke p-1 bg-surface rounded-none">
                     <TabsTrigger value="overview" class="text-[10px] font-black uppercase">
                       Overview
                     </TabsTrigger>
@@ -739,7 +774,7 @@ export const ThemeCreator = () => {
                 </Tabs>
               </div>
 
-              <div class="space-y-6 pt-10 border-t-4 border-fg">
+              <div class="space-y-6 pt-10 border-t-4 border-stroke">
                 <h2
                   class="text-3xl font-black tracking-tighter uppercase"
                   style={{ 'font-family': 'var(--display-main)' }}
@@ -747,7 +782,7 @@ export const ThemeCreator = () => {
                   Status Monitor
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Alert variant="success" class="border-2 border-fg rounded-none">
+                  <Alert variant="success" class="border-2 border-stroke rounded-none">
                     <AlertTitle class="font-black uppercase text-[10px]">
                       Backups Completed
                     </AlertTitle>
@@ -755,7 +790,7 @@ export const ThemeCreator = () => {
                       All encrypted volumes synced to secondary regions.
                     </AlertDescription>
                   </Alert>
-                  <Alert variant="warning" class="border-2 border-fg rounded-none">
+                  <Alert variant="warning" class="border-2 border-stroke rounded-none">
                     <AlertTitle class="font-black uppercase text-[10px]">
                       API Latency Spike
                     </AlertTitle>
@@ -763,7 +798,7 @@ export const ThemeCreator = () => {
                       Inbound request threshold exceeded in EU-WEST-1.
                     </AlertDescription>
                   </Alert>
-                  <Alert variant="error" class="border-2 border-fg rounded-none">
+                  <Alert variant="error" class="border-2 border-stroke rounded-none">
                     <AlertTitle class="font-black uppercase text-[10px]">
                       Core Protocol Failure
                     </AlertTitle>
@@ -771,7 +806,7 @@ export const ThemeCreator = () => {
                       Critical error detected in synchronization logic.
                     </AlertDescription>
                   </Alert>
-                  <Alert variant="info" class="border-2 border-fg rounded-none">
+                  <Alert variant="info" class="border-2 border-stroke rounded-none">
                     <AlertTitle class="font-black uppercase text-[10px]">
                       Maintenance Window
                     </AlertTitle>
@@ -785,7 +820,7 @@ export const ThemeCreator = () => {
 
             <div class="lg:col-span-4 space-y-10">
               <Card
-                class="border-2 border-fg bg-panel"
+                class="border-2 border-stroke bg-panel"
                 style={{ 'box-shadow': 'var(--shadow-main)' }}
               >
                 <CardHeader class="border-b-2 border-stroke">
@@ -812,7 +847,7 @@ export const ThemeCreator = () => {
                     </Label>
                     <Input
                       value="starling-production-01"
-                      class="border-2 border-fg rounded-none font-mono"
+                      class="border-2 border-stroke rounded-none font-mono"
                     />
                   </div>
 
@@ -823,7 +858,7 @@ export const ThemeCreator = () => {
                     <DatePicker
                       value={new Date()}
                       onChange={() => {}}
-                      class="border-2 border-fg rounded-none font-mono"
+                      class="border-2 border-stroke rounded-none font-mono"
                     />
                   </div>
 
@@ -836,7 +871,7 @@ export const ThemeCreator = () => {
                     </div>
                     <Progress
                       value={65}
-                      class="h-2 border border-fg rounded-none overflow-hidden"
+                      class="h-2 border border-stroke rounded-none overflow-hidden"
                     />
                   </div>
 
@@ -901,7 +936,7 @@ export const ThemeCreator = () => {
                 </CardContent>
                 <CardFooter>
                   <Button
-                    class="w-full h-12 font-black uppercase tracking-widest border-2 border-fg"
+                    class="w-full h-12 font-black uppercase tracking-widest border-2 border-stroke"
                     style={{ 'box-shadow': 'var(--shadow-btn)' }}
                   >
                     Commit Changes
@@ -911,7 +946,7 @@ export const ThemeCreator = () => {
 
               <Alert
                 variant="warning"
-                class="border-2 border-fg bg-yellow-400/10 text-fg rounded-none"
+                class="border-2 border-stroke bg-yellow-400/10 text-fg rounded-none"
               >
                 <AlertTitle
                   class="font-black uppercase text-[11px]"
@@ -933,11 +968,28 @@ export const ThemeCreator = () => {
         <ModalHeader>
           <ModalTitle class="font-black uppercase">Architecture Export</ModalTitle>
           <ModalDescription class="font-bold">
-            Inject these variables into your global root.
+            Copy the configuration for your preferred integration method.
           </ModalDescription>
         </ModalHeader>
-        <ModalContent class="mt-4">
-          <Code code={generateCSS()} language="css" fileName="theme.css" />
+        <ModalContent class="mt-4 space-y-4">
+          <Tabs value={exportTab()} onChange={(v) => setExportTab(v as string)}>
+            <TabsList class="grid grid-cols-2 border-2 border-stroke p-1 bg-surface rounded-none h-10">
+              <TabsTrigger value="css" class="text-[10px] font-black uppercase">
+                CSS Variables
+              </TabsTrigger>
+              <TabsTrigger value="json" class="text-[10px] font-black uppercase">
+                Theme Object
+              </TabsTrigger>
+            </TabsList>
+            <div class="mt-4">
+              <TabsContent value="css">
+                <Code code={generateCSS()} language="css" fileName="theme.css" />
+              </TabsContent>
+              <TabsContent value="json">
+                <Code code={generateObject()} language="json" fileName="theme.json" />
+              </TabsContent>
+            </div>
+          </Tabs>
         </ModalContent>
         <ModalFooter>
           <Button variant="outline" class="font-bold" onClick={() => setShowExport(false)}>
@@ -948,7 +1000,7 @@ export const ThemeCreator = () => {
               when={hasCopied()}
               fallback={
                 <>
-                  <Copy size={16} /> Copy CSS
+                  <Copy size={16} /> Copy {exportTab() === 'css' ? 'CSS' : 'Object'}
                 </>
               }
             >

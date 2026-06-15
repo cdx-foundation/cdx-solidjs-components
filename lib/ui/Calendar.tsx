@@ -74,6 +74,7 @@ const CalendarHeader = (props: {
       type="button"
       onClick={props.onPrev}
       class="p-1 text-muted hover:text-fg transition-colors"
+      aria-label="Previous month"
     >
       <ChevronLeft size={16} strokeWidth={1.5} />
     </button>
@@ -84,11 +85,74 @@ const CalendarHeader = (props: {
       type="button"
       onClick={props.onNext}
       class="p-1 text-muted hover:text-fg transition-colors"
+      aria-label="Next month"
     >
       <ChevronRight size={16} strokeWidth={1.5} />
     </button>
   </div>
 );
+
+const CalendarDayCell = (props: {
+  day: number;
+  date: Date;
+  isCurrentMonth: boolean;
+  mode: CalendarMode;
+  selected: Date | Date[] | DateRange | undefined;
+  showOutsideDays: boolean;
+  disabled?: (date: Date) => boolean;
+  onDateClick: (date: Date) => void;
+  todayTimestamp: number;
+}) => {
+  const isSelected = () => {
+    const s = props.selected;
+    if (!s) return false;
+    if (props.mode === 'range' && 'from' in s) {
+      return isSameDay(props.date, (s as DateRange).from) || isSameDay(props.date, (s as DateRange).to);
+    }
+    if (props.mode === 'multiple') return Array.isArray(s) && (s as Date[]).some((d) => isSameDay(d, props.date));
+    return s instanceof Date && isSameDay(props.date, s);
+  };
+
+  const isInRange = () => {
+    if (props.mode === 'range' && props.selected && 'from' in props.selected && props.selected.from && 'to' in props.selected && props.selected.to) {
+      return isWithinRange(props.date, props.selected.from as Date, props.selected.to as Date);
+    }
+    return false;
+  };
+
+  const isDisabled = () => props.disabled?.(props.date) || (!props.isCurrentMonth && !props.showOutsideDays);
+  const isToday = getDayTimestamp(props.date) === props.todayTimestamp;
+
+  const ariaLabel = `${MONTH_NAMES[props.date.getMonth()]} ${props.date.getDate()}, ${props.date.getFullYear()}${isToday ? ' (Today)' : ''}`;
+
+  return (
+    <div
+      class="flex justify-center w-full relative"
+      role="gridcell"
+      tabIndex={-1}
+      aria-selected={isSelected()}
+    >
+      <Show when={isInRange() && !isSelected()}>
+        <div class="absolute inset-y-0 inset-x-[-4px] bg-primary/20 z-0" />
+      </Show>
+
+      <button
+        type="button"
+        disabled={isDisabled()}
+        onClick={() => props.onDateClick(props.date)}
+        aria-label={ariaLabel}
+        aria-current={isToday ? 'date' : undefined}
+        class={`relative z-10 flex items-center justify-center w-10 h-10 text-sm font-mono cursor-pointer transition-all outline-none ${
+          !props.isCurrentMonth ? (props.showOutsideDays ? 'text-muted/40 ' : 'invisible pointer-events-none ') : ''
+        }${isToday && !isSelected() ? 'text-primary font-bold underline underline-offset-4 ' : ''}${
+          isSelected() ? 'bg-primary text-white font-semibold ' : 'text-fg hover:bg-surface hover:text-fg '
+        }${isDisabled() ? 'opacity-30 cursor-not-allowed grayscale' : ''}`}
+      >
+        {props.day}
+      </button>
+    </div>
+  );
+};
 
 // --- Main Component ---
 
@@ -108,13 +172,13 @@ interface CalendarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChan
    * - In `multiple` mode: `Date[]`
    * - In `range` mode: `DateRange`
    */
-  selected?: any;
+  selected?: Date | Date[] | DateRange;
 
   /**
    * Event handler called whenever a date interaction occurs.
    * Receives the updated selection value corresponding to the current `mode`.
    */
-  onChange?: (val: any) => void;
+  onChange?: (val: Date | Date[] | DateRange) => void;
 
   /**
    * A function to restrict selection. If it returns `true` for a given date,
@@ -194,7 +258,7 @@ export const Calendar = (props: CalendarProps) => {
       ? local.initialFocus
       : local.mode === 'single' && local.selected instanceof Date
         ? local.selected
-        : local.mode === 'range' && local.selected?.from instanceof Date
+        : local.mode === 'range' && local.selected && 'from' in local.selected && local.selected.from instanceof Date
           ? local.selected.from
           : new Date(),
   );
@@ -206,6 +270,8 @@ export const Calendar = (props: CalendarProps) => {
       setViewDate(local.selected);
     }
   });
+
+  const todayTimestamp = createMemo(() => getDayTimestamp(new Date()));
 
   const calendarData = createMemo(() => {
     const month = viewDate().getMonth();
@@ -250,7 +316,7 @@ export const Calendar = (props: CalendarProps) => {
     const clickedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
     if (local.mode === 'range') {
-      const s = local.selected || {};
+      const s = (local.selected || {}) as DateRange;
       const { from, to } = s;
 
       if (!from || (from && to)) {
@@ -353,65 +419,19 @@ export const Calendar = (props: CalendarProps) => {
           {(row) => (
             <div role="row" class="contents" tabIndex={-1}>
               <For each={row}>
-                {({ day, date, isCurrentMonth }) => {
-                  const s = local.selected;
-                  const selected = createMemo(() => {
-                    if (!s) return false;
-                    if (local.mode === 'range') return isSameDay(date, s.from) || isSameDay(date, s.to);
-                    if (local.mode === 'multiple')
-                      return Array.isArray(s) && s.some((d) => isSameDay(d, date));
-                    return isSameDay(date, s);
-                  });
-
-                  const inRange = createMemo(() => {
-                    if (local.mode === 'range' && s?.from && s?.to) {
-                      return isWithinRange(date, s.from, s.to);
-                    }
-                    return false;
-                  });
-
-                  const disabled = local.disabled?.(date);
-                  const isToday = isSameDay(date, new Date());
-
-                  const ariaLabel = () => {
-                    return `${MONTH_NAMES[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}${isToday ? ' (Today)' : ''}`;
-                  };
-
-                  return (
-                    <div
-                      class="flex justify-center w-full relative"
-                      role="gridcell"
-                      tabIndex={-1}
-                      aria-selected={selected()}
-                    >
-                      <Show when={inRange() && !selected()}>
-                        <div class="absolute inset-y-0 inset-x-[-4px] bg-primary/20 z-0" />
-                      </Show>
-
-                      <button
-                        type="button"
-                        disabled={disabled || (!isCurrentMonth && !local.showOutsideDays)}
-                        onClick={() => handleDateClick(date)}
-                        aria-label={ariaLabel()}
-                        aria-current={isToday ? 'date' : undefined}
-                        class={twMerge(
-                          'relative z-10 flex items-center justify-center w-10 h-10 text-sm font-mono cursor-pointer transition-all outline-none',
-                          !isCurrentMonth &&
-                            (local.showOutsideDays
-                              ? 'text-muted/40'
-                              : 'invisible pointer-events-none'),
-                          isToday && !selected() && 'text-primary font-bold underline underline-offset-4',
-                          selected()
-                            ? 'bg-primary text-white font-semibold'
-                            : 'text-fg hover:bg-surface hover:text-fg',
-                          disabled && 'opacity-30 cursor-not-allowed grayscale',
-                        )}
-                      >
-                        {day}
-                      </button>
-                    </div>
-                  );
-                }}
+                {(cell) => (
+                  <CalendarDayCell
+                    day={cell.day}
+                    date={cell.date}
+                    isCurrentMonth={cell.isCurrentMonth}
+                    mode={local.mode!}
+                    selected={local.selected}
+                    showOutsideDays={local.showOutsideDays!}
+                    disabled={local.disabled}
+                    onDateClick={handleDateClick}
+                    todayTimestamp={todayTimestamp()}
+                  />
+                )}
               </For>
             </div>
           )}

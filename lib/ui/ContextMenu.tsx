@@ -69,17 +69,18 @@ export const ContextMenu = (props: ContextMenuProps) => {
     if (isOpen()) setIsOpen(false);
   };
 
+  const handleGlobalContextMenu = () => {
+    setIsOpen(false);
+  };
+
   onMount(() => {
     document.addEventListener('click', handleClickOutside);
-    document.addEventListener('contextmenu', (_e) => {
-      // If clicking outside this specific wrapper, close it
-      // In a real implementation, you'd check refs, but a global close is safest for simple menus
-      setIsOpen(false);
-    });
+    document.addEventListener('contextmenu', handleGlobalContextMenu);
   });
 
   onCleanup(() => {
     document.removeEventListener('click', handleClickOutside);
+    document.removeEventListener('contextmenu', handleGlobalContextMenu);
   });
 
   return (

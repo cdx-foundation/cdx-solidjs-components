@@ -62,11 +62,9 @@ export const PopoverTrigger = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
     <Floating.Trigger
       onClick={(e) => {
         toggle();
-        if (typeof local.onClick === 'function') {
-          local.onClick(e);
-        } else if (local.onClick) {
-          (local.onClick[0] as any)(local.onClick[1], e);
-        }
+        const fn = local.onClick;
+        if (typeof fn === 'function') fn(e);
+        else if (fn) fn[0](fn[1], e);
       }}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -78,11 +76,9 @@ export const PopoverTrigger = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
           e.preventDefault();
           toggle();
         }
-        if (typeof local.onKeyDown === 'function') {
-          local.onKeyDown(e);
-        } else if (local.onKeyDown) {
-          (local.onKeyDown[0] as any)(local.onKeyDown[1], e);
-        }
+        const fn = local.onKeyDown;
+        if (typeof fn === 'function') fn(e);
+        else if (fn) fn[0](fn[1], e);
       }}
       class={twMerge('inline-block cursor-pointer', local.class)}
       {...{

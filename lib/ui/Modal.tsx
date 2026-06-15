@@ -1,4 +1,3 @@
-import { createShortcut } from '@solid-primitives/keyboard';
 import { X } from 'lucide-solid';
 import { type JSX, Show, createEffect, onCleanup, splitProps } from 'solid-js';
 import { Portal } from 'solid-js/web';
@@ -62,8 +61,16 @@ export const Modal = (props: ModalProps) => {
     'backdropClass',
   ]);
 
-  createShortcut(['Escape'], () => {
-    if (local.isOpen) local.onClose();
+  // Keyboard handler: only active when modal is open, avoids global listener when closed
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') local.onClose();
+  };
+
+  createEffect(() => {
+    if (local.isOpen) {
+      window.addEventListener('keydown', onKeyDown);
+      onCleanup(() => window.removeEventListener('keydown', onKeyDown));
+    }
   });
 
   createEffect(() => {

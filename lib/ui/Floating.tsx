@@ -88,6 +88,8 @@ export const FloatingContent = (props: FloatingContentProps) => {
   const [coords, setCoords] = createSignal<{ top: number; left: number } | null>(null);
   const [width, setWidth] = createSignal<string>('auto');
 
+  let rafId: number | undefined;
+
   const update = () => {
     const triggerEl = context.triggerEl();
     if (!local.isOpen || !triggerEl) return;
@@ -155,25 +157,32 @@ export const FloatingContent = (props: FloatingContentProps) => {
     }
 
     setCoords({ top, left });
+    rafId = undefined;
+  };
+
+  const rafUpdate = () => {
+    if (rafId !== undefined) return;
+    rafId = requestAnimationFrame(update);
   };
 
   createEffect(() => {
     if (local.isOpen) {
       update();
-      requestAnimationFrame(update);
+      rafUpdate();
     } else {
       setCoords(null);
     }
   });
 
   onMount(() => {
-    window.addEventListener('scroll', update, true);
-    window.addEventListener('resize', update);
+    window.addEventListener('scroll', rafUpdate, { passive: true, capture: true });
+    window.addEventListener('resize', rafUpdate, { passive: true });
   });
 
   onCleanup(() => {
-    window.removeEventListener('scroll', update, true);
-    window.removeEventListener('resize', update);
+    if (rafId !== undefined) cancelAnimationFrame(rafId);
+    window.removeEventListener('scroll', rafUpdate, true);
+    window.removeEventListener('resize', rafUpdate);
   });
 
   const getTransform = () => {

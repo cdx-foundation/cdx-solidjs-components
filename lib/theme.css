@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=JetBrains+Mono:wght@400..800&family=Playfair+Display:wght@400..900&family=Archivo+Black&family=Space+Grotesk:wght@300..700&family=Lexend:wght@100..900&family=Outfit:wght@100..900&family=Bebas+Neue&family=Fraunces:opsz,wght@9..144,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=JetBrains+Mono:wght@400..800&family=Archivo+Black&family=Bebas+Neue&family=Oxanium:wght@200..800&display=swap");
 @plugin "tailwindcss-animate";
 @source "./ui/**/*.tsx";
 
@@ -30,6 +30,16 @@
   --radius-badge: var(--radius-badge, 0px);
   --shadow-btn: var(--shadow-btn, none);
   --shadow-main: var(--shadow-main, none);
+
+  /* Sidebar Theme Colors */
+  --color-sidebar: var(--sidebar, #fafafa);
+  --color-sidebar-fg: var(--sidebar-fg, #0a0a0a);
+  --color-sidebar-primary: var(--sidebar-primary, #171717);
+  --color-sidebar-primary-fg: var(--sidebar-primary-fg, #fafafa);
+  --color-sidebar-accent: var(--sidebar-accent, #f5f5f5);
+  --color-sidebar-accent-fg: var(--sidebar-accent-fg, #171717);
+  --color-sidebar-border: var(--sidebar-border, #e5e5e5);
+  --color-sidebar-ring: var(--sidebar-ring, #a1a1a1);
 }
 
 @layer base {

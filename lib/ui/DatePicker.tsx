@@ -1,8 +1,7 @@
 import { Calendar as CalendarIcon } from 'lucide-solid';
-import { type JSX, Show, createEffect, createSignal, splitProps } from 'solid-js';
-import { twMerge } from 'tailwind-merge';
-import { Calendar } from './Calendar';
-import { type Alignment } from './Floating';
+import { type JSX, Show, createSignal, splitProps } from 'solid-js';
+import { Calendar, type DateRange } from './Calendar';
+import type { Alignment } from './Floating';
 import { Popover } from './Popover';
 
 /**
@@ -80,11 +79,9 @@ export const DatePicker = (props: DatePickerProps) => {
     'showTime',
     'align',
   ]);
-  const [internalDate, setInternalDate] = createSignal<Date | undefined>(local.value);
-
-  createEffect(() => {
-    setInternalDate(local.value);
-  });
+  const [internalDate, setInternalDate] = createSignal<Date | undefined>();
+  // Use prop value when controlled, fall back to internal state for uncontrolled
+  const date = () => local.value !== undefined ? local.value : internalDate();
 
   const handleSelect = (date: Date) => {
     setInternalDate(date);
@@ -112,7 +109,7 @@ export const DatePicker = (props: DatePickerProps) => {
   };
 
   return (
-    <div class={twMerge('flex flex-col gap-1.5 w-full', local.class)} {...others}>
+    <div class={`flex flex-col gap-1.5 w-full ${local.class || ''}`} {...others}>
       <Show when={local.label}>
         <span class="text-xs font-semibold text-fg">{local.label}</span>
       </Show>
@@ -120,23 +117,20 @@ export const DatePicker = (props: DatePickerProps) => {
       <Popover align={local.align || 'left'} class="p-0 w-max">
         <Popover.Trigger>
           <div
-            class={twMerge(
-              'flex items-center gap-2 w-full border border-stroke bg-transparent rounded-none px-3 py-2.5 text-sm font-mono transition-colors duration-150 hover:border-muted cursor-pointer outline-none focus-visible:border-fg focus-visible:ring-1 focus-visible:ring-fg',
-              !internalDate() ? 'text-muted/80' : 'text-fg',
-            )}
+            class={`flex items-center gap-2 w-full border border-stroke bg-transparent rounded-none px-3 py-2.5 text-sm font-mono transition-colors duration-150 hover:border-muted cursor-pointer outline-none focus-visible:border-fg focus-visible:ring-1 focus-visible:ring-fg ${!local.value ? 'text-muted/80' : 'text-fg'}`}
           >
             <CalendarIcon size={16} class="opacity-50" />
-            <span>{formatDate(internalDate()) || local.placeholder || 'Pick a date'}</span>
+            <span>{formatDate(date()) || local.placeholder || 'Pick a date'}</span>
           </div>
         </Popover.Trigger>
         <Popover.Content>
           <Calendar
             mode="single"
-            selected={internalDate()}
-            onChange={handleSelect}
+            selected={date()}
+            onChange={handleSelect as (val: Date | Date[] | DateRange) => void}
             showTime={local.showTime}
             class="border-0 shadow-none"
-            initialFocus={internalDate()}
+            initialFocus={date()}
             align={local.align}
           />
         </Popover.Content>

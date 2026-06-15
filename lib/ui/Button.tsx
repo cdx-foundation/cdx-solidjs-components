@@ -1,5 +1,5 @@
 import { type VariantProps, cva } from 'class-variance-authority';
-import { type ComponentProps, type JSX, splitProps } from 'solid-js';
+import { type JSX, splitProps } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
@@ -32,8 +32,7 @@ const buttonVariants = cva(
  * Configuration options and properties for the Button component.
  */
 export interface ButtonProps
-  extends JSX.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends VariantProps<typeof buttonVariants> {
   /**
    * Indicates an ongoing background process.
    * When true, replaces content with a spinner, disables the button, and prevents interaction.
@@ -47,8 +46,21 @@ export interface ButtonProps
    * @example as="a" href="https://google.com"
    * @default "button"
    */
-  as?: any;
-  [key: string]: any;
+  as?: string;
+  /**
+   * CSS class names.
+   */
+  class?: string;
+  /**
+   * The children content inside the button.
+   */
+  children?: any;
+  /**
+   * Whether the button is disabled.
+   */
+  disabled?: boolean;
+  /** Additional props forwarded to the underlying element via `Dynamic`. */
+  [key: string]: unknown;
 }
 
 /**

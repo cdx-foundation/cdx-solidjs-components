@@ -1,5 +1,5 @@
 import { ChevronDown } from 'lucide-solid';
-import { type JSX, Show, createSignal, splitProps } from 'solid-js';
+import { type JSX, Show, createSignal, onCleanup, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 
 /**
@@ -72,6 +72,7 @@ export const NavigationMenuItem = (props: {
 }) => {
   const [isOpen, setIsOpen] = createSignal(false);
   let timeoutId: number | undefined;
+  onCleanup(() => clearTimeout(timeoutId));
 
   const handleEnter = () => {
     clearTimeout(timeoutId);

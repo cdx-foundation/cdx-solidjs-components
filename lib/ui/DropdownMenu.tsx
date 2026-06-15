@@ -3,9 +3,6 @@ import { type JSX, Show, createSignal, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { clickOutside } from '../directives';
 
-// Suppress unused warning for directive
-false && clickOutside;
-
 /**
  * Configuration properties for the Root DropdownMenu container.
  */

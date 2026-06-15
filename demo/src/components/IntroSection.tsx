@@ -19,6 +19,7 @@ export const IntroSection = (props: IntroSectionProps) => {
       <p class="text-xl text-muted leading-relaxed max-w-2xl">
         Starling UI is a meticulously crafted component library for SolidJS, optimized for
         data-heavy interfaces. It emphasizes precision, accessibility, and professional aesthetics.
+        Heavily inspired by <a href="https://shadcn-svelte.com/" class="text-primary hover:underline font-semibold">shadcn-svelte</a>.
       </p>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
         <Card class="bg-panel/30 border-dashed">

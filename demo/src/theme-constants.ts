@@ -1,207 +1,197 @@
 export type ThemeFont =
   | 'sans'
   | 'mono'
-  | 'serif'
   | 'display'
-  | 'system'
-  | 'modern'
-  | 'reading'
-  | 'geometric'
   | 'condensed'
-  | 'soft-serif';
+  | 'system'
+  | 'oxanium';
 export type BaseColor =
   | 'zinc'
   | 'slate'
   | 'stone'
-  | 'pure'
-  | 'crimson'
-  | 'ocean'
-  | 'forest'
-  | 'vintage'
-  | 'oled'
-  | 'brutalist';
+  | 'gray'
+  | 'neutral';
 export type ShadowLevel = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'neo' | 'flat' | 'hard';
+
+export type StylePreset = 'vega' | 'nova' | 'maia' | 'lyra' | 'mira' | 'luma' | 'sera' | 'rhea';
+
+export interface StylePresetConfig {
+  label: string;
+  description: string;
+  headerFont: ThemeFont;
+  bodyFont: ThemeFont;
+  radius: string;
+  shadow: ShadowLevel;
+  cardPad: string;
+  cardGap: string;
+  btnPadY: string;
+  btnPadX: string;
+  inputPadY: string;
+  inputPadX: string;
+  badgePadY: string;
+  badgePadX: string;
+  layoutGap: string;
+}
+
+export const STYLE_PRESETS: Record<StylePreset, StylePresetConfig> = {
+  vega: {
+    label: 'Vega',
+    description: 'Default, clean',
+    headerFont: 'sans',
+    bodyFont: 'sans',
+    radius: '0.5rem',
+    shadow: 'md',
+    cardPad: '1.25rem',
+    cardGap: '0.75rem',
+    btnPadY: '0.625rem',
+    btnPadX: '1.25rem',
+    inputPadY: '0.625rem',
+    inputPadX: '0.75rem',
+    badgePadY: '0.125rem',
+    badgePadX: '0.5rem',
+    layoutGap: '2.5rem',
+  },
+  nova: {
+    label: 'Nova',
+    description: 'Modern, tech-forward',
+    headerFont: 'sans',
+    bodyFont: 'sans',
+    radius: '0.75rem',
+    shadow: 'md',
+    cardPad: '1.125rem',
+    cardGap: '0.625rem',
+    btnPadY: '0.5rem',
+    btnPadX: '1rem',
+    inputPadY: '0.5rem',
+    inputPadX: '0.75rem',
+    badgePadY: '0.125rem',
+    badgePadX: '0.5rem',
+    layoutGap: '2rem',
+  },
+  maia: {
+    label: 'Maia',
+    description: 'Friendly, rounded',
+    headerFont: 'sans',
+    bodyFont: 'sans',
+    radius: '1.0rem',
+    shadow: 'sm',
+    cardPad: '1.5rem',
+    cardGap: '1rem',
+    btnPadY: '0.75rem',
+    btnPadX: '1.5rem',
+    inputPadY: '0.75rem',
+    inputPadX: '1rem',
+    badgePadY: '0.1875rem',
+    badgePadX: '0.625rem',
+    layoutGap: '2.5rem',
+  },
+  lyra: {
+    label: 'Lyra',
+    description: 'Monospace, technical',
+    headerFont: 'mono',
+    bodyFont: 'mono',
+    radius: '0px',
+    shadow: 'none',
+    cardPad: '0.75rem',
+    cardGap: '0.375rem',
+    btnPadY: '0.375rem',
+    btnPadX: '0.75rem',
+    inputPadY: '0.375rem',
+    inputPadX: '0.5rem',
+    badgePadY: '0.0625rem',
+    badgePadX: '0.25rem',
+    layoutGap: '1.5rem',
+  },
+  mira: {
+    label: 'Mira',
+    description: 'Mini, compact',
+    headerFont: 'sans',
+    bodyFont: 'sans',
+    radius: '0.3rem',
+    shadow: 'sm',
+    cardPad: '0.75rem',
+    cardGap: '0.375rem',
+    btnPadY: '0.375rem',
+    btnPadX: '0.75rem',
+    inputPadY: '0.375rem',
+    inputPadX: '0.5rem',
+    badgePadY: '0.0625rem',
+    badgePadX: '0.25rem',
+    layoutGap: '1.5rem',
+  },
+  luma: {
+    label: 'Luma',
+    description: 'Soft, pill-like',
+    headerFont: 'sans',
+    bodyFont: 'sans',
+    radius: '1.0rem',
+    shadow: 'lg',
+    cardPad: '1.5rem',
+    cardGap: '1rem',
+    btnPadY: '0.75rem',
+    btnPadX: '1.75rem',
+    inputPadY: '0.75rem',
+    inputPadX: '1rem',
+    badgePadY: '0.1875rem',
+    badgePadX: '0.625rem',
+    layoutGap: '3rem',
+  },
+  sera: {
+    label: 'Sera',
+    description: 'Editorial, typographic',
+    headerFont: 'display',
+    bodyFont: 'sans',
+    radius: '0px',
+    shadow: 'none',
+    cardPad: '1rem',
+    cardGap: '0.5rem',
+    btnPadY: '0.5rem',
+    btnPadX: '1rem',
+    inputPadY: '0.5rem',
+    inputPadX: '0.75rem',
+    badgePadY: '0.125rem',
+    badgePadX: '0.375rem',
+    layoutGap: '2rem',
+  },
+  rhea: {
+    label: 'Rhea',
+    description: 'Compact Luma',
+    headerFont: 'sans',
+    bodyFont: 'sans',
+    radius: '0.75rem',
+    shadow: 'md',
+    cardPad: '1rem',
+    cardGap: '0.5rem',
+    btnPadY: '0.4375rem',
+    btnPadX: '1rem',
+    inputPadY: '0.5rem',
+    inputPadX: '0.75rem',
+    badgePadY: '0.0625rem',
+    badgePadX: '0.375rem',
+    layoutGap: '1.5rem',
+  },
+};
 
 export const BASE_PALETTES: Record<BaseColor, { light: any; dark: any }> = {
   zinc: {
-    light: {
-      bg: '#ffffff',
-      panel: '#fafafa',
-      surface: '#f4f4f5',
-      border: '#e4e4e7',
-      fg: '#09090b',
-      muted: '#71717a',
-    },
-    dark: {
-      bg: '#09090b',
-      panel: '#121217',
-      surface: '#18181b',
-      border: '#27272a',
-      fg: '#fafafa',
-      muted: '#a1a1aa',
-    },
+    light: { bg: '#ffffff', panel: '#ffffff', surface: '#f4f4f5', border: '#e4e4e7', fg: '#09090b', muted: '#71717a' },
+    dark: { bg: '#09090b', panel: '#09090b', surface: '#27272a', border: '#27272a', fg: '#fafafa', muted: '#a1a1aa' },
   },
   slate: {
-    light: {
-      bg: '#ffffff',
-      panel: '#f8fafc',
-      surface: '#f1f5f9',
-      border: '#e2e8f0',
-      fg: '#0f172a',
-      muted: '#64748b',
-    },
-    dark: {
-      bg: '#020617',
-      panel: '#0f172a',
-      surface: '#1e293b',
-      border: '#334155',
-      fg: '#f8fafc',
-      muted: '#94a3b8',
-    },
+    light: { bg: '#ffffff', panel: '#ffffff', surface: '#f1f5f9', border: '#e2e8f0', fg: '#0f172a', muted: '#64748b' },
+    dark: { bg: '#020617', panel: '#020617', surface: '#1e293b', border: '#334155', fg: '#f8fafc', muted: '#94a3b8' },
   },
   stone: {
-    light: {
-      bg: '#ffffff',
-      panel: '#fafaf9',
-      surface: '#f5f5f4',
-      border: '#e7e5e4',
-      fg: '#0c0a09',
-      muted: '#78716c',
-    },
-    dark: {
-      bg: '#0c0a09',
-      panel: '#1c1917',
-      surface: '#292524',
-      border: '#44403c',
-      fg: '#fafaf9',
-      muted: '#a8a29e',
-    },
+    light: { bg: '#ffffff', panel: '#ffffff', surface: '#f5f5f4', border: '#e7e5e4', fg: '#1c1917', muted: '#78716c' },
+    dark: { bg: '#1c1917', panel: '#1c1917', surface: '#292524', border: '#44403c', fg: '#fafaf9', muted: '#a8a29e' },
   },
-  pure: {
-    light: {
-      bg: '#ffffff',
-      panel: '#ffffff',
-      surface: '#ffffff',
-      border: '#f0f0f0',
-      fg: '#171717',
-      muted: '#737373',
-    },
-    dark: {
-      bg: '#0a0a0a',
-      panel: '#0a0a0a',
-      surface: '#121212',
-      border: '#1f1f1f',
-      fg: '#ededed',
-      muted: '#a3a3a3',
-    },
+  gray: {
+    light: { bg: '#ffffff', panel: '#ffffff', surface: '#f3f4f6', border: '#e5e7eb', fg: '#111827', muted: '#6b7280' },
+    dark: { bg: '#030712', panel: '#030712', surface: '#1f2937', border: '#374151', fg: '#f9fafb', muted: '#9ca3af' },
   },
-  crimson: {
-    light: {
-      bg: '#fffafa',
-      panel: '#fff5f5',
-      surface: '#ffffff',
-      border: '#fee2e2',
-      fg: '#450a0a',
-      muted: '#b91c1c',
-    },
-    dark: {
-      bg: '#0a0000',
-      panel: '#1a0000',
-      surface: '#2a0000',
-      border: '#450a0a',
-      fg: '#fef2f2',
-      muted: '#ef4444',
-    },
-  },
-  ocean: {
-    light: {
-      bg: '#f0f7ff',
-      panel: '#e0f0ff',
-      surface: '#ffffff',
-      border: '#bae0ff',
-      fg: '#002c4d',
-      muted: '#60a5fa',
-    },
-    dark: {
-      bg: '#000d1a',
-      panel: '#001a33',
-      surface: '#00264d',
-      border: '#003d80',
-      fg: '#e6f4ff',
-      muted: '#3b82f6',
-    },
-  },
-  forest: {
-    light: {
-      bg: '#f2fcf5',
-      panel: '#e6f7ed',
-      surface: '#ffffff',
-      border: '#d1f2e2',
-      fg: '#052e16',
-      muted: '#10b981',
-    },
-    dark: {
-      bg: '#02120a',
-      panel: '#052e16',
-      surface: '#064e3b',
-      border: '#065f46',
-      fg: '#ecfdf5',
-      muted: '#34d399',
-    },
-  },
-  vintage: {
-    light: {
-      bg: '#fdfcf0',
-      panel: '#f5f2d0',
-      surface: '#fffef5',
-      border: '#e6e2bc',
-      fg: '#422006',
-      muted: '#a16207',
-    },
-    dark: {
-      bg: '#1a140a',
-      panel: '#2d2412',
-      surface: '#3e301a',
-      border: '#5c4b2a',
-      fg: '#fefce8',
-      muted: '#ca8a04',
-    },
-  },
-  oled: {
-    light: {
-      bg: '#ffffff',
-      panel: '#fafafa',
-      surface: '#f5f5f5',
-      border: '#e5e5e5',
-      fg: '#000000',
-      muted: '#737373',
-    },
-    dark: {
-      bg: '#000000',
-      panel: '#000000',
-      surface: '#090909',
-      border: '#1a1a1a',
-      fg: '#ffffff',
-      muted: '#a3a3a3',
-    },
-  },
-  brutalist: {
-    light: {
-      bg: '#ffffff',
-      panel: '#ffffff',
-      surface: '#ffffff',
-      border: '#000000',
-      fg: '#000000',
-      muted: '#000000',
-    },
-    dark: {
-      bg: '#000000',
-      panel: '#000000',
-      surface: '#000000',
-      border: '#ffffff',
-      fg: '#ffffff',
-      muted: '#ffffff',
-    },
+  neutral: {
+    light: { bg: '#ffffff', panel: '#ffffff', surface: '#f5f5f5', border: '#e5e5e5', fg: '#0a0a0a', muted: '#737373' },
+    dark: { bg: '#0a0a0a', panel: '#0a0a0a', surface: '#262626', border: '#404040', fg: '#fafafa', muted: '#a3a3a3' },
   },
 };
 
@@ -220,14 +210,10 @@ export const SHADOWS: Record<ShadowLevel, string> = {
 export const FONTS = {
   sans: '"Inter", system-ui, sans-serif',
   mono: '"JetBrains Mono", ui-monospace, monospace',
-  serif: '"Playfair Display", Georgia, serif',
   display: '"Archivo Black", Impact, sans-serif',
-  system: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-  modern: '"Space Grotesk", sans-serif',
-  reading: '"Lexend", sans-serif',
-  geometric: '"Outfit", sans-serif',
   condensed: '"Bebas Neue", sans-serif',
-  'soft-serif': '"Fraunces", serif',
+  system: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  oxanium: '"Oxanium", sans-serif',
 };
 
 export function hexToRgb(hex: string) {

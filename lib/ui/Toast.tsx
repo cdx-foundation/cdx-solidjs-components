@@ -77,6 +77,9 @@ const [toastConfig, setToastConfig] = createSignal({
 // Toaster instance management to prevent duplicates
 const [activeToasters, setActiveToasters] = createSignal<string[]>([]);
 
+// Track auto-dismiss timeouts for cleanup on manual dismiss
+const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
+
 /**
  * Arguments that can be passed to the toast functions.
  */
@@ -102,9 +105,11 @@ const createToast = (data: ToastArgs) => {
 
   // Auto-dismiss logic
   if (duration > 0) {
-    setTimeout(() => {
+    const tid = setTimeout(() => {
+      toastTimeouts.delete(id);
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, duration);
+    toastTimeouts.set(id, tid);
   }
 
   return id;
@@ -329,7 +334,11 @@ export const Toaster = (props: ToasterProps & { class?: string }) => {
                   </div>
                   <button
                     type="button"
-                    onClick={() => setToasts((prev) => prev.filter((x) => x.id !== t.id))}
+                    onClick={() => {
+                      const tid = toastTimeouts.get(t.id);
+                      if (tid) { clearTimeout(tid); toastTimeouts.delete(t.id); }
+                      setToasts((prev) => prev.filter((x) => x.id !== t.id));
+                    }}
                     class="absolute right-2 top-2 text-muted hover:text-fg transition-colors"
                   >
                     <X size={16} />

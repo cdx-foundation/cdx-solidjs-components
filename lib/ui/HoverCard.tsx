@@ -1,5 +1,6 @@
 import {
   type JSX,
+  Show,
   createContext,
   createSignal,
   splitProps,
@@ -55,29 +56,22 @@ export const HoverCardTrigger = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
 
   let timeoutId: number | undefined;
 
-  const handleMouseEnter = (e: any) => {
-    clearTimeout(timeoutId);
-    context.setIsOpen(true);
-    if (typeof local.onMouseEnter === 'function') {
-      local.onMouseEnter(e);
-    } else if (local.onMouseEnter) {
-      (local.onMouseEnter[0] as any)(local.onMouseEnter[1], e);
-    }
-  };
-
-  const handleMouseLeave = (e: any) => {
-    timeoutId = window.setTimeout(() => context.setIsOpen(false), 200);
-    if (typeof local.onMouseLeave === 'function') {
-      local.onMouseLeave(e);
-    } else if (local.onMouseLeave) {
-      (local.onMouseLeave[0] as any)(local.onMouseLeave[1], e);
-    }
+  const callHandler = (handler: any, ev: Event) => {
+    if (typeof handler === 'function') handler(ev);
+    else if (handler) handler[0](handler[1], ev);
   };
 
   return (
     <Floating.Trigger
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={(e) => {
+        clearTimeout(timeoutId);
+        context.setIsOpen(true);
+        callHandler(local.onMouseEnter, e);
+      }}
+      onMouseLeave={(e) => {
+        timeoutId = window.setTimeout(() => context.setIsOpen(false), 200);
+        callHandler(local.onMouseLeave, e);
+      }}
       class={twMerge('inline-block cursor-help', local.class)}
       {...others}
     >
@@ -93,6 +87,11 @@ export const HoverCardContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
 
   let timeoutId: number | undefined;
 
+  const callHandler = (handler: any, ev: Event) => {
+    if (typeof handler === 'function') handler(ev);
+    else if (handler) handler[0](handler[1], ev);
+  };
+
   return (
     <Floating.Content
       isOpen={context.isOpen()}
@@ -104,19 +103,11 @@ export const HoverCardContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
       )}
       onMouseEnter={(e) => {
         clearTimeout(timeoutId);
-        if (typeof local.onMouseEnter === 'function') {
-          local.onMouseEnter(e);
-        } else if (local.onMouseEnter) {
-          (local.onMouseEnter[0] as any)(local.onMouseEnter[1], e);
-        }
+        callHandler(local.onMouseEnter, e);
       }}
       onMouseLeave={(e) => {
         timeoutId = window.setTimeout(() => context.setIsOpen(false), 200);
-        if (typeof local.onMouseLeave === 'function') {
-          local.onMouseLeave(e);
-        } else if (local.onMouseLeave) {
-          (local.onMouseLeave[0] as any)(local.onMouseLeave[1], e);
-        }
+        callHandler(local.onMouseLeave, e);
       }}
       {...others}
     >

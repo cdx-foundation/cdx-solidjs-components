@@ -1,5 +1,25 @@
-import { Cat, ChevronRight, Menu, Search, Shield, Sparkles, Zap } from 'lucide-solid';
+import {
+  Book,
+  Cat,
+  ChevronDown,
+  Database,
+  FileText,
+  Layers,
+  LayoutDashboard,
+  MessageSquare,
+  Monitor,
+  Navigation,
+  Paintbrush,
+  Palette,
+  Rocket,
+  Search,
+  Shield,
+  Sparkles,
+  Wrench,
+  Zap,
+} from 'lucide-solid';
 import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
 import { Button } from '../../lib/ui/Button';
@@ -20,6 +40,7 @@ import {
 import { Slider } from '../../lib/ui/Slider';
 import { Switch } from '../../lib/ui/Switch';
 import { Toaster, type ToasterPosition, toast } from '../../lib/ui/Toast';
+import { Sidebar, SidebarProvider } from '../../lib/ui/Sidebar';
 import { useAppTheme } from './hooks/useAppTheme';
 import { BASE_PALETTES, FONTS, SHADOWS, hexToRgb } from './theme-constants';
 
@@ -28,7 +49,6 @@ import { DisclosureSection } from './components/DisclosureSection';
 import { FeedbackSection } from './components/FeedbackSection';
 import { FormsSection } from './components/FormsSection';
 import { GetStartedSection } from './components/GetStartedSection';
-// Section Components
 import { IntroSection } from './components/IntroSection';
 import { LayoutSection } from './components/LayoutSection';
 import { NavSection } from './components/NavSection';
@@ -77,6 +97,16 @@ export default function App() {
     root.style.setProperty('--fg-main', palette.fg);
     root.style.setProperty('--text-muted', palette.muted);
 
+    // Sidebar theme - use surface for sidebar bg, panel for surface, same fg
+    root.style.setProperty('--sidebar', palette.surface);
+    root.style.setProperty('--sidebar-fg', palette.fg);
+    root.style.setProperty('--sidebar-primary', palette.fg);
+    root.style.setProperty('--sidebar-primary-fg', palette.bg);
+    root.style.setProperty('--sidebar-accent', palette.border);
+    root.style.setProperty('--sidebar-accent-fg', palette.fg);
+    root.style.setProperty('--sidebar-border', palette.border);
+    root.style.setProperty('--sidebar-ring', accentColor());
+
     root.style.setProperty('--border-main', palette.border);
     root.style.setProperty('--stroke', palette.border);
 
@@ -109,7 +139,6 @@ export default function App() {
 
   const [activeSection, setActiveSection] = createSignal<Section>('intro');
   const [currentTheme, setCurrentTheme] = createSignal<Theme>('professional');
-  const [sidebarOpen, setSidebarOpen] = createSignal(false);
   const [commandOpen, setCommandOpen] = createSignal(false);
 
   // Toast settings
@@ -122,6 +151,9 @@ export default function App() {
   const [sheetOpen, setSheetOpen] = createSignal(false);
 
   onMount(() => {
+    // Reset sidebar to expanded state on each page load
+    localStorage.removeItem('sidebar:state');
+
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
@@ -141,99 +173,95 @@ export default function App() {
   });
 
   const navItems = [
-    { id: 'intro', label: 'Introduction', group: 'Getting Started', keywords: ['about', 'guide'] },
+    { id: 'intro', label: 'Introduction', group: 'Getting Started', icon: Book, keywords: ['about', 'guide'] },
     {
       id: 'get-started',
       label: 'Installation',
       group: 'Getting Started',
+      icon: Rocket,
       keywords: ['setup', 'install', 'usage'],
     },
     {
       id: 'theming',
       label: 'Theming',
       group: 'Getting Started',
+      icon: Palette,
       keywords: ['colors', 'customization', 'branding'],
     },
     {
       id: 'theme-creator',
       label: 'Theme Creator',
       group: 'Getting Started',
+      icon: Paintbrush,
       keywords: ['customize', 'editor', 'preview', 'export'],
     },
     {
       id: 'hud',
       label: 'HUD Variant',
       group: 'FiveM Specific',
+      icon: Monitor,
       keywords: ['hud', 'fivem', 'gaming', 'vitals', 'overlay'],
     },
     {
       id: 'layout',
       label: 'Layout',
       group: 'Components',
+      icon: LayoutDashboard,
       keywords: ['card', 'separator', 'aspect ratio', 'scrollarea', 'resizable'],
     },
     {
       id: 'forms',
       label: 'Forms & Inputs',
       group: 'Components',
+      icon: FileText,
       keywords: [
-        'button',
-        'input',
-        'textarea',
-        'checkbox',
-        'radio',
-        'select',
-        'slider',
-        'switch',
-        'colorpicker',
-        'datepicker',
-        'label',
+        'button', 'input', 'textarea', 'checkbox', 'radio', 'select',
+        'slider', 'switch', 'colorpicker', 'datepicker', 'label',
       ],
     },
     {
       id: 'nav',
       label: 'Navigation',
       group: 'Components',
+      icon: Navigation,
       keywords: ['navigation menu', 'menubar', 'breadcrumb', 'pagination', 'tabs'],
     },
     {
       id: 'data',
       label: 'Data Display',
       group: 'Components',
+      icon: Database,
       keywords: ['badge', 'table', 'avatar', 'kbd', 'calendar', 'code'],
     },
     {
       id: 'feedback',
       label: 'Feedback',
       group: 'Components',
+      icon: MessageSquare,
       keywords: ['alert', 'progress', 'skeleton', 'toast', 'toaster'],
     },
     {
       id: 'overlays',
       label: 'Overlays',
       group: 'Components',
+      icon: Layers,
       keywords: [
-        'modal',
-        'dialog',
-        'sheet',
-        'popover',
-        'tooltip',
-        'hover card',
-        'context menu',
-        'command',
-        'dropdown menu',
+        'modal', 'dialog', 'sheet', 'popover', 'tooltip',
+        'hover card', 'context menu', 'command', 'dropdown menu',
       ],
     },
     {
       id: 'disclosure',
       label: 'Disclosure',
       group: 'Components',
+      icon: ChevronDown,
       keywords: ['accordion', 'collapsible', 'carousel'],
     },
     {
       id: 'utils',
       label: 'Utilities',
       group: 'Development',
+      icon: Wrench,
       keywords: ['hooks', 'directives'],
     },
   ];
@@ -253,90 +281,79 @@ export default function App() {
     return groups;
   });
 
-  const Sidebar = () => (
-    <aside
-      class={twMerge(
-        'fixed inset-y-0 left-0 z-40 w-64 bg-panel border-r border-stroke transition-all duration-400 lg:translate-x-0 lg:static lg:inset-auto lg:z-0',
-        sidebarOpen() ? 'translate-x-0' : '-translate-x-full',
-      )}
-    >
-      <div class="h-full flex flex-col p-6 overflow-y-auto">
-        <div class="flex items-center gap-3 mb-10">
-          <div class="h-8 w-8 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
-            <span class="text-white font-black text-xl">S</span>
-          </div>
-          <span class="text-xl font-bold tracking-tight">Starling UI</span>
-        </div>
+  return (
+    <SidebarProvider class="flex min-h-screen bg-bg text-fg">
+      <Sidebar.Root collapsible="icon" side="left">
+        <Sidebar.Header>
+          <Sidebar.Menu>
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton class="gap-3">
+                <span data-sidebar-icon>
+                  <div class="h-8 w-8 shrink-0 bg-primary rounded-lg flex items-center justify-center shadow-lg shadow-primary/20">
+                    <span class="text-white font-black text-xl">S</span>
+                  </div>
+                </span>
+                <span class="text-xl font-bold tracking-tight">Starling UI</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+          </Sidebar.Menu>
+        </Sidebar.Header>
 
-        <nav class="space-y-8">
+        <Sidebar.Content>
           <For each={Object.entries(groupedNav())}>
             {([group, items]) => (
-              <div class="space-y-3">
-                <h4 class="text-[11px] font-bold uppercase tracking-wider text-muted/60 px-3">
-                  {group}
-                </h4>
-                <div class="space-y-1">
-                  <For each={items}>
-                    {(item) => (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setActiveSection(item.id as Section);
-                          setSidebarOpen(false);
-                        }}
-                        class={twMerge(
-                          'w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors',
-                          activeSection() === item.id
-                            ? 'bg-primary/10 text-primary'
-                            : 'text-muted hover:bg-surface hover:text-fg',
-                        )}
-                      >
-                        {item.label}
-                        {activeSection() === item.id && <ChevronRight size={14} />}
-                      </button>
-                    )}
-                  </For>
-                </div>
-              </div>
+              <Sidebar.Group>
+                <Sidebar.GroupLabel>{group}</Sidebar.GroupLabel>
+                <Sidebar.GroupContent>
+                  <Sidebar.Menu>
+                    <For each={items}>
+                      {(item) => (
+                        <Sidebar.MenuItem>
+                          <Sidebar.MenuButton
+                            isActive={activeSection() === item.id}
+                            onClick={() => setActiveSection(item.id as Section)}
+                            tooltip={item.label}
+                          >
+                            <span data-sidebar-icon>
+                              <Dynamic component={item.icon} size={16} />
+                            </span>
+                            <span>{item.label}</span>
+                          </Sidebar.MenuButton>
+                        </Sidebar.MenuItem>
+                      )}
+                    </For>
+                  </Sidebar.Menu>
+                </Sidebar.GroupContent>
+              </Sidebar.Group>
             )}
           </For>
-        </nav>
+        </Sidebar.Content>
 
-        <div class="mt-auto pt-8 border-t border-stroke/50">
-          <a
-            href="https://github.com/StarlingCityDevelopment/cdx-solidjs-components"
-            class="flex items-center gap-2 text-sm text-muted hover:text-fg transition-colors"
-          >
-            <Cat size={16} />
-            GitHub Repository
-          </a>
-        </div>
-      </div>
-    </aside>
-  );
+        <Sidebar.Footer>
+          <Sidebar.Menu>
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton
+                as="a"
+                href="https://github.com/StarlingCityDevelopment/cdx-solidjs-components"
+                target="_blank"
+                tooltip="GitHub"
+              >
+                <span data-sidebar-icon>
+                  <Cat size={16} />
+                </span>
+                <span>GitHub Repository</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+          </Sidebar.Menu>
+        </Sidebar.Footer>
 
-  return (
-    <div class="min-h-screen bg-bg text-fg flex overflow-hidden">
-      <Sidebar />
-
-      {/* Mobile Backdrop */}
-      <Show when={sidebarOpen()}>
-        <div
-          class="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      </Show>
+        <Sidebar.Rail />
+      </Sidebar.Root>
 
       <main class="flex-1 flex flex-col h-screen overflow-y-auto scroll-smooth scrollbar-gutter-stable">
         <header class="h-16 border-b border-stroke bg-bg/80 backdrop-blur-md sticky top-0 z-20 flex items-center justify-between px-6 shrink-0 transition-all duration-400">
           <div class="flex items-center gap-4 flex-1">
-            <button
-              type="button"
-              class="lg:hidden p-2 -ml-2 text-muted hover:text-fg"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <Menu size={20} />
-            </button>
+            <Sidebar.Trigger />
 
             <SegmentedControl
               class="hidden sm:inline-flex"
@@ -529,6 +546,6 @@ export default function App() {
       </Command>
 
       <Toaster maxToasts={maxToasts()} duration={toastDuration()} />
-    </div>
+    </SidebarProvider>
   );
 }

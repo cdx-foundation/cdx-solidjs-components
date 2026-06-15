@@ -56,7 +56,7 @@ const prefersDark = createPrefersDark();
 const BUILTIN_DEFAULTS: Theme = {
   dark: prefersDark(),
   accent: '#c62828',
-  base: 'pure',
+  base: 'zinc',
   radius: '0px',
   font: 'sans',
   shadow: 'none',

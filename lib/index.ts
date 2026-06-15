@@ -35,6 +35,7 @@ export * from './ui/ScrollArea';
 export * from './ui/SegmentedControl';
 export * from './ui/Select';
 export * from './ui/Separator';
+export * from './ui/Sidebar';
 export * from './ui/Sheet';
 export * from './ui/Skeleton';
 export * from './ui/Slider';
