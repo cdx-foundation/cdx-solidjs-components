@@ -60,7 +60,7 @@ The most straightforward way to customize the theme is to define your own values
 
 ### Via `useTheme` Hook
 
-Starling UI provides a built-in `useTheme` hook that manages the dark/light mode state.
+Starling UI provides a built-in `useTheme` hook that manages the full application theme.
 
 ```tsx
 import { useTheme } from 'cdx-solidjs-components/hooks';
@@ -74,6 +74,13 @@ function ThemeToggle() {
     </Button>
   );
 }
+```
+
+For project-specific defaults:
+```tsx
+import { useTheme } from 'cdx-solidjs-components/hooks';
+
+const { accent, setLightTheme } = useTheme({ accent: '#6366f1', base: 'slate' });
 ```
 
 Other theme properties like primary color, radii, and fonts should be managed via CSS variables as shown in the [Global CSS](#via-global-css) section.
