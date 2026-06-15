@@ -7,7 +7,7 @@ Components for toggling the visibility of large sections of content.
 A vertically stacked set of collapsible headings.
 
 ```tsx
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from 'starling-fivem-components/ui/Accordion';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from 'cdx-solidjs-components/ui/Accordion';
 
 <Accordion collapsible>
   <AccordionItem>
@@ -32,8 +32,8 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from 'st
 A simple interactive area to show or hide content.
 
 ```tsx
-import { Collapsible } from 'starling-fivem-components/ui/Collapsible';
-import { Button } from 'starling-fivem-components/ui/Button';
+import { Collapsible } from 'cdx-solidjs-components/ui/Collapsible';
+import { Button } from 'cdx-solidjs-components/ui/Button';
 
 <Collapsible
   trigger={<Button variant="outline">Advanced Settings</Button>}
@@ -52,7 +52,7 @@ import { Button } from 'starling-fivem-components/ui/Button';
 A high-performance slider with native browser snap-scrolling.
 
 ```tsx
-import { Carousel } from 'starling-fivem-components/ui/Carousel';
+import { Carousel } from 'cdx-solidjs-components/ui/Carousel';
 
 <Carousel
   items={[

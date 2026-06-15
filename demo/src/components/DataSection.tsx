@@ -32,7 +32,7 @@ export const DataSection = () => {
       <Preview
         title="Code Block"
         description="A professional code container with copy action."
-        code={`import { Code } from 'starling-fivem-components/ui/Code';\n\n<Code \n  fileName="lib/ui/Code.tsx" \n  language="typescript"\n  code="export const Code = () => { ... }"\n/>`}
+        code={`import { Code } from 'cdx-solidjs-components/ui/Code';\n\n<Code \n  fileName="lib/ui/Code.tsx" \n  language="typescript"\n  code="export const Code = () => { ... }"\n/>`}
       >
         <div class="w-full max-w-md">
           <Code
@@ -48,7 +48,7 @@ export const DataSection = () => {
       <Preview
         title="Interactive Table"
         description="Data-dense tabular layouts."
-        code={`import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from 'starling-fivem-components/ui/Table';\nimport { Badge } from 'starling-fivem-components/ui/Badge';\n\n<Table>\n  <TableHeader>\n    <TableRow>\n      <TableHead>Instance</TableHead>\n      <TableHead>Status</TableHead>\n    </TableRow>\n  </TableHeader>\n  <TableBody>\n    <TableRow>\n       <TableCell>US-EAST-1</TableCell>\n       <TableCell><Badge>Healthy</Badge></TableCell>\n    </TableRow>\n  </TableBody>\n</Table>`}
+        code={`import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from 'cdx-solidjs-components/ui/Table';\nimport { Badge } from 'cdx-solidjs-components/ui/Badge';\n\n<Table>\n  <TableHeader>\n    <TableRow>\n      <TableHead>Instance</TableHead>\n      <TableHead>Status</TableHead>\n    </TableRow>\n  </TableHeader>\n  <TableBody>\n    <TableRow>\n       <TableCell>US-EAST-1</TableCell>\n       <TableCell><Badge>Healthy</Badge></TableCell>\n    </TableRow>\n  </TableBody>\n</Table>`}
       >
         <div class="w-full border border-stroke rounded-xl overflow-hidden bg-bg">
           <Table>
@@ -84,7 +84,7 @@ export const DataSection = () => {
       <Preview
         title="Calendar"
         description="Single, range, and multiple date selection. Now with optional time picker."
-        code={`import { Calendar } from 'starling-fivem-components/ui/Calendar';\n\nconst [date, setDate] = createSignal(new Date());\n\n<Calendar \n  mode="single" \n  selected={date()} \n  onChange={setDate} \n  showTime\n/>`}
+        code={`import { Calendar } from 'cdx-solidjs-components/ui/Calendar';\n\nconst [date, setDate] = createSignal(new Date());\n\n<Calendar \n  mode="single" \n  selected={date()} \n  onChange={setDate} \n  showTime\n/>`}
       >
         <div class="flex flex-col items-center gap-6 w-full max-w-sm transition-all duration-400">
           <div class="flex items-center justify-between w-full px-2 py-1 bg-surface rounded-lg border border-stroke">
@@ -126,7 +126,7 @@ export const DataSection = () => {
       <Preview
         title="Date & Time Picker"
         description="A popover-based picker for dates and times."
-        code={`import { DatePicker } from 'starling-fivem-components/ui/DatePicker';\n\n<DatePicker\n  label="Schedule Maintenance"\n  value={date()}\n  onChange={setDate}\n  showTime\n/>`}
+        code={`import { DatePicker } from 'cdx-solidjs-components/ui/DatePicker';\n\n<DatePicker\n  label="Schedule Maintenance"\n  value={date()}\n  onChange={setDate}\n  showTime\n/>`}
       >
         <div class="w-full max-w-xs">
           <DatePicker

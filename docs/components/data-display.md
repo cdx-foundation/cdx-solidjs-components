@@ -7,7 +7,7 @@ Components for presenting information, status, and tabular data with technical p
 A compact element for highlighting a status, category, or count.
 
 ```tsx
-import { Badge } from 'starling-fivem-components/ui/Badge';
+import { Badge } from 'cdx-solidjs-components/ui/Badge';
 
 <Badge variant="success">Online</Badge>
 <Badge variant="destructive">Critical</Badge>
@@ -29,7 +29,7 @@ import { Badge } from 'starling-fivem-components/ui/Badge';
 A semantic and responsive system for displaying tabular data.
 
 ```tsx
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from 'starling-fivem-components/ui/Table';
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from 'cdx-solidjs-components/ui/Table';
 
 <Table>
   <TableHeader>
@@ -61,7 +61,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from 's
 A visual representation of a user with smart fallback for missing images.
 
 ```tsx
-import { Avatar, AvatarImage, AvatarFallback } from 'starling-fivem-components/ui/Avatar';
+import { Avatar, AvatarImage, AvatarFallback } from 'cdx-solidjs-components/ui/Avatar';
 
 <Avatar>
   <AvatarImage src="https://github.com/nutlope.png" alt="Yanis" />
@@ -76,7 +76,7 @@ import { Avatar, AvatarImage, AvatarFallback } from 'starling-fivem-components/u
 A semantic element for displaying keyboard shortcuts.
 
 ```tsx
-import { Kbd } from 'starling-fivem-components/ui/Kbd';
+import { Kbd } from 'cdx-solidjs-components/ui/Kbd';
 
 <div class="flex gap-1">
   <Kbd>⌘</Kbd>
@@ -91,7 +91,7 @@ import { Kbd } from 'starling-fivem-components/ui/Kbd';
 A grid-based date selection component supporting single, multiple, and range modes.
 
 ```tsx
-import { Calendar } from 'starling-fivem-components/ui/Calendar';
+import { Calendar } from 'cdx-solidjs-components/ui/Calendar';
 
 {/* Single Date */}
 <Calendar mode="single" selected={date()} onSelect={setDate} />

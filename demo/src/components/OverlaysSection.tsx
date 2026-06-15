@@ -24,7 +24,7 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
       <Preview
         title="Dialog (Modal)"
         description="Focused interruptions for critical tasks."
-        code={`import { Modal, ModalHeader, ModalTitle, ModalFooter } from 'starling-fivem-components/ui/Modal';\n\n<Modal isOpen={open()} onClose={close}>\n  <ModalHeader>\n    <ModalTitle>Confirm Deployment</ModalTitle>\n  </ModalHeader>\n  <ModalFooter>\n    <Button onClick={close}>Cancel</Button>\n    <Button variant="primary">Confirm</Button>\n  </ModalFooter>\n</Modal>`}
+        code={`import { Modal, ModalHeader, ModalTitle, ModalFooter } from 'cdx-solidjs-components/ui/Modal';\n\n<Modal isOpen={open()} onClose={close}>\n  <ModalHeader>\n    <ModalTitle>Confirm Deployment</ModalTitle>\n  </ModalHeader>\n  <ModalFooter>\n    <Button onClick={close}>Cancel</Button>\n    <Button variant="primary">Confirm</Button>\n  </ModalFooter>\n</Modal>`}
       >
         <Button variant="secondary" onClick={() => props.setModalOpen(true)}>
           Launch Dialog
@@ -34,7 +34,7 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
       <Preview
         title="Slide Overlay (Sheet)"
         description="Lateral panels for detail views."
-        code={`import { Sheet, SheetHeader, SheetTitle, SheetContent, SheetFooter } from 'starling-fivem-components/ui/Sheet';\n\n<Sheet isOpen={open()} onClose={close} side="right">\n  <SheetHeader>\n    <SheetTitle>Configuration</SheetTitle>\n  </SheetHeader>\n  <SheetContent>...</SheetContent>\n  <SheetFooter>\n    <Button>Save Changes</Button>\n  </SheetFooter>\n</Sheet>`}
+        code={`import { Sheet, SheetHeader, SheetTitle, SheetContent, SheetFooter } from 'cdx-solidjs-components/ui/Sheet';\n\n<Sheet isOpen={open()} onClose={close} side="right">\n  <SheetHeader>\n    <SheetTitle>Configuration</SheetTitle>\n  </SheetHeader>\n  <SheetContent>...</SheetContent>\n  <SheetFooter>\n    <Button>Save Changes</Button>\n  </SheetFooter>\n</Sheet>`}
       >
         <Button variant="secondary" onClick={() => props.setSheetOpen(true)}>
           Open Right Sheet
@@ -44,7 +44,7 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
       <Preview
         title="Tooltip"
         description="A small floating label that appears on hover."
-        code={`import { Tooltip, TooltipTrigger, TooltipContent } from 'starling-fivem-components/ui/Tooltip';\n\n<Tooltip align="top">\n  <TooltipTrigger>\n    <Button variant="outline">Hover Me</Button>\n  </TooltipTrigger>\n  <TooltipContent>Archive this resource</TooltipContent>\n</Tooltip>`}
+        code={`import { Tooltip, TooltipTrigger, TooltipContent } from 'cdx-solidjs-components/ui/Tooltip';\n\n<Tooltip align="top">\n  <TooltipTrigger>\n    <Button variant="outline">Hover Me</Button>\n  </TooltipTrigger>\n  <TooltipContent>Archive this resource</TooltipContent>\n</Tooltip>`}
       >
         <div class="flex gap-4">
           <Tooltip align="top">
@@ -77,7 +77,7 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
       <Preview
         title="Popover"
         description="A floating container for rich content. Now supports cardinal and diagonal (corner) alignment."
-        code={`import { Popover, PopoverTrigger, PopoverContent } from 'starling-fivem-components/ui/Popover';\n\n<div class="grid grid-cols-3 gap-4">\n  <Popover align="bottom-left">\n    <PopoverTrigger><Button variant="outline">Bottom Left</Button></PopoverTrigger>\n    <PopoverContent>...</PopoverContent>\n  </Popover>\n</div>`}
+        code={`import { Popover, PopoverTrigger, PopoverContent } from 'cdx-solidjs-components/ui/Popover';\n\n<div class="grid grid-cols-3 gap-4">\n  <Popover align="bottom-left">\n    <PopoverTrigger><Button variant="outline">Bottom Left</Button></PopoverTrigger>\n    <PopoverContent>...</PopoverContent>\n  </Popover>\n</div>`}
       >
         <div class="flex flex-col gap-8 w-full items-center">
           <div class="flex flex-wrap justify-center gap-4">
@@ -158,7 +158,7 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
       <Preview
         title="Hover Card"
         description="A non-interactive preview that appears on hover. Alignment is now fully configurable."
-        code={`import { HoverCard, HoverCardTrigger, HoverCardContent } from 'starling-fivem-components/ui/HoverCard';\n\n<HoverCard align="bottom-right">\n  <HoverCardTrigger><Button>Bottom Right</Button></HoverCardTrigger>\n  <HoverCardContent>Content aligned to corner</HoverCardContent>\n</HoverCard>`}
+        code={`import { HoverCard, HoverCardTrigger, HoverCardContent } from 'cdx-solidjs-components/ui/HoverCard';\n\n<HoverCard align="bottom-right">\n  <HoverCardTrigger><Button>Bottom Right</Button></HoverCardTrigger>\n  <HoverCardContent>Content aligned to corner</HoverCardContent>\n</HoverCard>`}
       >
         <div class="flex flex-wrap justify-center gap-8">
           <HoverCard align="top-left">

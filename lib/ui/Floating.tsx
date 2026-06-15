@@ -50,10 +50,15 @@ export const Floating = (props: { children: JSX.Element; isOpen?: boolean }) => 
   );
 };
 
+export const useFloatingContext = () => {
+  const context = useContext(FloatingContext);
+  if (!context) throw new Error('useFloatingContext must be used within Floating');
+  return context;
+};
+
 export const FloatingTrigger = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
   const [local, others] = splitProps(props, ['children']);
-  const context = useContext(FloatingContext);
-  if (!context) throw new Error('FloatingTrigger must be used within Floating');
+  const context = useFloatingContext();
 
   return (
     <div ref={context.setTriggerEl} {...others}>
@@ -78,8 +83,7 @@ export const FloatingContent = (props: FloatingContentProps) => {
     'class',
     'matchTriggerWidth',
   ]);
-  const context = useContext(FloatingContext);
-  if (!context) throw new Error('FloatingContent must be used within Floating');
+  const context = useFloatingContext();
 
   const [coords, setCoords] = createSignal<{ top: number; left: number } | null>(null);
   const [width, setWidth] = createSignal<string>('auto');
@@ -229,3 +233,4 @@ export const FloatingContent = (props: FloatingContentProps) => {
 
 Floating.Trigger = FloatingTrigger;
 Floating.Content = FloatingContent;
+Floating.useContext = useFloatingContext;

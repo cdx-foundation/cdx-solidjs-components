@@ -7,7 +7,7 @@ A collection of input-based components for gathering and validating user data.
 A versatile action button with support for variants, loading states, and polymorphic rendering.
 
 ```tsx
-import { Button } from 'starling-fivem-components/ui/Button';
+import { Button } from 'cdx-solidjs-components/ui/Button';
 
 <Button variant="primary">Submit</Button>
 <Button variant="outline" isLoading>Saving...</Button>
@@ -28,7 +28,7 @@ import { Button } from 'starling-fivem-components/ui/Button';
 A standard text input field with built-in label and error support.
 
 ```tsx
-import { Input } from 'starling-fivem-components/ui/Input';
+import { Input } from 'cdx-solidjs-components/ui/Input';
 
 <Input label="Email" placeholder="user@example.com" type="email" />
 <Input label="Password" error="Incorrect password" type="password" />
@@ -41,7 +41,7 @@ import { Input } from 'starling-fivem-components/ui/Input';
 A multi-line text input for longer data.
 
 ```tsx
-import { Textarea } from 'starling-fivem-components/ui/Textarea';
+import { Textarea } from 'cdx-solidjs-components/ui/Textarea';
 
 <Textarea label="Biography" placeholder="Tell us about yourself..." />
 ```
@@ -53,7 +53,7 @@ import { Textarea } from 'starling-fivem-components/ui/Textarea';
 A boolean toggle for selecting one or more items.
 
 ```tsx
-import { Checkbox } from 'starling-fivem-components/ui/Checkbox';
+import { Checkbox } from 'cdx-solidjs-components/ui/Checkbox';
 
 <Checkbox label="Accept terms and conditions" onCheckedChange={(v) => console.log(v)} />
 ```
@@ -65,7 +65,7 @@ import { Checkbox } from 'starling-fivem-components/ui/Checkbox';
 A set of mutually exclusive choices using a modern card-based layout.
 
 ```tsx
-import { RadioGroup } from 'starling-fivem-components/ui/RadioGroup';
+import { RadioGroup } from 'cdx-solidjs-components/ui/RadioGroup';
 
 <RadioGroup
   name="plan"
@@ -86,7 +86,7 @@ import { RadioGroup } from 'starling-fivem-components/ui/RadioGroup';
 A fully themeable replacement for the native dropdown menu.
 
 ```tsx
-import { Select } from 'starling-fivem-components/ui/Select';
+import { Select } from 'cdx-solidjs-components/ui/Select';
 
 <Select
   label="Environment"
@@ -106,7 +106,7 @@ import { Select } from 'starling-fivem-components/ui/Select';
 A range input with a custom track and square thumb.
 
 ```tsx
-import { Slider } from 'starling-fivem-components/ui/Slider';
+import { Slider } from 'cdx-solidjs-components/ui/Slider';
 
 <Slider label="Volume" min={0} max={100} value={vol()} onChange={setVol} />
 ```
@@ -118,7 +118,7 @@ import { Slider } from 'starling-fivem-components/ui/Slider';
 A high-fidelity toggle control (On/Off).
 
 ```tsx
-import { Switch } from 'starling-fivem-components/ui/Switch';
+import { Switch } from 'cdx-solidjs-components/ui/Switch';
 
 <Switch label="Auto-save" checked={enabled()} onCheckedChange={setEnabled} />
 ```
@@ -130,7 +130,7 @@ import { Switch } from 'starling-fivem-components/ui/Switch';
 A color selection tool with curated presets and custom Hex input.
 
 ```tsx
-import { ColorPicker } from 'starling-fivem-components/ui/ColorPicker';
+import { ColorPicker } from 'cdx-solidjs-components/ui/ColorPicker';
 
 <ColorPicker label="Accent Color" value={color()} onChange={setColor} />
 ```
@@ -142,7 +142,7 @@ import { ColorPicker } from 'starling-fivem-components/ui/ColorPicker';
 A combination of Popover and Calendar for selecting specific dates.
 
 ```tsx
-import { DatePicker } from 'starling-fivem-components/ui/DatePicker';
+import { DatePicker } from 'cdx-solidjs-components/ui/DatePicker';
 
 <DatePicker label="Start Date" value={date()} onChange={setDate} />
 ```
@@ -154,7 +154,7 @@ import { DatePicker } from 'starling-fivem-components/ui/DatePicker';
 A semantic wrapper for form headings.
 
 ```tsx
-import { Label } from 'starling-fivem-components/ui/Label';
+import { Label } from 'cdx-solidjs-components/ui/Label';
 
 <Label for="username">Username</Label>
 ```

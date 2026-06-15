@@ -1,6 +1,7 @@
 import { createShortcut } from '@solid-primitives/keyboard';
 import {
   type JSX,
+  Show,
   createContext,
   createSignal,
   onCleanup,
@@ -14,14 +15,13 @@ interface PopoverContextValue {
   isOpen: () => boolean;
   setIsOpen: (value: boolean) => void;
   align: Alignment;
-  triggerEl: () => HTMLElement | undefined;
-  setTriggerEl: (el: HTMLElement) => void;
 }
 
 const PopoverContext = createContext<PopoverContextValue>();
 
 interface PopoverProps extends JSX.HTMLAttributes<HTMLDivElement> {
   align?: Alignment;
+  trigger?: JSX.Element;
 }
 
 /**
@@ -30,36 +30,65 @@ interface PopoverProps extends JSX.HTMLAttributes<HTMLDivElement> {
  * A floating container used to display rich content or additional options.
  */
 export const Popover = (props: PopoverProps) => {
-  const [local, others] = splitProps(props, ['align', 'children', 'class']);
+  const [local, others] = splitProps(props, ['align', 'children', 'class', 'trigger']);
   const [isOpen, setIsOpen] = createSignal(false);
-  const [triggerEl, setTriggerEl] = createSignal<HTMLElement>();
   const align = local.align || 'bottom';
 
   return (
-    <PopoverContext.Provider value={{ isOpen, setIsOpen, align, triggerEl, setTriggerEl }}>
-      <div class={twMerge('inline-block', local.class)} {...others}>
-        {local.children}
-      </div>
+    <PopoverContext.Provider value={{ isOpen, setIsOpen, align }}>
+      <Floating isOpen={isOpen()}>
+        <div class={twMerge('inline-block', local.class)} {...others}>
+          <Show
+            when={local.trigger}
+            fallback={local.children}
+          >
+            <PopoverTrigger>{local.trigger}</PopoverTrigger>
+            <PopoverContent>{local.children}</PopoverContent>
+          </Show>
+        </div>
+      </Floating>
     </PopoverContext.Provider>
   );
 };
 
 export const PopoverTrigger = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
-  const [local, others] = splitProps(props, ['children', 'class', 'onClick']);
+  const [local, others] = splitProps(props, ['children', 'class', 'onClick', 'onKeyDown']);
   const context = useContext(PopoverContext);
   if (!context) throw new Error('PopoverTrigger must be used within Popover');
+
+  const toggle = () => context.setIsOpen(!context.isOpen());
 
   return (
     <Floating.Trigger
       onClick={(e) => {
-        context.setIsOpen(!context.isOpen());
+        toggle();
         if (typeof local.onClick === 'function') {
           local.onClick(e);
         } else if (local.onClick) {
           (local.onClick[0] as any)(local.onClick[1], e);
         }
       }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          // If the event target is a button, it will likely trigger a click.
+          // We avoid double-toggling by checking the target.
+          if ((e.target as HTMLElement).tagName === 'BUTTON' && e.currentTarget !== e.target) {
+            return;
+          }
+          e.preventDefault();
+          toggle();
+        }
+        if (typeof local.onKeyDown === 'function') {
+          local.onKeyDown(e);
+        } else if (local.onKeyDown) {
+          (local.onKeyDown[0] as any)(local.onKeyDown[1], e);
+        }
+      }}
       class={twMerge('inline-block cursor-pointer', local.class)}
+      {...{
+        role: 'button',
+        tabIndex: 0
+      }}
       {...others}
     >
       {local.children}
@@ -70,12 +99,14 @@ export const PopoverTrigger = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
 export const PopoverContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
   const [local, others] = splitProps(props, ['children', 'class']);
   const context = useContext(PopoverContext);
+  const floating = Floating.useContext();
+
   if (!context) throw new Error('PopoverContent must be used within Popover');
 
   let containerRef: HTMLDivElement | undefined;
 
   const onClickOutside = (e: MouseEvent) => {
-    const triggerEl = context.triggerEl();
+    const triggerEl = floating.triggerEl();
     if (
       context.isOpen() &&
       containerRef &&

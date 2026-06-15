@@ -119,8 +119,7 @@ export const DatePicker = (props: DatePickerProps) => {
 
       <Popover align={local.align || 'left'} class="p-0 w-max">
         <Popover.Trigger>
-          <button
-            type="button"
+          <div
             class={twMerge(
               'flex items-center gap-2 w-full border border-stroke bg-transparent rounded-none px-3 py-2.5 text-sm font-mono transition-colors duration-150 hover:border-muted cursor-pointer outline-none focus-visible:border-fg focus-visible:ring-1 focus-visible:ring-fg',
               !internalDate() ? 'text-muted/80' : 'text-fg',
@@ -128,7 +127,7 @@ export const DatePicker = (props: DatePickerProps) => {
           >
             <CalendarIcon size={16} class="opacity-50" />
             <span>{formatDate(internalDate()) || local.placeholder || 'Pick a date'}</span>
-          </button>
+          </div>
         </Popover.Trigger>
         <Popover.Content>
           <Calendar

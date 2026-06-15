@@ -18,6 +18,7 @@ const HoverCardContext = createContext<HoverCardContextValue>();
 
 interface HoverCardProps extends JSX.HTMLAttributes<HTMLDivElement> {
   align?: Alignment;
+  trigger?: JSX.Element;
 }
 
 /**
@@ -26,15 +27,23 @@ interface HoverCardProps extends JSX.HTMLAttributes<HTMLDivElement> {
  * Provides a non-interactive preview of content that appears when hovering over a trigger.
  */
 export const HoverCard = (props: HoverCardProps) => {
-  const [local, others] = splitProps(props, ['align', 'children', 'class']);
+  const [local, others] = splitProps(props, ['align', 'children', 'class', 'trigger']);
   const [isOpen, setIsOpen] = createSignal(false);
   const align = local.align || 'top';
 
   return (
     <HoverCardContext.Provider value={{ isOpen, setIsOpen, align }}>
-      <div class={twMerge('inline-block', local.class)} {...others}>
-        {local.children}
-      </div>
+      <Floating isOpen={isOpen()}>
+        <div class={twMerge('inline-block', local.class)} {...others}>
+          <Show
+            when={local.trigger}
+            fallback={local.children}
+          >
+            <HoverCardTrigger>{local.trigger}</HoverCardTrigger>
+            <HoverCardContent>{local.children}</HoverCardContent>
+          </Show>
+        </div>
+      </Floating>
     </HoverCardContext.Provider>
   );
 };

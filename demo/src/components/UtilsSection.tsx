@@ -42,7 +42,7 @@ export const UtilsSection = () => {
           Manages application theme state with built-in persistence and DOM synchronization.
         </p>
         <Code
-          code={`import { useTheme } from 'starling-fivem-components/hooks';\n\nconst { isDark, toggleTheme } = useTheme();`}
+          code={`import { useTheme } from 'cdx-solidjs-components/hooks';\n\nconst { isDark, toggleTheme } = useTheme();`}
           fileName="hooks"
           language="typescript"
         />

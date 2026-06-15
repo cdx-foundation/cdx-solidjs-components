@@ -11,7 +11,7 @@ export const GetStartedSection = () => {
 
       <div class="space-y-4">
         <h2 class="text-xl font-bold">1. Install Package</h2>
-        <Code code="bun install starling-fivem-components" fileName="terminal" language="bash" />
+        <Code code="bun install cdx-solidjs-components" fileName="terminal" language="bash" />
       </div>
 
       <div class="space-y-4">
@@ -20,7 +20,7 @@ export const GetStartedSection = () => {
           Import the theme and base styles into your CSS entry point (Tailwind v4 compatible).
         </p>
         <Code
-          code={`@import "tailwindcss";\n@import "starling-fivem-components";`}
+          code={`@import "tailwindcss";\n@import "cdx-solidjs-components";`}
           fileName="app.css"
           language="css"
         />
@@ -33,7 +33,7 @@ export const GetStartedSection = () => {
         </AlertDescription>
         <div class="mt-4">
           <Code
-            code={`import { Toaster } from 'starling-fivem-components/ui/Toast';\n\nfunction App() {\n  return (\n    <main>\n      <Toaster />\n      <Router />\n    </main>\n  );\n}`}
+            code={`import { Toaster } from 'cdx-solidjs-components/ui/Toast';\n\nfunction App() {\n  return (\n    <main>\n      <Toaster />\n      <Router />\n    </main>\n  );\n}`}
             fileName="App.tsx"
           />
         </div>

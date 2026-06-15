@@ -14,9 +14,9 @@ An elegant and feature-rich UI component library for Solid.js, meticulously craf
 ## Installation
 
 ```bash
-bun install starling-fivem-components
+bun install cdx-solidjs-components
 # or
-bun add starling-fivem-components
+bun add cdx-solidjs-components
 ```
 
 ## Setup
@@ -27,7 +27,7 @@ To ensure styles are computed correctly, import the library in your main CSS fil
 
 ```css
 @import "tailwindcss";
-@import "starling-fivem-components";
+@import "cdx-solidjs-components";
 ```
 
 ## Component List
@@ -80,8 +80,8 @@ The library includes 41 high-fidelity components:
 
 ```tsx
 import { createSignal } from "solid-js";
-import { Button, Modal } from "starling-fivem-components";
-import { useTheme } from "starling-fivem-components/hooks";
+import { Button, Modal } from "cdx-solidjs-components";
+import { useTheme } from "cdx-solidjs-components/hooks";
 
 export const MyComponent = () => {
   const [isOpen, setIsOpen] = createSignal(false);

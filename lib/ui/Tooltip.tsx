@@ -1,6 +1,5 @@
 import {
   type JSX,
-  Show,
   createContext,
   createSignal,
   splitProps,
@@ -26,6 +25,14 @@ interface TooltipProps extends JSX.HTMLAttributes<HTMLDivElement> {
    * @default "top"
    */
   align?: Alignment;
+  /**
+   * The element that triggers the tooltip on hover.
+   */
+  trigger?: JSX.Element;
+  /**
+   * The content to display inside the tooltip.
+   */
+  content?: JSX.Element;
 }
 
 /**
@@ -34,15 +41,23 @@ interface TooltipProps extends JSX.HTMLAttributes<HTMLDivElement> {
  * A compact floating label that provides additional context about an element when hovered.
  */
 export const Tooltip = (props: TooltipProps) => {
-  const [local, others] = splitProps(props, ['align', 'children', 'class']);
+  const [local, others] = splitProps(props, ['align', 'children', 'class', 'trigger', 'content']);
   const [isOpen, setIsOpen] = createSignal(false);
   const align = local.align || 'top';
 
   return (
     <TooltipContext.Provider value={{ isOpen, setIsOpen, align }}>
-      <div class={twMerge('inline-flex', local.class)} {...others}>
-        {local.children}
-      </div>
+      <Floating isOpen={isOpen()}>
+        <div class={twMerge('inline-flex', local.class)} {...others}>
+          <Show
+            when={local.trigger}
+            fallback={local.children}
+          >
+            <TooltipTrigger>{local.trigger}</TooltipTrigger>
+            <TooltipContent>{local.content || local.children}</TooltipContent>
+          </Show>
+        </div>
+      </Floating>
     </TooltipContext.Provider>
   );
 };

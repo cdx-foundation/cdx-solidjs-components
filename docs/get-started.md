@@ -8,10 +8,10 @@ Starling UI is distributed via npm. You can install it using your preferred pack
 
 ```bash
 # npm
-npm install starling-fivem-components
+npm install cdx-solidjs-components
 
 # bun
-bun add starling-fivem-components
+bun add cdx-solidjs-components
 ```
 
 ## Peer Dependencies
@@ -29,10 +29,10 @@ Starling UI is built for Tailwind CSS v4. In your main CSS entry point, import t
 
 ```css
 @import "tailwindcss";
-@import "starling-fivem-components/theme";
+@import "cdx-solidjs-components/theme";
 
 /* Optional: Source the components if you are using Tailwind's JIT scanner on the library */
-@source "../node_modules/starling-fivem-components/ui/**/*.tsx";
+@source "../node_modules/cdx-solidjs-components/ui/**/*.tsx";
 ```
 
 ### 2. Provider Setup (Optional)
@@ -40,7 +40,7 @@ Starling UI is built for Tailwind CSS v4. In your main CSS entry point, import t
 If you plan to use toast notifications, make sure to add the `Toaster` component at the root of your application.
 
 ```tsx
-import { Toaster } from 'starling-fivem-components/ui/Toast';
+import { Toaster } from 'cdx-solidjs-components/ui/Toast';
 
 function App() {
   return (
@@ -57,8 +57,8 @@ function App() {
 Import components directly and start building:
 
 ```tsx
-import { Button } from 'starling-fivem-components/ui/Button';
-import { Card, CardTitle, CardContent } from 'starling-fivem-components/ui/Card';
+import { Button } from 'cdx-solidjs-components/ui/Button';
+import { Card, CardTitle, CardContent } from 'cdx-solidjs-components/ui/Card';
 
 export default function Home() {
   return (

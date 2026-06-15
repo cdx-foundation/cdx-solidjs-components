@@ -48,7 +48,7 @@ export const IntroSection = (props: IntroSectionProps) => {
         <Button
           variant="secondary"
           as="a"
-          href="https://github.com/StarlingCityDevelopment/starling-fivem-components"
+          href="https://github.com/StarlingCityDevelopment/cdx-solidjs-components"
         >
           GitHub Repository
         </Button>

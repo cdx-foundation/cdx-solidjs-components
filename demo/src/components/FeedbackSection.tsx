@@ -27,7 +27,7 @@ export const FeedbackSection = (props: FeedbackSectionProps) => {
       <Preview
         title="Alert"
         description="Prominent, contextual messaging."
-        code={`import { Alert, AlertTitle, AlertDescription } from 'starling-fivem-components/ui/Alert';\n\n<Alert variant="destructive">\n  <AlertTitle>Critical Error</AlertTitle>\n  <AlertDescription>Regional cluster failure detected.</AlertDescription>\n</Alert>`}
+        code={`import { Alert, AlertTitle, AlertDescription } from 'cdx-solidjs-components/ui/Alert';\n\n<Alert variant="destructive">\n  <AlertTitle>Critical Error</AlertTitle>\n  <AlertDescription>Regional cluster failure detected.</AlertDescription>\n</Alert>`}
       >
         <div class="flex flex-col gap-4 w-full max-w-md transition-all duration-400">
           <Alert>
@@ -44,7 +44,7 @@ export const FeedbackSection = (props: FeedbackSectionProps) => {
       <Preview
         title="Progress & Skeletons"
         description="Visualizing async states and completion."
-        code={`import { Progress } from 'starling-fivem-components/ui/Progress';\nimport { Skeleton } from 'starling-fivem-components/ui/Skeleton';\n\n<Progress value={78} />\n<Skeleton class="h-12 w-full rounded-xl" />`}
+        code={`import { Progress } from 'cdx-solidjs-components/ui/Progress';\nimport { Skeleton } from 'cdx-solidjs-components/ui/Skeleton';\n\n<Progress value={78} />\n<Skeleton class="h-12 w-full rounded-xl" />`}
       >
         <div class="w-full max-w-sm space-y-6 transition-all duration-400">
           <Progress value={78} class="h-1.5" />
@@ -59,7 +59,7 @@ export const FeedbackSection = (props: FeedbackSectionProps) => {
       <Preview
         title="Toast Notifications"
         description="Fluid, non-interruptive feedback. Now with configurable positioning, limits, and duration."
-        code={`import { toast, Toaster } from 'starling-fivem-components/ui/Toast';\n\n<Toaster \n  position="${props.toastPos}" \n  maxToasts={${props.maxToasts}} \n  duration={${props.toastDuration}} \n/>\n\n<Button onClick={() => toast({ title: "Done", type: "success" })}>\n  Show Success\n</Button>`}
+        code={`import { toast, Toaster } from 'cdx-solidjs-components/ui/Toast';\n\n<Toaster \n  position="${props.toastPos}" \n  maxToasts={${props.maxToasts}} \n  duration={${props.toastDuration}} \n/>\n\n<Button onClick={() => toast({ title: "Done", type: "success" })}>\n  Show Success\n</Button>`}
       >
         <div class="flex flex-col gap-6 w-full max-w-xs transition-all duration-400">
           <Select

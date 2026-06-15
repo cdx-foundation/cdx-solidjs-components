@@ -7,7 +7,7 @@ Components for building complex site navigation, pagination, and multi-layered m
 A high-level site navigation component with hover-activated dropdown panels.
 
 ```tsx
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink } from 'starling-fivem-components/ui/NavigationMenu';
+import { NavigationMenu, NavigationMenuItem, NavigationMenuLink } from 'cdx-solidjs-components/ui/NavigationMenu';
 
 <NavigationMenu>
   <NavigationMenuItem trigger="Documentation">
@@ -40,7 +40,7 @@ import { NavigationMenu, NavigationMenuItem, NavigationMenuLink } from 'starling
 A top-level horizontal bar for desktop-style application menus.
 
 ```tsx
-import { Menubar, MenubarMenu, MenubarItem, MenubarSeparator } from 'starling-fivem-components/ui/Menubar';
+import { Menubar, MenubarMenu, MenubarItem, MenubarSeparator } from 'cdx-solidjs-components/ui/Menubar';
 
 <Menubar>
   <MenubarMenu trigger="File">
@@ -62,7 +62,7 @@ import { Menubar, MenubarMenu, MenubarItem, MenubarSeparator } from 'starling-fi
 A trail of links showing the current location in the application hierarchy.
 
 ```tsx
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from 'starling-fivem-components/ui/Breadcrumb';
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from 'cdx-solidjs-components/ui/Breadcrumb';
 
 <Breadcrumb>
   <BreadcrumbList>
@@ -84,7 +84,7 @@ import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbS
 A navigation element for traversing through paginated data sets.
 
 ```tsx
-import { Pagination } from 'starling-fivem-components/ui/Pagination';
+import { Pagination } from 'cdx-solidjs-components/ui/Pagination';
 
 <Pagination
   currentPage={page()}
@@ -100,7 +100,7 @@ import { Pagination } from 'starling-fivem-components/ui/Pagination';
 A set of layered sections of content displayed one at a time. Supports both compound and shorthand patterns.
 
 ```tsx
-import { Tabs, TabsList, TabsTrigger, TabsContent } from 'starling-fivem-components/ui/Tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from 'cdx-solidjs-components/ui/Tabs';
 
 {/* Compound Pattern */}
 <Tabs defaultValue="overview">
