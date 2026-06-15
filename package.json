@@ -81,5 +81,8 @@
     "vite-plugin-dts": "^4.3.0",
     "vite-plugin-solid": "^2.11.12",
     "vitest": "^4.1.5"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }
