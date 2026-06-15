@@ -1,4 +1,4 @@
-import { type JSX, createContext, createSignal, splitProps, useContext } from 'solid-js';
+import { type JSX, Show, createContext, createSignal, splitProps, useContext } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { type Alignment, Floating } from './Floating';
 
