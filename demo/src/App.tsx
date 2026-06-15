@@ -37,10 +37,10 @@ import {
   SheetHeader,
   SheetTitle,
 } from '../../lib/ui/Sheet';
+import { Sidebar, SidebarProvider } from '../../lib/ui/Sidebar';
 import { Slider } from '../../lib/ui/Slider';
 import { Switch } from '../../lib/ui/Switch';
 import { Toaster, type ToasterPosition, toast } from '../../lib/ui/Toast';
-import { Sidebar, SidebarProvider } from '../../lib/ui/Sidebar';
 import { useAppTheme } from './hooks/useAppTheme';
 import { BASE_PALETTES, FONTS, SHADOWS, hexToRgb } from './theme-constants';
 
@@ -173,7 +173,13 @@ export default function App() {
   });
 
   const navItems = [
-    { id: 'intro', label: 'Introduction', group: 'Getting Started', icon: Book, keywords: ['about', 'guide'] },
+    {
+      id: 'intro',
+      label: 'Introduction',
+      group: 'Getting Started',
+      icon: Book,
+      keywords: ['about', 'guide'],
+    },
     {
       id: 'get-started',
       label: 'Installation',
@@ -215,8 +221,17 @@ export default function App() {
       group: 'Components',
       icon: FileText,
       keywords: [
-        'button', 'input', 'textarea', 'checkbox', 'radio', 'select',
-        'slider', 'switch', 'colorpicker', 'datepicker', 'label',
+        'button',
+        'input',
+        'textarea',
+        'checkbox',
+        'radio',
+        'select',
+        'slider',
+        'switch',
+        'colorpicker',
+        'datepicker',
+        'label',
       ],
     },
     {
@@ -246,8 +261,15 @@ export default function App() {
       group: 'Components',
       icon: Layers,
       keywords: [
-        'modal', 'dialog', 'sheet', 'popover', 'tooltip',
-        'hover card', 'context menu', 'command', 'dropdown menu',
+        'modal',
+        'dialog',
+        'sheet',
+        'popover',
+        'tooltip',
+        'hover card',
+        'context menu',
+        'command',
+        'dropdown menu',
       ],
     },
     {

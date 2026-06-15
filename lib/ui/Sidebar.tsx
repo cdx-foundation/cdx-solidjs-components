@@ -1,10 +1,10 @@
-import { PanelLeft, ChevronRight } from 'lucide-solid';
 import { createShortcut } from '@solid-primitives/keyboard';
 import { createMediaQuery } from '@solid-primitives/media';
 import { makePersisted } from '@solid-primitives/storage';
+import { ChevronRight, PanelLeft } from 'lucide-solid';
 import {
-  type JSX,
   type Accessor,
+  type JSX,
   Show,
   createContext,
   createEffect,
@@ -16,11 +16,11 @@ import {
 } from 'solid-js';
 import { Dynamic, Portal } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
-import { Tooltip, TooltipContent, TooltipTrigger } from './Tooltip';
-import { Separator } from './Separator';
-import { Skeleton } from './Skeleton';
-import { Sheet, SheetContent } from './Sheet';
 import { ScrollArea } from './ScrollArea';
+import { Separator } from './Separator';
+import { Sheet, SheetContent } from './Sheet';
+import { Skeleton } from './Skeleton';
+import { Tooltip, TooltipContent, TooltipTrigger } from './Tooltip';
 
 // --- Constants ---
 const SIDEBAR_COOKIE_NAME = 'sidebar:state';
@@ -62,7 +62,13 @@ interface SidebarProviderProps extends JSX.HTMLAttributes<HTMLDivElement> {
 }
 
 export const SidebarProvider = (props: SidebarProviderProps) => {
-  const [local, others] = splitProps(props, ['defaultOpen', 'open', 'onOpenChange', 'style', 'children']);
+  const [local, others] = splitProps(props, [
+    'defaultOpen',
+    'open',
+    'onOpenChange',
+    'style',
+    'children',
+  ]);
 
   const isMobile = createMediaQuery('(max-width: 768px)');
 
@@ -74,7 +80,7 @@ export const SidebarProvider = (props: SidebarProviderProps) => {
   const [openMobile, setOpenMobile] = createSignal(false);
 
   // Controlled vs uncontrolled
-  const open = () => local.open !== undefined ? local.open : internalOpen();
+  const open = () => (local.open !== undefined ? local.open : internalOpen());
   const setOpen = (value: boolean) => {
     if (local.open !== undefined) {
       local.onOpenChange?.(value);
@@ -96,13 +102,25 @@ export const SidebarProvider = (props: SidebarProviderProps) => {
 
   // Keyboard shortcut: Cmd+B or Ctrl+B
   createShortcut([SIDEBAR_KEYBOARD_SHORTCUT], (e) => {
-    if (e && (e.metaKey || e.ctrlKey) && !(e.target as HTMLElement).closest('input, textarea, [contenteditable]')) {
+    if (
+      e &&
+      (e.metaKey || e.ctrlKey) &&
+      !(e.target as HTMLElement).closest('input, textarea, [contenteditable]')
+    ) {
       e.preventDefault();
       toggle();
     }
   });
 
-  const value: SidebarContextValue = { state, open, setOpen, openMobile, setOpenMobile, isMobile, toggle };
+  const value: SidebarContextValue = {
+    state,
+    open,
+    setOpen,
+    openMobile,
+    setOpenMobile,
+    isMobile,
+    toggle,
+  };
 
   return (
     <SidebarContext.Provider value={value}>
@@ -131,14 +149,23 @@ export interface SidebarRootProps extends JSX.HTMLAttributes<HTMLDivElement> {
 
 export const SidebarRoot = (props: SidebarRootProps) => {
   const context = useSidebar();
-  const [local, others] = splitProps(props, ['side', 'variant', 'collapsible', 'class', 'children']);
+  const [local, others] = splitProps(props, [
+    'side',
+    'variant',
+    'collapsible',
+    'class',
+    'children',
+  ]);
 
   const side = () => local.side ?? 'left';
   const variant = () => local.variant ?? 'sidebar';
   const collapsible = () => local.collapsible ?? 'icon';
 
   return (
-    <Show when={!context.isMobile()} fallback={<MobileSidebar side={side()}>{local.children}</MobileSidebar>}>
+    <Show
+      when={!context.isMobile()}
+      fallback={<MobileSidebar side={side()}>{local.children}</MobileSidebar>}
+    >
       <DesktopSidebar
         side={side()}
         variant={variant()}
@@ -157,9 +184,16 @@ export const SidebarRoot = (props: SidebarRootProps) => {
 const MobileSidebar = (props: { children: JSX.Element; side: SidebarSide }) => {
   const context = useSidebar();
   return (
-    <Sheet isOpen={context.openMobile()} onClose={() => context.setOpenMobile(false)} side={props.side}>
+    <Sheet
+      isOpen={context.openMobile()}
+      onClose={() => context.setOpenMobile(false)}
+      side={props.side}
+    >
       <SheetContent>
-        <div class="flex h-full flex-col bg-sidebar text-sidebar-fg" style={{ width: 'var(--sidebar-width-mobile)' }}>
+        <div
+          class="flex h-full flex-col bg-sidebar text-sidebar-fg"
+          style={{ width: 'var(--sidebar-width-mobile)' }}
+        >
           {props.children}
         </div>
       </SheetContent>
@@ -178,7 +212,13 @@ const DesktopSidebar = (props: {
   [key: string]: unknown;
 }) => {
   const context = useSidebar();
-  const [local, others] = splitProps(props, ['side', 'variant', 'collapsible', 'class', 'children']);
+  const [local, others] = splitProps(props, [
+    'side',
+    'variant',
+    'collapsible',
+    'class',
+    'children',
+  ]);
 
   const state = context.state;
   const open = context.open;
@@ -196,7 +236,9 @@ const DesktopSidebar = (props: {
       class={twMerge(
         'group/sidebar relative flex flex-col bg-sidebar text-sidebar-fg transition-[width,transform,opacity] duration-200',
         // Width
-        isFloating() ? 'absolute z-40 h-full shadow-lg border-r border-sidebar-border' : 'border-r border-sidebar-border',
+        isFloating()
+          ? 'absolute z-40 h-full shadow-lg border-r border-sidebar-border'
+          : 'border-r border-sidebar-border',
         // Expanded width
         'w-(--sidebar-width)',
         // Icon mode collapse
@@ -208,9 +250,7 @@ const DesktopSidebar = (props: {
       {...others}
     >
       {context.state() === 'collapsed' && local.collapsible === 'icon' ? (
-        <div class="flex flex-col h-full w-full items-center px-1">
-          {local.children}
-        </div>
+        <div class="flex flex-col h-full w-full items-center px-1">{local.children}</div>
       ) : (
         local.children
       )}
@@ -346,11 +386,7 @@ export const SidebarGroupLabel = (props: JSX.HTMLAttributes<HTMLDivElement>) => 
 export const SidebarGroupContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <div
-      data-sidebar="group-content"
-      class={twMerge('w-full text-sm', local.class)}
-      {...others}
-    >
+    <div data-sidebar="group-content" class={twMerge('w-full text-sm', local.class)} {...others}>
       {local.children}
     </div>
   );
@@ -436,7 +472,8 @@ export const SidebarMenuButton = (props: SidebarMenuButtonProps) => {
           ? 'bg-sidebar-accent text-sidebar-accent-fg'
           : 'text-sidebar-fg hover:bg-sidebar-accent hover:text-sidebar-accent-fg',
         // Icon-mode compact layout only when actually collapsed
-        isCollapsed() && '!p-2 w-(--sidebar-width-icon) justify-center [&>span:not([data-sidebar-icon])]:hidden',
+        isCollapsed() &&
+          '!p-2 w-(--sidebar-width-icon) justify-center [&>span:not([data-sidebar-icon])]:hidden',
         local.class,
       )}
       {...others}
@@ -453,7 +490,12 @@ export const SidebarMenuButton = (props: SidebarMenuButtonProps) => {
       return '';
     };
     return (
-      <Tooltip trigger={button()} content={<span>{tooltipText()}</span>} align="right" class="w-full" />
+      <Tooltip
+        trigger={button()}
+        content={<span>{tooltipText()}</span>}
+        align="right"
+        class="w-full"
+      />
     );
   }
 

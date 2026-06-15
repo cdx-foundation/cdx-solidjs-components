@@ -31,8 +31,7 @@ const buttonVariants = cva(
 /**
  * Configuration options and properties for the Button component.
  */
-export interface ButtonProps
-  extends VariantProps<typeof buttonVariants> {
+export interface ButtonProps extends VariantProps<typeof buttonVariants> {
   /**
    * Indicates an ongoing background process.
    * When true, replaces content with a spinner, disables the button, and prevents interaction.

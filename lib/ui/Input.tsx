@@ -122,7 +122,7 @@ export const Input = (props: InputProps) => {
     <Show
       when={local.type === 'number'}
       fallback={
-        <div class={'flex flex-col gap-1.5 w-full text-left ' + (local.containerClass || '')}>
+        <div class={`flex flex-col gap-1.5 w-full text-left ${local.containerClass || ''}`}>
           <Show when={local.label}>
             <label for={id} class="text-xs font-semibold text-fg">
               {local.label}
@@ -141,11 +141,7 @@ export const Input = (props: InputProps) => {
                   .join(' ') || undefined
               }
               onInput={handleInput}
-              class={
-                'w-full border border-stroke bg-transparent rounded-input px-3 py-2.5 text-sm font-mono text-fg outline-none placeholder:text-muted/80 transition-colors duration-150 focus:border-fg disabled:opacity-50 disabled:cursor-not-allowed ' +
-                (local.error ? 'border-primary text-primary focus:border-primary ' : '') +
-                (local.class || '')
-              }
+              class={`w-full border border-stroke bg-transparent rounded-input px-3 py-2.5 text-sm font-mono text-fg outline-none placeholder:text-muted/80 transition-colors duration-150 focus:border-fg disabled:opacity-50 disabled:cursor-not-allowed ${local.error ? 'border-primary text-primary focus:border-primary ' : ''}${local.class || ''}`}
             />
           </div>
           <Show when={local.description}>
@@ -241,7 +237,7 @@ const NumberInputInternal = (props: any) => {
   };
 
   return (
-    <div class={'flex flex-col gap-1.5 w-full text-left ' + (local.containerClass || '')}>
+    <div class={`flex flex-col gap-1.5 w-full text-left ${local.containerClass || ''}`}>
       <Show when={local.label}>
         <label for={local.id} class="text-xs font-semibold text-fg">
           {local.label}
@@ -268,13 +264,7 @@ const NumberInputInternal = (props: any) => {
           step={local.step}
           min={local.min}
           max={local.max}
-          class={
-            'w-full border border-stroke bg-transparent rounded-input py-2.5 text-sm font-mono text-fg outline-none placeholder:text-muted/80 transition-colors duration-150 focus:border-fg text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ' +
-            (!local.hideButtons ? 'px-10 ' : '') +
-            (local.hideButtons ? 'px-3 text-left ' : '') +
-            (local.error ? 'border-primary text-primary ' : '') +
-            (local.class || '')
-          }
+          class={`w-full border border-stroke bg-transparent rounded-input py-2.5 text-sm font-mono text-fg outline-none placeholder:text-muted/80 transition-colors duration-150 focus:border-fg text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${!local.hideButtons ? 'px-10 ' : ''}${local.hideButtons ? 'px-3 text-left ' : ''}${local.error ? 'border-primary text-primary ' : ''}${local.class || ''}`}
           {...others}
         />
 

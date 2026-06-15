@@ -258,11 +258,7 @@ export const Select = (props: SelectProps) => {
                     type="button"
                     onClick={() => handleSelect(option)}
                     onMouseEnter={() => setFocusedIndex(i())}
-                    class={
-                      'w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors duration-100 outline-none ' +
-                      (isSelected() ? 'text-fg font-bold ' : 'text-muted ') +
-                      (isFocused(i()) ? 'bg-surface text-fg' : '')
-                    }
+                    class={`w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors duration-100 outline-none ${isSelected() ? 'text-fg font-bold ' : 'text-muted '}${isFocused(i()) ? 'bg-surface text-fg' : ''}`}
                   >
                     <span>{option.label}</span>
                     <Show when={isSelected()}>

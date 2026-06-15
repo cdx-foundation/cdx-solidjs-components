@@ -336,7 +336,10 @@ export const Toaster = (props: ToasterProps & { class?: string }) => {
                     type="button"
                     onClick={() => {
                       const tid = toastTimeouts.get(t.id);
-                      if (tid) { clearTimeout(tid); toastTimeouts.delete(t.id); }
+                      if (tid) {
+                        clearTimeout(tid);
+                        toastTimeouts.delete(t.id);
+                      }
                       setToasts((prev) => prev.filter((x) => x.id !== t.id));
                     }}
                     class="absolute right-2 top-2 text-muted hover:text-fg transition-colors"
