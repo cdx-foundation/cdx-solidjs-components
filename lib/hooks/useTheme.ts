@@ -1,6 +1,6 @@
 import { createPrefersDark } from '@solid-primitives/media';
 import { makePersisted } from '@solid-primitives/storage';
-import { type Accessor, createEffect, createSignal } from 'solid-js';
+import { type Accessor, createEffect, createRoot, createSignal } from 'solid-js';
 import { BASE_PALETTES, FONTS, SHADOWS } from '../theme-tokens';
 import type { BaseColor, ShadowLevel, ThemeFont } from '../theme-tokens';
 
@@ -20,18 +20,40 @@ export type Theme = {
   shadow: ShadowLevel;
 };
 
+export type DualThemeConfig = { light: Partial<Theme>; dark: Partial<Theme> };
+
 export type ThemeConfig = {
+  /** Whether dark mode is active. */
+  isDark: Accessor<boolean>;
+  /** Primary accent color (hex). */
+  accent: Accessor<string>;
+  /** Named color palette. */
+  base: Accessor<BaseColor>;
+  /** Unified border radius for all elements. */
+  radius: Accessor<string>;
+  /** UI font stack. */
+  font: Accessor<ThemeFont>;
+  /** Shadow level for panels and buttons. */
+  shadow: Accessor<ShadowLevel>;
+
+  /** Full theme object (for serialization / bulk reads). */
   theme: Accessor<Theme>;
-  /** Merge a partial theme — call this with your server response. */
-  setTheme: (partial: Partial<Theme>) => void;
-  toggleDark: () => void;
+
+  /** Merge a partial theme or apply a dual-theme config ({ light, dark }). */
+  setTheme: (config: Partial<Theme> | DualThemeConfig) => void;
+  /** Apply overrides scoped to light mode. */
+  setLightTheme: (config: Partial<Theme>) => void;
+  /** Apply overrides scoped to dark mode. */
+  setDarkTheme: (config: Partial<Theme>) => void;
+  /** Toggle between dark and light mode. */
+  toggleTheme: () => void;
 };
 
 // ─── Defaults ────────────────────────────────────────────────────────────────
 
 const prefersDark = createPrefersDark();
 
-const DEFAULT_THEME: Theme = {
+const BUILTIN_DEFAULTS: Theme = {
   dark: prefersDark(),
   accent: '#c62828',
   base: 'pure',
@@ -40,9 +62,11 @@ const DEFAULT_THEME: Theme = {
   shadow: 'none',
 };
 
+let defaultsApplied = false;
+
 // ─── Persistent singleton ─────────────────────────────────────────────────────
 
-const [theme, setThemeRaw] = makePersisted(createSignal<Theme>(DEFAULT_THEME), {
+const [theme, setThemeRaw] = makePersisted(createSignal<Theme>(BUILTIN_DEFAULTS), {
   name: 'starling-theme',
 });
 
@@ -74,9 +98,18 @@ function applyTheme(t: Theme) {
   root.style.setProperty('--shadow-btn', shadowVal);
 }
 
-// ─── Hook ─────────────────────────────────────────────────────────────────────
+// ─── Root-level effect (HMR-safe) ──────────────────────────────────────────────
 
-let effectRegistered = false;
+let themeEffectRan = false;
+function ensureThemeEffect() {
+  if (themeEffectRan) return;
+  themeEffectRan = true;
+  createRoot(() => {
+    createEffect(() => applyTheme(theme()));
+  });
+}
+
+// ─── Hook ─────────────────────────────────────────────────────────────────────
 
 /**
  * Manages the full application theme via a single `Theme` object.
@@ -86,9 +119,12 @@ let effectRegistered = false;
  * Use `useTheme.getScript()` as a blocking inline `<script>` in `<head>`
  * to prevent a flash of unstyled content (FOUC).
  *
+ * @param defaults - Optional project-level theme defaults applied once on first
+ *   call (lower priority than persisted localStorage values).
+ *
  * @example
  * ```tsx
- * const { setTheme, toggleDark } = useTheme();
+ * const { isDark, toggleTheme, setTheme } = useTheme();
  *
  * // Apply a full theme from server
  * setTheme(await fetchTheme());
@@ -97,16 +133,46 @@ let effectRegistered = false;
  * setTheme({ accent: '#6366f1' });
  * ```
  */
-export function useTheme(): ThemeConfig {
-  if (!effectRegistered) {
-    effectRegistered = true;
-    createEffect(() => applyTheme(theme()));
+export function useTheme(defaults?: Partial<Theme>): ThemeConfig {
+  ensureThemeEffect();
+
+  // Apply project defaults once (persisted localStorage already merged in signal)
+  if (defaults && !defaultsApplied) {
+    defaultsApplied = true;
+    setThemeRaw((prev) => ({ ...BUILTIN_DEFAULTS, ...defaults, ...prev }));
   }
 
   return {
     theme,
-    setTheme: (partial) => setThemeRaw((prev) => ({ ...prev, ...partial })),
-    toggleDark: () => setThemeRaw((prev) => ({ ...prev, dark: !prev.dark })),
+    isDark: () => theme().dark,
+    accent: () => theme().accent,
+    base: () => theme().base,
+    radius: () => theme().radius,
+    font: () => theme().font,
+    shadow: () => theme().shadow,
+
+    setTheme: (config: Partial<Theme> | DualThemeConfig) => {
+      setThemeRaw((prev) => {
+        if ('light' in config || 'dark' in config) {
+          const mode: 'light' | 'dark' = prev.dark ? 'dark' : 'light';
+          const modeConfig = (config as DualThemeConfig)[mode];
+          return modeConfig ? { ...prev, ...modeConfig } : prev;
+        }
+        return { ...prev, ...(config as Partial<Theme>) };
+      });
+    },
+
+    setLightTheme: (config: Partial<Theme>) => {
+      setThemeRaw((prev) => (prev.dark ? prev : { ...prev, ...config }));
+    },
+
+    setDarkTheme: (config: Partial<Theme>) => {
+      setThemeRaw((prev) => (prev.dark ? { ...prev, ...config } : prev));
+    },
+
+    toggleTheme: () => {
+      setThemeRaw((prev) => ({ ...prev, dark: !prev.dark }));
+    },
   };
 }
 
@@ -121,9 +187,12 @@ export function useTheme(): ThemeConfig {
  * ```tsx
  * <script innerHTML={useTheme.getScript()} />
  * ```
+ *
+ * @param defaults - Optional project-level theme defaults to merge before
+ *   reading persisted localStorage (same defaults passed to `useTheme`).
  */
-useTheme.getScript = (): string => `(function(){
-  var d=DEFAULT_THEME=${JSON.stringify(DEFAULT_THEME)};
+useTheme.getScript = (defaults?: Partial<Theme>): string => `(function(){
+  var d=Object.assign({},${JSON.stringify(BUILTIN_DEFAULTS)},${JSON.stringify(defaults || {})});
   try{var s=localStorage.getItem('starling-theme');if(s)d=Object.assign(d,JSON.parse(s));}catch(e){}
   var palettes=${JSON.stringify(BASE_PALETTES)};
   var fonts=${JSON.stringify(FONTS)};
