@@ -2,6 +2,10 @@
   "name": "cdx-solidjs-components",
   "version": "0.99.0",
   "description": "Solid.js component library for CDX projects.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cdx-foundation/cdx-solidjs-components.git"
+  },
   "type": "module",
   "sideEffects": [
     "*.css"
