@@ -1,7 +1,11 @@
 import { Button } from '../../../lib/ui/Button';
-import { HoverCard } from '../../../lib/ui/HoverCard';
-import { Popover } from '../../../lib/ui/Popover';
-import { Tooltip } from '../../../lib/ui/Tooltip';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '../../../lib/ui/HoverCard';
+import { Popover, PopoverContent, PopoverTrigger } from '../../../lib/ui/Popover';
+import { Tooltip, TooltipContent, TooltipTrigger } from '../../../lib/ui/Tooltip';
 import { Preview } from './Preview';
 
 interface OverlaysSectionProps {
@@ -40,68 +44,112 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
       <Preview
         title="Tooltip"
         description="A small floating label that appears on hover."
-        code={`import { Tooltip } from 'starling-fivem-components/ui/Tooltip';\n\n<Tooltip\n  trigger={<Button variant="outline">Hover Me</Button>}\n  content="Archive this resource"\n  align="top"\n/>`}
+        code={`import { Tooltip, TooltipTrigger, TooltipContent } from 'starling-fivem-components/ui/Tooltip';\n\n<Tooltip align="top">\n  <TooltipTrigger>\n    <Button variant="outline">Hover Me</Button>\n  </TooltipTrigger>\n  <TooltipContent>Archive this resource</TooltipContent>\n</Tooltip>`}
       >
         <div class="flex gap-4">
-          <Tooltip
-            trigger={<Button variant="outline">Top</Button>}
-            content="Top Tooltip"
-            align="top"
-          />
-          <Tooltip
-            trigger={<Button variant="outline">Bottom</Button>}
-            content="Bottom Tooltip"
-            align="bottom"
-          />
-          <Tooltip
-            trigger={<Button variant="outline">Left</Button>}
-            content="Left Tooltip"
-            align="left"
-          />
-          <Tooltip
-            trigger={<Button variant="outline">Right</Button>}
-            content="Right Tooltip"
-            align="right"
-          />
+          <Tooltip align="top">
+            <TooltipTrigger>
+              <Button variant="outline">Top</Button>
+            </TooltipTrigger>
+            <TooltipContent>Top Tooltip</TooltipContent>
+          </Tooltip>
+          <Tooltip align="bottom">
+            <TooltipTrigger>
+              <Button variant="outline">Bottom</Button>
+            </TooltipTrigger>
+            <TooltipContent>Bottom Tooltip</TooltipContent>
+          </Tooltip>
+          <Tooltip align="left">
+            <TooltipTrigger>
+              <Button variant="outline">Left</Button>
+            </TooltipTrigger>
+            <TooltipContent>Left Tooltip</TooltipContent>
+          </Tooltip>
+          <Tooltip align="right">
+            <TooltipTrigger>
+              <Button variant="outline">Right</Button>
+            </TooltipTrigger>
+            <TooltipContent>Right Tooltip</TooltipContent>
+          </Tooltip>
         </div>
       </Preview>
 
       <Preview
         title="Popover"
         description="A floating container for rich content. Now supports cardinal and diagonal (corner) alignment."
-        code={`import { Popover } from 'starling-fivem-components/ui/Popover';\n\n<div class="grid grid-cols-3 gap-4">\n  <Popover trigger={<Button variant="outline">Bottom Left</Button>} align="bottom-left">...</Popover>\n  <Popover trigger={<Button variant="outline">Bottom Right</Button>} align="bottom-right">...</Popover>\n  <Popover trigger={<Button variant="outline">Top Right</Button>} align="top-right">...</Popover>\n</div>`}
+        code={`import { Popover, PopoverTrigger, PopoverContent } from 'starling-fivem-components/ui/Popover';\n\n<div class="grid grid-cols-3 gap-4">\n  <Popover align="bottom-left">\n    <PopoverTrigger><Button variant="outline">Bottom Left</Button></PopoverTrigger>\n    <PopoverContent>...</PopoverContent>\n  </Popover>\n</div>`}
       >
         <div class="flex flex-col gap-8 w-full items-center">
           <div class="flex flex-wrap justify-center gap-4">
-            <Popover trigger={<Button variant="outline">Top Left</Button>} align="top-left">
-              <div class="p-4 w-48 text-sm">Aligned to trigger's top-left corner.</div>
+            <Popover align="top-left">
+              <PopoverTrigger>
+                <Button variant="outline">Top Left</Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <div class="p-4 w-48 text-sm">Aligned to trigger's top-left corner.</div>
+              </PopoverContent>
             </Popover>
-            <Popover trigger={<Button variant="outline">Top</Button>} align="top">
-              <div class="p-4 w-48 text-sm text-center">Standard top alignment.</div>
+            <Popover align="top">
+              <PopoverTrigger>
+                <Button variant="outline">Top</Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <div class="p-4 w-48 text-sm text-center">Standard top alignment.</div>
+              </PopoverContent>
             </Popover>
-            <Popover trigger={<Button variant="outline">Top Right</Button>} align="top-right">
-              <div class="p-4 w-48 text-sm text-right">Aligned to top-right corner.</div>
+            <Popover align="top-right">
+              <PopoverTrigger>
+                <Button variant="outline">Top Right</Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <div class="p-4 w-48 text-sm text-right">Aligned to top-right corner.</div>
+              </PopoverContent>
             </Popover>
           </div>
 
           <div class="flex flex-wrap justify-center gap-4">
-            <Popover trigger={<Button variant="outline">Bottom Left</Button>} align="bottom-left">
-              <div class="p-4 w-48 text-sm">Aligned to bottom-left corner.</div>
+            <Popover align="bottom-left">
+              <PopoverTrigger>
+                <Button variant="outline">Bottom Left</Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <div class="p-4 w-48 text-sm">Aligned to bottom-left corner.</div>
+              </PopoverContent>
             </Popover>
-            <Popover trigger={<Button variant="outline">Bottom</Button>} align="bottom">
-              <div class="p-4 w-48 text-sm text-center">Standard bottom alignment.</div>
+            <Popover align="bottom">
+              <PopoverTrigger>
+                <Button variant="outline">Bottom</Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <div class="p-4 w-48 text-sm text-center">Standard bottom alignment.</div>
+              </PopoverContent>
             </Popover>
-            <Popover trigger={<Button variant="outline">Bottom Right</Button>} align="bottom-right">
-              <div class="p-4 w-48 text-sm text-right">Aligned to bottom-right corner.</div>
+            <Popover align="bottom-right">
+              <PopoverTrigger>
+                <Button variant="outline">Bottom Right</Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <div class="p-4 w-48 text-sm text-right">Aligned to bottom-right corner.</div>
+              </PopoverContent>
             </Popover>
           </div>
 
           <div class="flex flex-wrap justify-center gap-4">
-            <Popover trigger={<Button variant="outline">Left Top</Button>} align="left-top">
-              <div class="p-4 w-48 text-sm">Side-aligned to the top.</div>
+            <Popover align="left-top">
+              <PopoverTrigger>
+                <Button variant="outline">Left Top</Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <div class="p-4 w-48 text-sm">Side-aligned to the top.</div>
+              </PopoverContent>
             </Popover>
-            <Popover trigger={<Button variant="outline">Right Bottom</Button>} align="right-bottom">
-              <div class="p-4 w-48 text-sm">Side-aligned to the bottom.</div>
+            <Popover align="right-bottom">
+              <PopoverTrigger>
+                <Button variant="outline">Right Bottom</Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <div class="p-4 w-48 text-sm">Side-aligned to the bottom.</div>
+              </PopoverContent>
             </Popover>
           </div>
         </div>
@@ -110,49 +158,51 @@ export const OverlaysSection = (props: OverlaysSectionProps) => {
       <Preview
         title="Hover Card"
         description="A non-interactive preview that appears on hover. Alignment is now fully configurable."
-        code={`import { HoverCard } from 'starling-fivem-components/ui/HoverCard';\n\n<HoverCard trigger={<Button>Bottom Right</Button>} align="bottom-right">\n  Content aligned to corner\n</HoverCard>`}
+        code={`import { HoverCard, HoverCardTrigger, HoverCardContent } from 'starling-fivem-components/ui/HoverCard';\n\n<HoverCard align="bottom-right">\n  <HoverCardTrigger><Button>Bottom Right</Button></HoverCardTrigger>\n  <HoverCardContent>Content aligned to corner</HoverCardContent>\n</HoverCard>`}
       >
         <div class="flex flex-wrap justify-center gap-8">
-          <HoverCard
-            align="top-left"
-            trigger={
+          <HoverCard align="top-left">
+            <HoverCardTrigger>
               <span class="text-primary underline cursor-help font-mono text-xs">top-left</span>
-            }
-          >
-            <div class="space-y-2">
-              <h4 class="text-sm font-bold">Top Left Card</h4>
-              <p class="text-xs text-muted leading-tight">
-                Perfect for triggers located at the edges of a container.
-              </p>
-            </div>
+            </HoverCardTrigger>
+            <HoverCardContent>
+              <div class="space-y-2">
+                <h4 class="text-sm font-bold">Top Left Card</h4>
+                <p class="text-xs text-muted leading-tight">
+                  Perfect for triggers located at the edges of a container.
+                </p>
+              </div>
+            </HoverCardContent>
           </HoverCard>
 
-          <HoverCard
-            align="right-top"
-            trigger={
+          <HoverCard align="right-top">
+            <HoverCardTrigger>
               <span class="text-primary underline cursor-help font-mono text-xs">right-top</span>
-            }
-          >
-            <div class="space-y-2">
-              <h4 class="text-sm font-bold">Right Top Card</h4>
-              <p class="text-xs text-muted leading-tight">
-                Appears to the right, flush with the top of the trigger.
-              </p>
-            </div>
+            </HoverCardTrigger>
+            <HoverCardContent>
+              <div class="space-y-2">
+                <h4 class="text-sm font-bold">Right Top Card</h4>
+                <p class="text-xs text-muted leading-tight">
+                  Appears to the right, flush with the top of the trigger.
+                </p>
+              </div>
+            </HoverCardContent>
           </HoverCard>
 
-          <HoverCard
-            align="bottom-right"
-            trigger={
-              <span class="text-primary underline cursor-help font-mono text-xs">bottom-right</span>
-            }
-          >
-            <div class="space-y-2">
-              <h4 class="text-sm font-bold">Bottom Right Card</h4>
-              <p class="text-xs text-muted leading-tight">
-                Spawns below and extends to the left from the right edge.
-              </p>
-            </div>
+          <HoverCard align="bottom-right">
+            <HoverCardTrigger>
+              <span class="text-primary underline cursor-help font-mono text-xs">
+                bottom-right
+              </span>
+            </HoverCardTrigger>
+            <HoverCardContent>
+              <div class="space-y-2">
+                <h4 class="text-sm font-bold">Bottom Right Card</h4>
+                <p class="text-xs text-muted leading-tight">
+                  Spawns below and extends to the left from the right edge.
+                </p>
+              </div>
+            </HoverCardContent>
           </HoverCard>
         </div>
       </Preview>

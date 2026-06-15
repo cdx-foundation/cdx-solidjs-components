@@ -1,4 +1,5 @@
 export * from './hooks';
+export * from './theme-tokens';
 export * from './directives';
 export * from './ui/Accordion';
 export * from './ui/Alert';

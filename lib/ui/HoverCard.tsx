@@ -1,30 +1,22 @@
-import { type JSX, createSignal, splitProps } from 'solid-js';
+import {
+  type JSX,
+  createContext,
+  createSignal,
+  splitProps,
+  useContext,
+} from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { type Alignment, Floating } from './Floating';
 
-/**
- * Configuration and properties for the HoverCard component.
- */
-interface HoverCardProps {
-  /**
-   * The element (e.g., a Username link or Icon) that reveals the card when the mouse enters its area.
-   */
-  trigger: JSX.Element;
+interface HoverCardContextValue {
+  isOpen: () => boolean;
+  setIsOpen: (value: boolean) => void;
+  align: Alignment;
+}
 
-  /**
-   * The rich content (e.g., a profile summary or preview image) to display within the card.
-   */
-  children: JSX.Element;
+const HoverCardContext = createContext<HoverCardContextValue>();
 
-  /**
-   * Custom CSS classes for the floating card container.
-   */
-  class?: string;
-
-  /**
-   * The anchor point of the card relative to its trigger.
-   * @default "top"
-   */
+interface HoverCardProps extends JSX.HTMLAttributes<HTMLDivElement> {
   align?: Alignment;
 }
 
@@ -32,68 +24,97 @@ interface HoverCardProps {
  * ### HoverCard Component
  *
  * Provides a non-interactive preview of content that appears when hovering over a trigger.
- * It uses a Portal and dynamic positioning to ensure it isn't clipped by parent containers
- * and stays within the viewport.
- *
- * @param props - Customization options including the `trigger` and `children`.
  */
 export const HoverCard = (props: HoverCardProps) => {
-  const [local, others] = splitProps(props, ['trigger', 'children', 'class', 'align']);
+  const [local, others] = splitProps(props, ['align', 'children', 'class']);
   const [isOpen, setIsOpen] = createSignal(false);
-  let timeoutId: number | undefined;
-
-  const handleMouseEnter = () => {
-    clearTimeout(timeoutId);
-    setIsOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    timeoutId = window.setTimeout(() => setIsOpen(false), 200);
-  };
+  const align = local.align || 'top';
 
   return (
-    <Floating
-      isOpen={isOpen()}
-      align={local.align || 'top'}
-      sideOffset={8}
-      class={twMerge('w-64 border border-stroke bg-panel p-4 shadow-xl rounded-card', local.class)}
-      trigger={(ref) => (
-        <div
-          ref={ref}
-          class="inline-block cursor-help"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          {local.trigger}
-        </div>
-      )}
-      {...others}
-    >
-      <div onMouseEnter={() => clearTimeout(timeoutId)} onMouseLeave={handleMouseLeave}>
+    <HoverCardContext.Provider value={{ isOpen, setIsOpen, align }}>
+      <div class={twMerge('inline-block', local.class)} {...others}>
         {local.children}
       </div>
-    </Floating>
+    </HoverCardContext.Provider>
   );
 };
 
-/**
- * ### HoverCardTrigger Component
- *
- * The element that triggers the hover card.
- */
-export const HoverCardTrigger = (props: { children: JSX.Element; class?: string }) => {
+export const HoverCardTrigger = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const [local, others] = splitProps(props, ['children', 'class', 'onMouseEnter', 'onMouseLeave']);
+  const context = useContext(HoverCardContext);
+  if (!context) throw new Error('HoverCardTrigger must be used within HoverCard');
+
+  let timeoutId: number | undefined;
+
+  const handleMouseEnter = (e: any) => {
+    clearTimeout(timeoutId);
+    context.setIsOpen(true);
+    if (typeof local.onMouseEnter === 'function') {
+      local.onMouseEnter(e);
+    } else if (local.onMouseEnter) {
+      (local.onMouseEnter[0] as any)(local.onMouseEnter[1], e);
+    }
+  };
+
+  const handleMouseLeave = (e: any) => {
+    timeoutId = window.setTimeout(() => context.setIsOpen(false), 200);
+    if (typeof local.onMouseLeave === 'function') {
+      local.onMouseLeave(e);
+    } else if (local.onMouseLeave) {
+      (local.onMouseLeave[0] as any)(local.onMouseLeave[1], e);
+    }
+  };
+
   return (
-    <span class={twMerge('cursor-help underline decoration-dotted', props.class)}>
-      {props.children}
-    </span>
+    <Floating.Trigger
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      class={twMerge('inline-block cursor-help', local.class)}
+      {...others}
+    >
+      {local.children}
+    </Floating.Trigger>
   );
 };
 
-/**
- * ### HoverCardContent Component
- *
- * The main container for the hover card's primary content.
- */
-export const HoverCardContent = (props: { children: JSX.Element; class?: string }) => {
-  return <div class={twMerge('flex flex-col gap-2', props.class)}>{props.children}</div>;
+export const HoverCardContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const [local, others] = splitProps(props, ['children', 'class', 'onMouseEnter', 'onMouseLeave']);
+  const context = useContext(HoverCardContext);
+  if (!context) throw new Error('HoverCardContent must be used within HoverCard');
+
+  let timeoutId: number | undefined;
+
+  return (
+    <Floating.Content
+      isOpen={context.isOpen()}
+      align={context.align}
+      sideOffset={8}
+      class={twMerge(
+        'w-64 border border-stroke bg-panel p-4 shadow-xl rounded-card animate-in fade-in zoom-in-95',
+        local.class,
+      )}
+      onMouseEnter={(e) => {
+        clearTimeout(timeoutId);
+        if (typeof local.onMouseEnter === 'function') {
+          local.onMouseEnter(e);
+        } else if (local.onMouseEnter) {
+          (local.onMouseEnter[0] as any)(local.onMouseEnter[1], e);
+        }
+      }}
+      onMouseLeave={(e) => {
+        timeoutId = window.setTimeout(() => context.setIsOpen(false), 200);
+        if (typeof local.onMouseLeave === 'function') {
+          local.onMouseLeave(e);
+        } else if (local.onMouseLeave) {
+          (local.onMouseLeave[0] as any)(local.onMouseLeave[1], e);
+        }
+      }}
+      {...others}
+    >
+      {local.children}
+    </Floating.Content>
+  );
 };
+
+HoverCard.Trigger = HoverCardTrigger;
+HoverCard.Content = HoverCardContent;

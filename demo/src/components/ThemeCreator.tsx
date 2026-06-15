@@ -149,7 +149,8 @@ export const ThemeCreator = () => {
   const theme = useAppTheme();
   const [showExport, setShowExport] = createSignal(false);
   const [hasCopied, setHasCopied] = createSignal(false);
-  const [sliderVal, setSliderVal] = createSignal([45]);
+  const [sliderVal, setSliderVal] = createSignal(45);
+  const [region, setRegion] = createSignal('us-east');
 
   const generateCSS = () => {
     const light = BASE_PALETTES[theme.baseColor()].light;
@@ -474,16 +475,25 @@ export const ThemeCreator = () => {
               <div class="space-y-4">
                 <div class="flex items-center gap-4">
                   <Avatar class="h-12 w-12 border-2 border-fg">
-                    <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop" />
+                    <AvatarImage
+                      src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop"
+                      alt="JD"
+                    />
                     <AvatarFallback>JD</AvatarFallback>
                   </Avatar>
                   <div class="flex -space-x-3">
                     <Avatar class="h-8 w-8 border-2 border-bg">
-                      <AvatarImage src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop" />
+                      <AvatarImage
+                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop"
+                        alt="AS"
+                      />
                       <AvatarFallback>AS</AvatarFallback>
                     </Avatar>
                     <Avatar class="h-8 w-8 border-2 border-bg">
-                      <AvatarImage src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=80&h=80&fit=crop" />
+                      <AvatarImage
+                        src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=80&h=80&fit=crop"
+                        alt="ML"
+                      />
                       <AvatarFallback>ML</AvatarFallback>
                     </Avatar>
                     <div class="h-8 w-8 rounded-full bg-surface border-2 border-bg flex items-center justify-center text-[10px] font-bold">
@@ -761,7 +771,7 @@ export const ThemeCreator = () => {
                       Critical error detected in synchronization logic.
                     </AlertDescription>
                   </Alert>
-                  <Alert variant="default" class="border-2 border-fg rounded-none">
+                  <Alert variant="info" class="border-2 border-fg rounded-none">
                     <AlertTitle class="font-black uppercase text-[10px]">
                       Maintenance Window
                     </AlertTitle>
@@ -835,7 +845,7 @@ export const ThemeCreator = () => {
                       <Label class="text-[10px] font-black uppercase text-muted">
                         Scaling Threshold
                       </Label>
-                      <span class="text-[10px] font-mono font-bold">{sliderVal()[0]}%</span>
+                      <span class="text-[10px] font-mono font-bold">{sliderVal()}%</span>
                     </div>
                     <Slider value={sliderVal()} max={100} step={1} onChange={setSliderVal} />
                   </div>
@@ -859,7 +869,7 @@ export const ThemeCreator = () => {
 
                   <div class="space-y-3">
                     <Label class="text-[10px] font-black uppercase">Region Selection</Label>
-                    <RadioGroup defaultValue="us-east" name="region" onChange={() => {}}>
+                    <RadioGroup value={region()} name="region" onChange={setRegion}>
                       <div class="flex items-center gap-2">
                         <RadioGroupItem value="us-east" id="r1" />
                         <Label for="r1" class="text-[10px] font-bold">

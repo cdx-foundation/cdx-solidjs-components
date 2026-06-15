@@ -40,6 +40,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && tsc -p tsconfig.prod.json",
+    "build:demo": "BUILD_DEMO=true vite build",
     "lint": "biome check .",
     "fmt": "biome format --write .",
     "typecheck": "tsc --noEmit",

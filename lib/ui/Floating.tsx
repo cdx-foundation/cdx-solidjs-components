@@ -1,11 +1,13 @@
 import {
   type JSX,
   Show,
+  createContext,
   createEffect,
   createSignal,
   onCleanup,
   onMount,
   splitProps,
+  useContext,
 } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
@@ -24,41 +26,66 @@ export type Alignment =
   | 'right-top'
   | 'right-bottom';
 
-interface FloatingProps {
-  trigger: (ref: (el: HTMLElement) => void) => JSX.Element;
-  children: JSX.Element;
-  isOpen: boolean;
-  align?: Alignment;
-  sideOffset?: number;
-  class?: string;
-  id?: string;
-  matchTriggerWidth?: boolean;
+interface FloatingContextValue {
+  triggerEl: () => HTMLElement | undefined;
+  setTriggerEl: (el: HTMLElement) => void;
+  isOpen: () => boolean;
 }
+
+const FloatingContext = createContext<FloatingContextValue>();
 
 /**
  * ### Internal Floating Utility
  *
  * Handles Portal rendering and dynamic viewport-aware positioning.
- * Optimized for zero-latency, zero-animation rendering using fixed positioning.
  */
-export const Floating = (props: FloatingProps) => {
+export const Floating = (props: { children: JSX.Element; isOpen?: boolean }) => {
+  const [triggerEl, setTriggerEl] = createSignal<HTMLElement>();
+  const isOpen = () => props.isOpen ?? false;
+
+  return (
+    <FloatingContext.Provider value={{ triggerEl, setTriggerEl, isOpen }}>
+      {props.children}
+    </FloatingContext.Provider>
+  );
+};
+
+export const FloatingTrigger = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const [local, others] = splitProps(props, ['children']);
+  const context = useContext(FloatingContext);
+  if (!context) throw new Error('FloatingTrigger must be used within Floating');
+
+  return (
+    <div ref={context.setTriggerEl} {...others}>
+      {local.children}
+    </div>
+  );
+};
+
+interface FloatingContentProps extends JSX.HTMLAttributes<HTMLDivElement> {
+  isOpen: boolean;
+  align?: Alignment;
+  sideOffset?: number;
+  matchTriggerWidth?: boolean;
+}
+
+export const FloatingContent = (props: FloatingContentProps) => {
   const [local, others] = splitProps(props, [
-    'trigger',
     'children',
     'isOpen',
     'align',
     'sideOffset',
     'class',
-    'id',
     'matchTriggerWidth',
   ]);
+  const context = useContext(FloatingContext);
+  if (!context) throw new Error('FloatingContent must be used within Floating');
+
   const [coords, setCoords] = createSignal<{ top: number; left: number } | null>(null);
   const [width, setWidth] = createSignal<string>('auto');
 
-  let triggerEl: HTMLElement | undefined;
-  let _contentEl: HTMLElement | undefined;
-
   const update = () => {
+    const triggerEl = context.triggerEl();
     if (!local.isOpen || !triggerEl) return;
 
     const triggerRect = triggerEl.getBoundingClientRect();
@@ -72,7 +99,6 @@ export const Floating = (props: FloatingProps) => {
     let top = 0;
     let left = 0;
 
-    // Viewport-relative base points (fixed)
     switch (align) {
       case 'top':
         top = triggerRect.top - offset;
@@ -130,7 +156,6 @@ export const Floating = (props: FloatingProps) => {
   createEffect(() => {
     if (local.isOpen) {
       update();
-      // Ensure positioning is fresh
       requestAnimationFrame(update);
     } else {
       setCoords(null);
@@ -180,35 +205,27 @@ export const Floating = (props: FloatingProps) => {
   };
 
   return (
-    <>
-      {local.trigger((el) => {
-        triggerEl = el;
-        if (local.isOpen) update();
-      })}
-      <Show when={local.isOpen && coords()}>
-        <Portal>
-          <div
-            ref={(el) => {
-              _contentEl = el;
-              update();
-            }}
-            id={local.id}
-            style={{
-              position: 'fixed',
-              top: `${coords()?.top}px`,
-              left: `${coords()?.left}px`,
-              width: width(),
-              transform: getTransform(),
-              'z-index': 100,
-              'pointer-events': 'auto',
-            }}
-            class={twMerge(local.class)}
-            {...others}
-          >
-            {local.children}
-          </div>
-        </Portal>
-      </Show>
-    </>
+    <Show when={local.isOpen && coords()}>
+      <Portal>
+        <div
+          style={{
+            position: 'fixed',
+            top: `${coords()?.top}px`,
+            left: `${coords()?.left}px`,
+            width: width(),
+            transform: getTransform(),
+            'z-index': 100,
+            'pointer-events': 'auto',
+          }}
+          class={twMerge(local.class)}
+          {...others}
+        >
+          {local.children}
+        </div>
+      </Portal>
+    </Show>
   );
 };
+
+Floating.Trigger = FloatingTrigger;
+Floating.Content = FloatingContent;

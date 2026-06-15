@@ -117,10 +117,8 @@ export const DatePicker = (props: DatePickerProps) => {
         <span class="text-xs font-semibold text-fg">{local.label}</span>
       </Show>
 
-      <Popover
-        align={local.align || 'left'}
-        class="p-0 w-max"
-        trigger={
+      <Popover align={local.align || 'left'} class="p-0 w-max">
+        <Popover.Trigger>
           <button
             type="button"
             class={twMerge(
@@ -131,17 +129,18 @@ export const DatePicker = (props: DatePickerProps) => {
             <CalendarIcon size={16} class="opacity-50" />
             <span>{formatDate(internalDate()) || local.placeholder || 'Pick a date'}</span>
           </button>
-        }
-      >
-        <Calendar
-          mode="single"
-          selected={internalDate()}
-          onChange={handleSelect}
-          showTime={local.showTime}
-          class="border-0 shadow-none"
-          initialFocus={internalDate()}
-          align={local.align}
-        />
+        </Popover.Trigger>
+        <Popover.Content>
+          <Calendar
+            mode="single"
+            selected={internalDate()}
+            onChange={handleSelect}
+            showTime={local.showTime}
+            class="border-0 shadow-none"
+            initialFocus={internalDate()}
+            align={local.align}
+          />
+        </Popover.Content>
       </Popover>
     </div>
   );

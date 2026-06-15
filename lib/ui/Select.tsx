@@ -197,18 +197,11 @@ export const Select = (props: SelectProps) => {
         </label>
       </Show>
 
-      <Floating
-        isOpen={isOpen()}
-        align="bottom"
-        sideOffset={4}
-        matchTriggerWidth
-        class="border border-stroke bg-panel rounded-card overflow-hidden animate-in fade-in duration-100 shadow-xl"
-        id={`${id}-listbox`}
-        trigger={(ref) => (
+      <Floating isOpen={isOpen()}>
+        <Floating.Trigger>
           <button
             ref={(el) => {
               triggerRef = el as HTMLButtonElement;
-              ref(el);
             }}
             id={id}
             type="button"
@@ -237,41 +230,50 @@ export const Select = (props: SelectProps) => {
               )}
             />
           </button>
-        )}
-      >
-        <div
-          role="listbox"
-          tabIndex={0}
-          aria-activedescendant={focusedIndex() >= 0 ? `${id}-opt-${focusedIndex()}` : undefined}
-          class="max-h-48 overflow-y-auto py-1"
-        >
-          <For each={allOptions()}>
-            {(option, i) => {
-              const isSelected = () => local.value === option.value;
+        </Floating.Trigger>
 
-              return (
-                <button
-                  id={`${id}-opt-${i()}`}
-                  role="option"
-                  aria-selected={isSelected()}
-                  type="button"
-                  onClick={() => handleSelect(option)}
-                  onMouseEnter={() => setFocusedIndex(i())}
-                  class={twMerge(
-                    'w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors duration-100 outline-none',
-                    isSelected() ? 'text-fg font-bold' : 'text-muted',
-                    isFocused(i()) ? 'bg-surface text-fg' : '',
-                  )}
-                >
-                  <span>{option.label}</span>
-                  <Show when={isSelected()}>
-                    <Check size={14} class="text-primary shrink-0" />
-                  </Show>
-                </button>
-              );
-            }}
-          </For>
-        </div>
+        <Floating.Content
+          isOpen={isOpen()}
+          align="bottom"
+          sideOffset={4}
+          matchTriggerWidth
+          class="border border-stroke bg-panel rounded-card overflow-hidden animate-in fade-in duration-100 shadow-xl"
+          id={`${id}-listbox`}
+        >
+          <div
+            role="listbox"
+            tabIndex={0}
+            aria-activedescendant={focusedIndex() >= 0 ? `${id}-opt-${focusedIndex()}` : undefined}
+            class="max-h-48 overflow-y-auto py-1"
+          >
+            <For each={allOptions()}>
+              {(option, i) => {
+                const isSelected = () => local.value === option.value;
+
+                return (
+                  <button
+                    id={`${id}-opt-${i()}`}
+                    role="option"
+                    aria-selected={isSelected()}
+                    type="button"
+                    onClick={() => handleSelect(option)}
+                    onMouseEnter={() => setFocusedIndex(i())}
+                    class={twMerge(
+                      'w-full flex items-center justify-between px-3 py-2 text-sm text-left transition-colors duration-100 outline-none',
+                      isSelected() ? 'text-fg font-bold' : 'text-muted',
+                      isFocused(i()) ? 'bg-surface text-fg' : '',
+                    )}
+                  >
+                    <span>{option.label}</span>
+                    <Show when={isSelected()}>
+                      <Check size={14} class="text-primary shrink-0" />
+                    </Show>
+                  </button>
+                );
+              }}
+            </For>
+          </div>
+        </Floating.Content>
       </Floating>
 
       <Show when={local.error}>

@@ -1,55 +1,89 @@
 import { createShortcut } from '@solid-primitives/keyboard';
-import { type JSX, createSignal, onCleanup, splitProps } from 'solid-js';
+import {
+  type JSX,
+  createContext,
+  createSignal,
+  onCleanup,
+  splitProps,
+  useContext,
+} from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { type Alignment, Floating } from './Floating';
 
-/**
- * Configuration and behavior properties for the Popover component.
- */
-interface PopoverProps {
-  /**
-   * The element (e.g., a Button or Avatar) that toggles the popover visibility when clicked.
-   */
-  trigger: JSX.Element;
+interface PopoverContextValue {
+  isOpen: () => boolean;
+  setIsOpen: (value: boolean) => void;
+  align: Alignment;
+  triggerEl: () => HTMLElement | undefined;
+  setTriggerEl: (el: HTMLElement) => void;
+}
 
-  /**
-   * The content to render inside the floating panel.
-   */
-  children: JSX.Element;
+const PopoverContext = createContext<PopoverContextValue>();
 
-  /**
-   * Custom CSS classes for the popover container.
-   */
-  class?: string;
-
-  /**
-   * The anchor point of the popover relative to its trigger.
-   * Supports cardinal and diagonal positions.
-   * @default "bottom"
-   */
+interface PopoverProps extends JSX.HTMLAttributes<HTMLDivElement> {
   align?: Alignment;
 }
 
 /**
  * ### Popover Component
  *
- * A floating container used to display rich content or additional options without navigating away.
+ * A floating container used to display rich content or additional options.
  */
 export const Popover = (props: PopoverProps) => {
-  const [local, others] = splitProps(props, ['trigger', 'children', 'class', 'align']);
+  const [local, others] = splitProps(props, ['align', 'children', 'class']);
   const [isOpen, setIsOpen] = createSignal(false);
+  const [triggerEl, setTriggerEl] = createSignal<HTMLElement>();
+  const align = local.align || 'bottom';
+
+  return (
+    <PopoverContext.Provider value={{ isOpen, setIsOpen, align, triggerEl, setTriggerEl }}>
+      <div class={twMerge('inline-block', local.class)} {...others}>
+        {local.children}
+      </div>
+    </PopoverContext.Provider>
+  );
+};
+
+export const PopoverTrigger = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const [local, others] = splitProps(props, ['children', 'class', 'onClick']);
+  const context = useContext(PopoverContext);
+  if (!context) throw new Error('PopoverTrigger must be used within Popover');
+
+  return (
+    <Floating.Trigger
+      onClick={(e) => {
+        context.setIsOpen(!context.isOpen());
+        if (typeof local.onClick === 'function') {
+          local.onClick(e);
+        } else if (local.onClick) {
+          (local.onClick[0] as any)(local.onClick[1], e);
+        }
+      }}
+      class={twMerge('inline-block cursor-pointer', local.class)}
+      {...others}
+    >
+      {local.children}
+    </Floating.Trigger>
+  );
+};
+
+export const PopoverContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const [local, others] = splitProps(props, ['children', 'class']);
+  const context = useContext(PopoverContext);
+  if (!context) throw new Error('PopoverContent must be used within Popover');
+
   let containerRef: HTMLDivElement | undefined;
-  let triggerRef: HTMLDivElement | undefined;
 
   const onClickOutside = (e: MouseEvent) => {
+    const triggerEl = context.triggerEl();
     if (
-      isOpen() &&
+      context.isOpen() &&
       containerRef &&
       !containerRef.contains(e.target as Node) &&
-      triggerRef &&
-      !triggerRef.contains(e.target as Node)
+      triggerEl &&
+      !triggerEl.contains(e.target as Node)
     ) {
-      setIsOpen(false);
+      context.setIsOpen(false);
     }
   };
 
@@ -57,54 +91,24 @@ export const Popover = (props: PopoverProps) => {
   onCleanup(() => document.removeEventListener('mousedown', onClickOutside));
 
   createShortcut(['Escape'], () => {
-    if (isOpen()) setIsOpen(false);
+    if (context.isOpen()) context.setIsOpen(false);
   });
 
   return (
-    <Floating
-      isOpen={isOpen()}
-      align={local.align || 'bottom'}
+    <Floating.Content
+      isOpen={context.isOpen()}
+      align={context.align}
       sideOffset={8}
-      class={twMerge('border border-stroke bg-panel p-4 shadow-xl rounded-card', local.class)}
-      trigger={(ref) => (
-        <div
-          ref={(el) => {
-            triggerRef = el;
-            ref(el);
-          }}
-          onClick={() => setIsOpen(!isOpen())}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              setIsOpen(!isOpen());
-            }
-          }}
-          class="inline-block cursor-pointer"
-        >
-          {local.trigger}
-        </div>
+      class={twMerge(
+        'border border-stroke bg-panel p-4 shadow-xl rounded-card animate-in fade-in slide-in-from-top-2',
+        local.class,
       )}
       {...others}
     >
       <div ref={containerRef}>{local.children}</div>
-    </Floating>
+    </Floating.Content>
   );
 };
 
-/**
- * ### PopoverTrigger Component
- *
- * The element that toggles the popover.
- */
-export const PopoverTrigger = (props: { children: JSX.Element; class?: string }) => {
-  return <div class={twMerge('inline-block cursor-pointer', props.class)}>{props.children}</div>;
-};
-
-/**
- * ### PopoverContent Component
- *
- * The main container for the popover's primary content.
- */
-export const PopoverContent = (props: { children: JSX.Element; class?: string }) => {
-  return <div class={twMerge('flex flex-col gap-2', props.class)}>{props.children}</div>;
-};
+Popover.Trigger = PopoverTrigger;
+Popover.Content = PopoverContent;

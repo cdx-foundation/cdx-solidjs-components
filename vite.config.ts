@@ -1,4 +1,4 @@
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
@@ -6,8 +6,18 @@ import solidPlugin from 'vite-plugin-solid';
 export default defineConfig(({ command, mode }) => {
   const isDemo = process.env.BUILD_DEMO === 'true' || command === 'serve';
 
+  const commonConfig = {
+    base: process.env.VITE_BASE || '/',
+    resolve: {
+      alias: {
+        '@': resolve(__dirname, '.'),
+      },
+    },
+  };
+
   if (isDemo) {
     return {
+      ...commonConfig,
       root: 'demo',
       plugins: [tailwindcss(), solidPlugin()],
       build: {
@@ -18,6 +28,7 @@ export default defineConfig(({ command, mode }) => {
   }
 
   return {
+    ...commonConfig,
     plugins: [solidPlugin()],
     build: {
       lib: {

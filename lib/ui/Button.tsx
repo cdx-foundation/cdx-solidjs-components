@@ -48,6 +48,7 @@ export interface ButtonProps
    * @default "button"
    */
   as?: any;
+  [key: string]: any;
 }
 
 /**
