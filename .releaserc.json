@@ -4,11 +4,11 @@
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
     "@semantic-release/changelog",
-    "@semantic-release/npm",
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "bun run fmt"
+        "prepareCmd": "npm version ${nextRelease.version} --no-git-tag-version && bun run fmt",
+        "publishCmd": "npm publish"
       }
     ],
     "@semantic-release/github",
