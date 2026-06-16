@@ -1,5 +1,5 @@
 {
-  "name": "cdx-solidjs-components",
+  "name": "@cdx-foundation/cdx-solidjs-components",
   "version": "1.0.0",
   "description": "Solid.js component library for CDX projects.",
   "repository": {
@@ -84,6 +84,6 @@
     "vitest": "^4.1.9"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org"
   }
 }
