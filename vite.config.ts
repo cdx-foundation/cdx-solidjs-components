@@ -47,7 +47,7 @@ export default defineConfig(({ command }) => {
     };
   }
 
-  const libPlugins: any[] = [solidPlugin()];
+  const libPlugins: any[] = [solidPlugin(process.env.VITEST ? { hot: false } : {})];
   return {
     ...sharedConfig,
     base: process.env.VITE_BASE || '/',
