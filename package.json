@@ -84,8 +84,8 @@
     "typescript": "^6.0.3",
     "vite-plugin-dts": "^4.5.4",
     "vite-plugin-solid": "^2.11.12",
-    "vite-plus": "catalog:",
-    "vitest": "catalog:"
+    "vite-plus": "latest",
+    "vitest": "4.1.9"
   },
   "peerDependencies": {
     "solid-js": "^1.9.12"

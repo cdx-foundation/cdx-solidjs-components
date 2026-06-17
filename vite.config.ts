@@ -38,7 +38,7 @@ export default defineConfig(({ command }) => {
       ...sharedConfig,
       base: process.env.VITE_BASE || '/',
       root: 'demo',
-      plugins: lazyPlugins(() => [tailwindcss(), solidPlugin()]),
+      plugins: lazyPlugins(() => [tailwindcss(), solidPlugin()]) as any,
       build: {
         outDir: '../dist-demo',
         emptyOutDir: true,
@@ -49,7 +49,7 @@ export default defineConfig(({ command }) => {
   return {
     ...sharedConfig,
     base: process.env.VITE_BASE || '/',
-    plugins: lazyPlugins(() => [solidPlugin()]),
+    plugins: lazyPlugins(() => [solidPlugin()]) as any,
     build: {
       lib: {
         entry: {
