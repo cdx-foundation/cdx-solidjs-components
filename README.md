@@ -1,6 +1,6 @@
-# Starling FiveM Components
+# CDX Solid.js Components
 
-An elegant and feature-rich UI component library for Solid.js, meticulously crafted for the Starling City ecosystem. It provides a set of highly accessible, performant, and customizable primitives built with Tailwind CSS and Solid primitives.
+An elegant and feature-rich UI component library for Solid.js, meticulously crafted for the CDX ecosystem. It provides a set of highly accessible, performant, and customizable primitives built with Tailwind CSS and Solid primitives.
 
 ## Features
 
@@ -14,9 +14,9 @@ An elegant and feature-rich UI component library for Solid.js, meticulously craf
 ## Installation
 
 ```bash
-bun install cdx-solidjs-components
+bun install @cdx-foundation/cdx-solidjs-components
 # or
-bun add cdx-solidjs-components
+bun add @cdx-foundation/cdx-solidjs-components
 ```
 
 ## Setup
@@ -27,7 +27,7 @@ To ensure styles are computed correctly, import the library in your main CSS fil
 
 ```css
 @import 'tailwindcss';
-@import 'cdx-solidjs-components';
+@import '@cdx-foundation/cdx-solidjs-components';
 ```
 
 ## Component List
@@ -80,8 +80,8 @@ The library includes 41 high-fidelity components:
 
 ```tsx
 import { createSignal } from 'solid-js';
-import { Button, Modal } from 'cdx-solidjs-components';
-import { useTheme } from 'cdx-solidjs-components/hooks';
+import { Button, Modal } from '@cdx-foundation/cdx-solidjs-components';
+import { useTheme } from '@cdx-foundation/cdx-solidjs-components/hooks';
 
 export const MyComponent = () => {
   const [isOpen, setIsOpen] = createSignal(false);
@@ -104,7 +104,7 @@ export const MyComponent = () => {
 
 ## Design System
 
-Startling Components relies on a specific set of Tailwind CSS variables. Ensure your `tailwind.config.js` is configured to support the library's aesthetics:
+CDX Components relies on a specific set of Tailwind CSS variables. Ensure your `tailwind.config.js` is configured to support the library's aesthetics:
 
 - Typography: Primarily uses `font-mono` for data values and inputs.
 - Borders: Consistent `border-stroke` usage.
@@ -112,17 +112,20 @@ Startling Components relies on a specific set of Tailwind CSS variables. Ensure 
 
 ## Development
 
-The library uses Biome for linting and formatting, and Tsup for lightning-fast builds.
+The library uses `vite-plus` for development, linting, and builds.
 
 ```bash
 # Build the library
-npm run build
+bun run build
 
 # Run linting
-npm run lint
+bun run lint
 
 # Format code
-npm run fmt
+bun run fmt
+
+# Run tests
+bun run test
 ```
 
 ## License
