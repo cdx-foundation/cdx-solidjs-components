@@ -1,6 +1,6 @@
 import { join, resolve } from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig, lazyPlugins } from 'vite-plus';
+import { defineConfig } from 'vite-plus';
 import solidPlugin from 'vite-plugin-solid';
 
 const sharedConfig: any = {
@@ -34,11 +34,12 @@ export default defineConfig(({ command }) => {
   const isDemo = process.env.BUILD_DEMO === 'true' || command === 'serve';
 
   if (isDemo) {
+    const demoPlugins: any[] = [tailwindcss(), solidPlugin()];
     return {
       ...sharedConfig,
       base: process.env.VITE_BASE || '/',
       root: 'demo',
-      plugins: lazyPlugins(() => [tailwindcss(), solidPlugin()]) as any,
+      plugins: demoPlugins,
       build: {
         outDir: '../dist-demo',
         emptyOutDir: true,
@@ -46,10 +47,11 @@ export default defineConfig(({ command }) => {
     };
   }
 
+  const libPlugins: any[] = [solidPlugin()];
   return {
     ...sharedConfig,
     base: process.env.VITE_BASE || '/',
-    plugins: lazyPlugins(() => [solidPlugin()]) as any,
+    plugins: libPlugins,
     build: {
       lib: {
         entry: {
