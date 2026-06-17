@@ -13,6 +13,7 @@
     "outDir": "./dist",
     "types": ["vite-plus/client", "vitest/globals", "@testing-library/jest-dom"],
     "ignoreDeprecations": "6.0",
+    "skipLibCheck": true,
     "paths": {
       "@/*": ["./*"]
     }
