@@ -13,11 +13,9 @@ import {
   Palette,
   Rocket,
   Search,
-  Shield,
-  Sparkles,
   Wrench,
-  Zap,
 } from 'lucide-solid';
+import { makePersisted } from '@solid-primitives/storage';
 import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
@@ -28,7 +26,6 @@ import { Input } from '../../lib/ui/Input';
 import { Kbd } from '../../lib/ui/Kbd';
 import { Label } from '../../lib/ui/Label';
 import { Modal, ModalDescription, ModalFooter, ModalHeader, ModalTitle } from '../../lib/ui/Modal';
-import { SegmentedControl } from '../../lib/ui/SegmentedControl';
 import {
   Sheet,
   SheetContent,
@@ -41,8 +38,10 @@ import { Sidebar, SidebarProvider } from '../../lib/ui/Sidebar';
 import { Slider } from '../../lib/ui/Slider';
 import { Switch } from '../../lib/ui/Switch';
 import { Toaster, type ToasterPosition, toast } from '../../lib/ui/Toast';
+import { useTheme } from '../../lib/hooks/useTheme';
 import { useAppTheme } from './hooks/useAppTheme';
-import { BASE_PALETTES, FONTS, SHADOWS, hexToRgb } from './theme-constants';
+import { FONTS, SHADOWS } from '../../lib/theme-tokens';
+import { hexToRgb } from './theme-constants';
 
 import { DataSection } from './components/DataSection';
 import { DisclosureSection } from './components/DisclosureSection';
@@ -71,11 +70,12 @@ type Section =
   | 'overlays'
   | 'disclosure'
   | 'utils';
-type Theme = 'professional' | 'brutalist' | 'midnight';
-
 export default function App() {
-  const { isDark, accentColor, radius, headerFont, bodyFont, baseColor, shadow, btnBoxShadow } =
-    useAppTheme();
+  const {
+    isDark, accentColor, radius, headerFont, bodyFont,
+    bg, panel, surface, border, fg, muted, shadow, btnShadow, setIsDark,
+  } = useAppTheme();
+  useTheme();
 
   // App-specific implementation logic (Effects)
   createEffect(() => {
@@ -85,32 +85,31 @@ export default function App() {
 
   createEffect(() => {
     const root = document.documentElement;
-    const palette = BASE_PALETTES[baseColor()][isDark() ? 'dark' : 'light'];
+    const isDarkVal = isDark();
 
     root.style.setProperty('--primary-color', accentColor());
     root.style.setProperty('--primary-rgb', hexToRgb(accentColor()));
 
-    root.style.setProperty('--bg-main', palette.bg);
-    root.style.setProperty('--bg-panel', palette.panel);
-    root.style.setProperty('--bg-surface', palette.surface);
+    root.style.setProperty('--bg-main', bg());
+    root.style.setProperty('--bg-panel', panel());
+    root.style.setProperty('--bg-surface', surface());
 
-    root.style.setProperty('--fg-main', palette.fg);
-    root.style.setProperty('--text-muted', palette.muted);
+    root.style.setProperty('--fg-main', fg());
+    root.style.setProperty('--text-muted', muted());
 
-    // Sidebar theme - use surface for sidebar bg, panel for surface, same fg
-    root.style.setProperty('--sidebar', palette.surface);
-    root.style.setProperty('--sidebar-fg', palette.fg);
-    root.style.setProperty('--sidebar-primary', palette.fg);
-    root.style.setProperty('--sidebar-primary-fg', palette.bg);
-    root.style.setProperty('--sidebar-accent', palette.border);
-    root.style.setProperty('--sidebar-accent-fg', palette.fg);
-    root.style.setProperty('--sidebar-border', palette.border);
+    // Sidebar theme
+    root.style.setProperty('--sidebar', surface());
+    root.style.setProperty('--sidebar-fg', fg());
+    root.style.setProperty('--sidebar-primary', fg());
+    root.style.setProperty('--sidebar-primary-fg', bg());
+    root.style.setProperty('--sidebar-accent', border());
+    root.style.setProperty('--sidebar-accent-fg', fg());
+    root.style.setProperty('--sidebar-border', border());
     root.style.setProperty('--sidebar-ring', accentColor());
 
-    root.style.setProperty('--border-main', palette.border);
-    root.style.setProperty('--stroke', palette.border);
+    root.style.setProperty('--border-main', border());
+    root.style.setProperty('--stroke', border());
 
-    const isDarkVal = isDark();
     root.style.setProperty(
       '--ring-main',
       isDarkVal ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
@@ -120,8 +119,8 @@ export default function App() {
       isDarkVal ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)',
     );
 
-    root.style.setProperty('--shadow-main', SHADOWS[shadow()]);
-    root.style.setProperty('--shadow-btn', SHADOWS[btnBoxShadow()]);
+    root.style.setProperty('--shadow-main', SHADOWS[shadow() as keyof typeof SHADOWS]);
+    root.style.setProperty('--shadow-btn', SHADOWS[btnShadow() as keyof typeof SHADOWS]);
 
     const r = radius();
     root.style.setProperty('--radius-card', r);
@@ -137,8 +136,7 @@ export default function App() {
     document.body.style.fontFamily = FONTS[bodyFont()];
   });
 
-  const [activeSection, setActiveSection] = createSignal<Section>('intro');
-  const [currentTheme, setCurrentTheme] = createSignal<Theme>('professional');
+  const [activeSection, setActiveSection] = makePersisted(createSignal<Section>('intro'), { name: 'sidebar:tab' });
   const [commandOpen, setCommandOpen] = createSignal(false);
 
   // Toast settings
@@ -162,14 +160,6 @@ export default function App() {
     };
     document.addEventListener('keydown', down);
     onCleanup(() => document.removeEventListener('keydown', down));
-  });
-
-  createEffect(() => {
-    const html = document.documentElement;
-    html.classList.remove('theme-brutalist', 'theme-midnight');
-    if (currentTheme() !== 'professional') {
-      html.classList.add(`theme-${currentTheme()}`);
-    }
   });
 
   const navItems = [
@@ -288,12 +278,6 @@ export default function App() {
     },
   ];
 
-  const themes = [
-    { value: 'professional', label: 'Pro', icon: Shield },
-    { value: 'brutalist', label: 'Brutal', icon: Zap },
-    { value: 'midnight', label: 'Midnight', icon: Sparkles },
-  ];
-
   const groupedNav = createMemo(() => {
     const groups: Record<string, typeof navItems> = {};
     for (const item of navItems) {
@@ -373,19 +357,10 @@ export default function App() {
       </Sidebar.Root>
 
       <main class="flex-1 flex flex-col h-screen overflow-y-auto scroll-smooth scrollbar-gutter-stable">
-        <header class="h-16 border-b border-stroke bg-bg/80 backdrop-blur-md sticky top-0 z-20 flex items-center justify-between px-6 shrink-0 transition-all duration-400">
-          <div class="flex items-center gap-4 flex-1">
-            <Sidebar.Trigger />
+        <header class="h-16 border-b border-stroke bg-bg/80 backdrop-blur-md sticky top-0 z-20 flex items-center gap-4 px-6 shrink-0 transition-all duration-400">
+          <Sidebar.Trigger />
 
-            <SegmentedControl
-              class="hidden sm:inline-flex"
-              value={currentTheme()}
-              onChange={(v) => setCurrentTheme(v as Theme)}
-              options={themes}
-            />
-          </div>
-
-          <div class="flex-1 flex justify-center max-w-xl mx-auto lg:mx-0">
+          <div class="flex-1 flex justify-center max-w-xl mx-auto">
             <button
               type="button"
               onClick={() => setCommandOpen(true)}
@@ -439,11 +414,7 @@ export default function App() {
           </Show>
 
           <Show when={activeSection() === 'forms'}>
-            <FormsSection
-              currentTheme={currentTheme()}
-              onThemeChange={(v) => setCurrentTheme(v as Theme)}
-              themes={themes}
-            />
+            <FormsSection />
           </Show>
 
           <Show when={activeSection() === 'nav'}>

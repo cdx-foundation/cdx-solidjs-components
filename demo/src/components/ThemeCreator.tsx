@@ -1,21 +1,19 @@
 import {
   Check,
   Copy,
-  Download,
   DownloadCloud,
+  Info,
   Layers,
   MoreHorizontal,
   MousePointer2,
   Palette,
-  Plus,
   RefreshCw,
-  Search,
-  Settings,
-  Settings2,
   Type,
 } from 'lucide-solid';
 import { For, Show, createSignal } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
+import { toDark } from '../../../lib/hooks/useTheme';
+import { FONTS, SHADOWS } from '../../../lib/theme-tokens';
 import {
   Accordion,
   AccordionContent,
@@ -78,25 +76,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../lib/ui/Tabs';
 import { toast } from '../../../lib/ui/Toast';
 import { Tooltip, TooltipContent, TooltipTrigger } from '../../../lib/ui/Tooltip';
 import { useAppTheme } from '../hooks/useAppTheme';
-import {
-  BASE_PALETTES,
-  type BaseColor,
-  FONTS,
-  SHADOWS,
-  STYLE_PRESETS,
-  type ShadowLevel,
-  type StylePreset,
-  type ThemeFont,
-  hexToRgb,
-} from '../theme-constants';
-
-const BASE_COLORS: { name: string; value: BaseColor; icon: any }[] = [
-  { name: 'Zinc', value: 'zinc', icon: Palette },
-  { name: 'Slate', value: 'slate', icon: Palette },
-  { name: 'Stone', value: 'stone', icon: Palette },
-  { name: 'Gray', value: 'gray', icon: Palette },
-  { name: 'Neutral', value: 'neutral', icon: Palette },
-];
+import { COLOR_PRESETS, STYLE_PRESETS, type StylePreset, hexToRgb } from '../theme-constants';
 
 const RADIUS_OPTIONS = [
   { label: '0', value: '0px' },
@@ -106,7 +86,7 @@ const RADIUS_OPTIONS = [
   { label: '1.0', value: '1.0rem' },
 ];
 
-const SHADOW_OPTIONS: { label: string; value: ShadowLevel }[] = [
+const SHADOW_OPTIONS = [
   { label: 'None', value: 'none' },
   { label: 'SM', value: 'sm' },
   { label: 'MD', value: 'md' },
@@ -116,7 +96,7 @@ const SHADOW_OPTIONS: { label: string; value: ShadowLevel }[] = [
   { label: 'Hard', value: 'hard' },
 ];
 
-const FONT_OPTIONS: { label: string; value: ThemeFont; family: string }[] = [
+const FONT_OPTIONS = [
   { label: 'Sans', value: 'sans', family: '"Inter"' },
   { label: 'Mono', value: 'mono', family: '"JetBrains Mono"' },
   { label: 'Display', value: 'display', family: '"Archivo Black"' },
@@ -133,77 +113,155 @@ export const ThemeCreator = () => {
   const [sliderVal, setSliderVal] = createSignal(45);
   const [region, setRegion] = createSignal('us-east');
 
+  // ── Helpers ────────────────────────────────────────────────────────────────
+
+  /** Apply a named colour preset — always sets light colours; dark auto-derives. */
+  const applyColorPreset = (preset: (typeof COLOR_PRESETS)[number]) => {
+    theme.setTheme({ light: { ...preset.colors } });
+    theme.setMatchedPreset(preset.label);
+  };
+
+  /** Check if the current colour preset is the active one. */
+  const matchesColorPreset = (preset: (typeof COLOR_PRESETS)[number]) => {
+    // Tracked name match works across light/dark mode (dark auto-computes differ).
+    if (theme.matchedPreset() === preset.label) return true;
+    // Light-mode exact match as a fallback (for page reloads where the
+    // preset name wasn't persisted but the colours were).
+    return (
+      !theme.isDark() &&
+      theme.bg() === preset.colors.bg &&
+      theme.panel() === preset.colors.panel &&
+      theme.surface() === preset.colors.surface &&
+      theme.border() === preset.colors.border &&
+      theme.fg() === preset.colors.fg &&
+      theme.muted() === preset.colors.muted
+    );
+  };
+
+  // ── Export generators ───────────────────────────────────────────────────────
+
   const generateObject = () => {
     const common = {
       accent: theme.accentColor(),
-      base: theme.baseColor(),
+      bg: theme.bg(),
+      panel: theme.panel(),
+      surface: theme.surface(),
+      border: theme.border(),
+      fg: theme.fg(),
+      muted: theme.muted(),
       radius: theme.radius(),
       font: theme.bodyFont(),
+      headerFont: theme.headerFont(),
       shadow: theme.shadow(),
+      btnShadow: theme.btnShadow(),
     };
-
-    const config = {
-      light: { ...common, dark: false },
-      dark: { ...common, dark: true },
-    };
-
-    return JSON.stringify(config, null, 2);
+    return JSON.stringify(
+      { light: { ...common, dark: false }, dark: { ...common, dark: true } },
+      null,
+      2,
+    );
   };
 
   const generateCSS = () => {
-    const light = BASE_PALETTES[theme.baseColor()].light;
-    const dark = BASE_PALETTES[theme.baseColor()].dark;
     const primaryColor = theme.accentColor();
     const primaryRgb = hexToRgb(primaryColor);
-
+    const r = theme.radius();
     return `:root {
     --primary-color: ${primaryColor};
     --primary-rgb: ${primaryRgb};
-
-    --bg-main: ${light.bg};
-    --bg-panel: ${light.panel};
-    --bg-surface: ${light.surface};
-
-    --fg-main: ${light.fg};
-    --text-muted: ${light.muted};
-
-    --border-main: ${light.border};
-    --stroke: ${light.border};
-
+    --bg-main: ${theme.bg()};
+    --bg-panel: ${theme.panel()};
+    --bg-surface: ${theme.surface()};
+    --fg-main: ${theme.fg()};
+    --text-muted: ${theme.muted()};
+    --border-main: ${theme.border()};
+    --stroke: ${theme.border()};
     --ring-main: rgba(0, 0, 0, 0.05);
     --glass-border: rgba(0, 0, 0, 0.06);
-
-    --radius: ${theme.radius()};
+    --radius-card: ${r};
+    --radius-lg: ${r};
+    --radius-btn: calc(${r} - 0.2rem);
+    --radius-input: calc(${r} - 0.1rem);
+    --radius-badge: calc(${r} - 0.3rem);
     --shadow-main: ${SHADOWS[theme.shadow()]};
-    --shadow-btn: ${SHADOWS[theme.btnBoxShadow()]};
+    --shadow-btn: ${SHADOWS[theme.btnShadow()]};
     --sans-main: ${FONTS[theme.bodyFont()]};
     --display-main: ${FONTS[theme.headerFont()]};
     --mono-main: ${FONTS.mono};
-
     color-scheme: light;
   }
 
   .dark {
     --primary-rgb: ${primaryRgb};
-    --bg-main: ${dark.bg};
-    --bg-panel: ${dark.panel};
-    --bg-surface: ${dark.surface};
-    --fg-main: ${dark.fg};
-    --text-muted: ${dark.muted};
-    --border-main: ${dark.border};
-    --stroke: ${dark.border};
+    --bg-main: ${theme.bg()};
+    --bg-panel: ${theme.panel()};
+    --bg-surface: ${theme.surface()};
+    --fg-main: ${theme.fg()};
+    --text-muted: ${theme.muted()};
+    --border-main: ${theme.border()};
+    --stroke: ${theme.border()};
     --ring-main: rgba(255, 255, 255, 0.1);
     --glass-border: rgba(255, 255, 255, 0.05);
     color-scheme: dark;
   }`;
   };
 
+  const generateLua = () => {
+    const accent = theme.accentColor();
+    const radius = theme.radius();
+    const font = theme.bodyFont();
+    const shadow = theme.shadow();
+    const headerFont = theme.headerFont();
+    const btnShadow = theme.btnShadow();
+    return `-- Starling UI Theme Configuration
+-- Paste into server.cfg or your resource's config.lua
+--
+-- On the client, read these convars and apply with setTheme():
+--
+--   local light = { accent = GetConvar("theme:light:accent", "${accent}"), bg = GetConvar("theme:light:bg", "${theme.bg()}"), panel = GetConvar("theme:light:panel", "${theme.panel()}"), surface = GetConvar("theme:light:surface", "${theme.surface()}"), border = GetConvar("theme:light:border", "${theme.border()}"), fg = GetConvar("theme:light:fg", "${theme.fg()}"), muted = GetConvar("theme:light:muted", "${theme.muted()}"), radius = GetConvar("theme:light:radius", "${radius}"), font = GetConvar("theme:light:font", "${font}"), headerFont = GetConvar("theme:light:headerFont", "${headerFont}"), shadow = GetConvar("theme:light:shadow", "${shadow}"), btnShadow = GetConvar("theme:light:btnShadow", "${btnShadow}") }
+--   local dark  = { accent = GetConvar("theme:dark:accent", "${accent}"), bg = GetConvar("theme:dark:bg", "${theme.bg()}"), panel = GetConvar("theme:dark:panel", "${theme.panel()}"), surface = GetConvar("theme:dark:surface", "${theme.surface()}"), border = GetConvar("theme:dark:border", "${theme.border()}"), fg = GetConvar("theme:dark:fg", "${theme.fg()}"), muted = GetConvar("theme:dark:muted", "${theme.muted()}"), radius = GetConvar("theme:dark:radius", "${radius}"), font = GetConvar("theme:dark:font", "${font}"), headerFont = GetConvar("theme:dark:headerFont", "${headerFont}"), shadow = GetConvar("theme:dark:shadow", "${shadow}"), btnShadow = GetConvar("theme:dark:btnShadow", "${btnShadow}") }
+--   SendNUIMessage({ type = "setTheme", payload = { light = light, dark = dark } })
+-- Light Mode
+setr theme:light:accent "${accent}"
+setr theme:light:bg "${theme.bg()}"
+setr theme:light:panel "${theme.panel()}"
+setr theme:light:surface "${theme.surface()}"
+setr theme:light:border "${theme.border()}"
+setr theme:light:fg "${theme.fg()}"
+setr theme:light:muted "${theme.muted()}"
+setr theme:light:radius "${radius}"
+setr theme:light:font "${font}"
+setr theme:light:headerFont "${headerFont}"
+setr theme:light:shadow "${shadow}"
+setr theme:light:btnShadow "${btnShadow}"
+
+-- Dark Mode
+setr theme:dark:accent "${accent}"
+setr theme:dark:bg "${theme.bg()}"
+setr theme:dark:panel "${theme.panel()}"
+setr theme:dark:surface "${theme.surface()}"
+setr theme:dark:border "${theme.border()}"
+setr theme:dark:fg "${theme.fg()}"
+setr theme:dark:muted "${theme.muted()}"
+setr theme:dark:radius "${radius}"
+setr theme:dark:font "${font}"
+setr theme:dark:headerFont "${headerFont}"
+setr theme:dark:shadow "${shadow}"
+setr theme:dark:btnShadow "${btnShadow}"`;
+  };
+
   const copyToClipboard = async () => {
     try {
-      const content = exportTab() === 'css' ? generateCSS() : generateObject();
+      const content =
+        exportTab() === 'css'
+          ? generateCSS()
+          : exportTab() === 'lua'
+            ? generateLua()
+            : generateObject();
       await navigator.clipboard.writeText(content);
       setHasCopied(true);
-      toast.success(exportTab() === 'css' ? 'CSS copied!' : 'Theme object copied!');
+      const label = exportTab() === 'css' ? 'CSS' : exportTab() === 'lua' ? 'Lua' : 'Theme object';
+      toast.success(`${label} copied!`);
       setTimeout(() => setHasCopied(false), 2000);
     } catch (err) {
       toast.error('Failed to copy');
@@ -216,75 +274,112 @@ export const ThemeCreator = () => {
       <aside class="w-80 border-r border-stroke bg-panel flex flex-col shrink-0 overflow-y-auto custom-scrollbar shadow-xl z-10">
         <div class="p-6 border-b border-stroke">
           <h2 class="text-lg font-bold flex items-center gap-2">
-            <Settings2 size={18} class="text-primary" />
+            <Palette size={18} class="text-primary" />
             Theme Architecture
           </h2>
           <p class="text-[11px] text-muted mt-1">Design system configuration.</p>
         </div>
 
         <div class="p-6 space-y-10 flex-1">
-          {/* Style Preset */}
+          {/* Style Presets */}
           <div class="space-y-4">
-            <div class="flex items-center gap-2 text-muted">
-              <Palette size={14} />
-              <Label class="text-[10px] font-bold uppercase tracking-widest">Style</Label>
-            </div>
-            <div class="grid grid-cols-2 gap-1.5">
+            <Label class="text-[10px] font-bold uppercase tracking-widest text-muted">
+              Style Presets
+            </Label>
+            <div class="grid grid-cols-2 gap-2">
               <For each={Object.entries(STYLE_PRESETS)}>
                 {([key, preset]) => (
                   <button
                     type="button"
-                    onClick={() => {
-                      const s = key as StylePreset;
-                      theme.setStyle(s);
-                      theme.setHeaderFont(preset.headerFont);
-                      theme.setBodyFont(preset.bodyFont);
-                      theme.setRadius(preset.radius);
-                      theme.setShadow(preset.shadow);
-                    }}
+                    onClick={() => theme.applyPreset(key as StylePreset)}
                     class={twMerge(
-                      'px-2 py-2 rounded-md border text-[10px] font-bold transition-all text-left leading-tight',
+                      'flex flex-col items-start gap-0.5 px-3 py-2 rounded-md border text-left transition-all',
                       theme.style() === key
                         ? 'border-primary bg-primary/5 text-fg shadow-[0_0_0_1px_var(--primary-color)]'
                         : 'border-stroke bg-surface/50 text-muted hover:border-muted hover:text-fg',
                     )}
                   >
-                    <div>{preset.label}</div>
-                    <div class="text-[8px] font-normal text-muted mt-0.5">{preset.description}</div>
+                    <span class="text-[10px] font-bold leading-tight">{preset.label}</span>
+                    <span class="text-[9px] opacity-60 leading-tight">{preset.description}</span>
+                  </button>
+                )}
+              </For>
+            </div>
+            <button
+              type="button"
+              onClick={() => theme.applyPreset('vega')}
+              class="flex items-center gap-1.5 text-[10px] text-muted hover:text-fg transition-colors"
+            >
+              <RefreshCw size={10} />
+              Reset
+            </button>
+          </div>
+
+          {/* Color Palette */}
+          <div class="space-y-4">
+            <Label class="text-[10px] font-bold uppercase tracking-widest text-muted">
+              Color Palette
+            </Label>
+            <div class="grid grid-cols-2 gap-2">
+              <For each={COLOR_PRESETS}>
+                {(preset) => (
+                  <button
+                    type="button"
+                    onClick={() => applyColorPreset(preset)}
+                    class={twMerge(
+                      'flex items-center gap-2 px-3 py-2 rounded-md border text-[10px] font-bold transition-all text-left',
+                      matchesColorPreset(preset)
+                        ? 'border-primary bg-primary/5 text-fg shadow-[0_0_0_1px_var(--primary-color)]'
+                        : 'border-stroke bg-surface/50 text-muted hover:border-muted hover:text-fg',
+                    )}
+                  >
+                    <span
+                      class="h-3 w-3 rounded-full shrink-0 border border-stroke"
+                      style={{ 'background-color': preset.colors.fg }}
+                    />
+                    {preset.label}
                   </button>
                 )}
               </For>
             </div>
           </div>
 
-          {/* Base Palette */}
-          <div class="space-y-4">
-            <Label class="text-[10px] font-bold uppercase tracking-widest text-muted">
-              Base Palette
-            </Label>
-            <div class="grid grid-cols-2 gap-2">
-              <For each={BASE_COLORS}>
-                {(color) => (
-                  <button
-                    type="button"
-                    onClick={() => theme.setBaseColor(color.value)}
-                    class={twMerge(
-                      'flex items-center gap-2 px-3 py-2 rounded-md border text-[10px] font-bold transition-all text-left',
-                      theme.baseColor() === color.value
-                        ? 'border-primary bg-primary/5 text-fg shadow-[0_0_0_1px_var(--primary-color)]'
-                        : 'border-stroke bg-surface/50 text-muted hover:border-muted hover:text-fg',
-                    )}
-                  >
-                    <color.icon
-                      size={12}
-                      class={theme.baseColor() === color.value ? 'text-primary' : ''}
-                    />
-                    {color.name}
-                  </button>
-                )}
-              </For>
-            </div>
-          </div>
+          {/* Individual Colour Controls */}
+          <Collapsible class="space-y-4">
+            <CollapsibleTrigger class="flex items-center gap-1.5 text-[10px] text-muted hover:text-fg transition-colors uppercase tracking-widest font-bold">
+              <Palette size={10} />
+              Custom Colors
+              <span class="ml-2 px-1.5 py-0.5 text-[8px] font-mono font-bold uppercase tracking-wider rounded-full border border-stroke bg-surface/60 text-muted">
+                Editing: {theme.isDark() ? 'Dark' : 'Light'}
+              </span>
+            </CollapsibleTrigger>
+            <CollapsibleContent class="space-y-4">
+              <div class="space-y-2">
+                <Label class="text-[9px] font-bold uppercase text-muted">Background</Label>
+                <ColorPicker value={theme.bg()} onChange={theme.setBg} />
+              </div>
+              <div class="space-y-2">
+                <Label class="text-[9px] font-bold uppercase text-muted">Panel</Label>
+                <ColorPicker value={theme.panel()} onChange={theme.setPanel} />
+              </div>
+              <div class="space-y-2">
+                <Label class="text-[9px] font-bold uppercase text-muted">Surface</Label>
+                <ColorPicker value={theme.surface()} onChange={theme.setSurface} />
+              </div>
+              <div class="space-y-2">
+                <Label class="text-[9px] font-bold uppercase text-muted">Border</Label>
+                <ColorPicker value={theme.border()} onChange={theme.setBorder} />
+              </div>
+              <div class="space-y-2">
+                <Label class="text-[9px] font-bold uppercase text-muted">Foreground</Label>
+                <ColorPicker value={theme.fg()} onChange={theme.setFg} />
+              </div>
+              <div class="space-y-2">
+                <Label class="text-[9px] font-bold uppercase text-muted">Muted</Label>
+                <ColorPicker value={theme.muted()} onChange={theme.setMuted} />
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
           {/* Accent Color */}
           <div class="space-y-4">
@@ -294,7 +389,7 @@ export const ThemeCreator = () => {
             <ColorPicker value={theme.accentColor()} onChange={theme.setAccentColor} />
           </div>
 
-          {/* Typography - Header */}
+          {/* Header Font */}
           <div class="space-y-4">
             <div class="flex items-center gap-2 text-muted">
               <Type size={14} />
@@ -321,7 +416,7 @@ export const ThemeCreator = () => {
             </div>
           </div>
 
-          {/* Typography - Body */}
+          {/* Body Font */}
           <div class="space-y-4">
             <div class="flex items-center gap-2 text-muted">
               <Type size={14} />
@@ -378,7 +473,7 @@ export const ThemeCreator = () => {
             <div class="space-y-3">
               <div class="flex items-center gap-2 text-muted">
                 <Layers size={14} />
-                <Label class="text-[10px] font-bold uppercase tracking-widest">Global Depth</Label>
+                <Label class="text-[10px] font-bold uppercase tracking-widest">Panel Shadow</Label>
               </div>
               <div class="grid grid-cols-3 gap-1">
                 <For each={SHADOW_OPTIONS}>
@@ -410,10 +505,10 @@ export const ThemeCreator = () => {
                   {(opt) => (
                     <button
                       type="button"
-                      onClick={() => theme.setBtnBoxShadow(opt.value)}
+                      onClick={() => theme.setBtnShadow(opt.value)}
                       class={twMerge(
                         'py-1.5 rounded border text-[10px] font-bold transition-all truncate',
-                        theme.btnBoxShadow() === opt.value
+                        theme.btnShadow() === opt.value
                           ? 'border-primary bg-primary/5 text-fg shadow-[0_0_0_1px_var(--primary-color)]'
                           : 'border-stroke bg-surface/50 text-muted hover:border-muted hover:text-fg',
                       )}
@@ -447,11 +542,29 @@ export const ThemeCreator = () => {
                   Dark
                 </Button>
               </div>
+              <button
+                type="button"
+                onClick={() => {
+                  theme.setTheme({
+                    dark: {
+                      bg: toDark(theme.bg()),
+                      panel: toDark(theme.panel()),
+                      surface: toDark(theme.surface()),
+                      border: toDark(theme.border()),
+                      fg: toDark(theme.fg()),
+                      muted: toDark(theme.muted()),
+                    },
+                  });
+                }}
+                class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-md border border-stroke bg-surface/50 text-[9px] font-bold text-muted hover:text-fg hover:border-muted transition-all"
+              >
+                Copy Light Colors to Dark
+              </button>
             </div>
           </div>
         </div>
 
-        <div class="p-6 border-t border-stroke bg-surface/30 space-y-3">
+        <div class="p-6 border-t border-stroke bg-surface/30">
           <Button
             class="w-full gap-2 text-xs font-black uppercase tracking-tighter"
             size="sm"
@@ -459,23 +572,6 @@ export const ThemeCreator = () => {
           >
             <DownloadCloud size={14} /> Get Snippet
           </Button>
-          <button
-            type="button"
-            class="w-full text-[10px] font-bold text-muted hover:text-primary transition-colors flex items-center justify-center gap-1.5"
-            onClick={() => {
-              theme.setStyle('vega');
-              theme.setAccentColor('#e11d48');
-              theme.setRadius('0.5rem');
-              theme.setHeaderFont('display');
-              theme.setBodyFont('sans');
-              theme.setBaseColor('zinc');
-              theme.setShadow('sm');
-              theme.setBtnBoxShadow('none');
-              toast.info('Restored');
-            }}
-          >
-            <RefreshCw size={10} /> Reset
-          </button>
         </div>
       </aside>
 
@@ -626,7 +722,7 @@ export const ThemeCreator = () => {
                         <span class="text-[10px] font-bold uppercase">Encrypted</span>
                         <Tooltip align="top">
                           <TooltipTrigger>
-                            <Plus size={10} class="text-primary cursor-help" />
+                            <Info size={10} class="text-primary cursor-help" />
                           </TooltipTrigger>
                           <TooltipContent>AES-256 Bit Encryption Active</TooltipContent>
                         </Tooltip>
@@ -635,7 +731,6 @@ export const ThemeCreator = () => {
                     </div>
                   </CardContent>
                 </Card>
-
                 <Card class="border-2 border-stroke" style={{ 'box-shadow': 'var(--shadow-main)' }}>
                   <CardHeader class="pb-4">
                     <CardTitle class="text-[10px] font-black uppercase text-muted">
@@ -714,8 +809,7 @@ export const ThemeCreator = () => {
                       <TableRow class="border-b border-stroke/50 font-bold">
                         <TableCell class="pl-6 py-4">
                           <div class="flex items-center gap-2">
-                            Auth Service Cluster
-                            <Kbd class="text-[9px] px-1 border-stroke">⌘A</Kbd>
+                            Auth Service Cluster<Kbd class="text-[9px] px-1 border-stroke">⌘A</Kbd>
                           </div>
                         </TableCell>
                         <TableCell>
@@ -728,8 +822,7 @@ export const ThemeCreator = () => {
                       <TableRow class="border-b border-stroke/50 font-bold">
                         <TableCell class="pl-6 py-4">
                           <div class="flex items-center gap-2">
-                            Database Replica 04
-                            <Kbd class="text-[9px] px-1 border-stroke">⌘D</Kbd>
+                            Database Replica 04<Kbd class="text-[9px] px-1 border-stroke">⌘D</Kbd>
                           </div>
                         </TableCell>
                         <TableCell>
@@ -758,7 +851,6 @@ export const ThemeCreator = () => {
                     class="border-2 border-stroke"
                   />
                 </div>
-
                 <Tabs defaultValue="overview" class="w-full max-w-md">
                   <TabsList class="grid grid-cols-3 border-2 border-stroke p-1 bg-surface rounded-none">
                     <TabsTrigger value="overview" class="text-[10px] font-black uppercase">
@@ -837,11 +929,10 @@ export const ThemeCreator = () => {
                       Cluster Identifier
                       <HoverCard>
                         <HoverCardTrigger>
-                          <Search size={10} class="text-primary cursor-help" />
+                          <Info size={10} class="text-primary cursor-help" />
                         </HoverCardTrigger>
                         <HoverCardContent class="w-64 p-3 text-[10px] font-bold">
-                          The unique alphanumeric string used to route internal traffic to this
-                          specific node.
+                          The unique alphanumeric string used to route internal traffic.
                         </HoverCardContent>
                       </HoverCard>
                     </Label>
@@ -850,7 +941,6 @@ export const ThemeCreator = () => {
                       class="border-2 border-stroke rounded-none font-mono"
                     />
                   </div>
-
                   <div class="space-y-2">
                     <Label class="text-[10px] font-black uppercase text-muted">
                       Activation Date
@@ -861,9 +951,7 @@ export const ThemeCreator = () => {
                       class="border-2 border-stroke rounded-none font-mono"
                     />
                   </div>
-
                   <Separator class="bg-stroke" />
-
                   <div class="space-y-3">
                     <div class="flex items-center justify-between">
                       <span class="text-[10px] font-black uppercase">Network Load</span>
@@ -874,7 +962,6 @@ export const ThemeCreator = () => {
                       class="h-2 border border-stroke rounded-none overflow-hidden"
                     />
                   </div>
-
                   <div class="space-y-3">
                     <div class="flex items-center justify-between">
                       <Label class="text-[10px] font-black uppercase text-muted">
@@ -884,7 +971,6 @@ export const ThemeCreator = () => {
                     </div>
                     <Slider value={sliderVal()} max={100} step={1} onChange={setSliderVal} />
                   </div>
-
                   <div class="space-y-4 pt-2">
                     <div class="flex items-center space-x-2">
                       <Checkbox id="stealth" checked />
@@ -899,9 +985,7 @@ export const ThemeCreator = () => {
                       </Label>
                     </div>
                   </div>
-
                   <Separator class="bg-stroke" />
-
                   <div class="space-y-3">
                     <Label class="text-[10px] font-black uppercase">Region Selection</Label>
                     <RadioGroup value={region()} name="region" onChange={setRegion}>
@@ -919,17 +1003,13 @@ export const ThemeCreator = () => {
                       </div>
                     </RadioGroup>
                   </div>
-
-                  <Separator class="bg-stroke" />
-
                   <Accordion multiple class="border-t border-stroke">
                     <AccordionItem value="details" class="border-b border-stroke">
                       <AccordionTrigger class="text-[10px] font-black uppercase py-3">
                         Advanced Parameters
                       </AccordionTrigger>
                       <AccordionContent class="pb-4 text-[10px] font-bold text-muted">
-                        Encryption levels and proxy rotation settings are managed automatically by
-                        the core cluster.
+                        Encryption levels and proxy rotation settings are managed automatically.
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -943,7 +1023,6 @@ export const ThemeCreator = () => {
                   </Button>
                 </CardFooter>
               </Card>
-
               <Alert
                 variant="warning"
                 class="border-2 border-stroke bg-yellow-400/10 text-fg rounded-none"
@@ -964,7 +1043,7 @@ export const ThemeCreator = () => {
       </main>
 
       {/* Export Modal */}
-      <Modal isOpen={showExport()} onClose={() => setShowExport(false)}>
+      <Modal isOpen={showExport()} onClose={() => setShowExport(false)} class="max-w-2xl">
         <ModalHeader>
           <ModalTitle class="font-black uppercase">Architecture Export</ModalTitle>
           <ModalDescription class="font-bold">
@@ -973,12 +1052,15 @@ export const ThemeCreator = () => {
         </ModalHeader>
         <ModalContent class="mt-4 space-y-4">
           <Tabs value={exportTab()} onChange={(v) => setExportTab(v as string)}>
-            <TabsList class="grid grid-cols-2 border-2 border-stroke p-1 bg-surface rounded-none h-10">
+            <TabsList class="grid grid-cols-3 border-2 border-stroke p-1 bg-surface rounded-none h-10">
               <TabsTrigger value="css" class="text-[10px] font-black uppercase">
                 CSS Variables
               </TabsTrigger>
               <TabsTrigger value="json" class="text-[10px] font-black uppercase">
                 Theme Object
+              </TabsTrigger>
+              <TabsTrigger value="lua" class="text-[10px] font-black uppercase">
+                SETR Config
               </TabsTrigger>
             </TabsList>
             <div class="mt-4">
@@ -987,6 +1069,9 @@ export const ThemeCreator = () => {
               </TabsContent>
               <TabsContent value="json">
                 <Code code={generateObject()} language="json" fileName="theme.json" />
+              </TabsContent>
+              <TabsContent value="lua">
+                <Code code={generateLua()} language="lua" fileName="theme.lua" />
               </TabsContent>
             </div>
           </Tabs>
@@ -1000,7 +1085,8 @@ export const ThemeCreator = () => {
               when={hasCopied()}
               fallback={
                 <>
-                  <Copy size={16} /> Copy {exportTab() === 'css' ? 'CSS' : 'Object'}
+                  <Copy size={16} /> Copy{' '}
+                  {exportTab() === 'css' ? 'CSS' : exportTab() === 'lua' ? 'Lua' : 'Object'}
                 </>
               }
             >

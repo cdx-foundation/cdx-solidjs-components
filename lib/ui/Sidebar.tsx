@@ -701,6 +701,27 @@ export const SidebarRail = (props: JSX.HTMLAttributes<HTMLButtonElement>) => {
   );
 };
 
+// ─── useSidebarTab ─────────────────────────────────────────────────────────────
+
+/**
+ * Persists the active sidebar tab key across page reloads.
+ *
+ * @param storageKey - localStorage key (default: `'sidebar:tab'`)
+ * @param defaultTab - initial value when nothing is persisted
+ *
+ * @example
+ * ```tsx
+ * const [tab, setTab] = useSidebarTab('dashboard');
+ *
+ * <Sidebar.MenuButton isActive={tab() === 'dashboard'} onClick={() => setTab('dashboard')}>
+ *   Dashboard
+ * </Sidebar.MenuButton>
+ * ```
+ */
+export function useSidebarTab(defaultTab: string, storageKey = 'sidebar:tab') {
+  return makePersisted(createSignal(defaultTab), { name: storageKey, storage: localStorage });
+}
+
 // ─── Sidebar Namespace ─────────────────────────────────────────────────────────
 // Enables usage: <Sidebar.Provider>, <Sidebar.Root>, <Sidebar.Menu>, etc.
 

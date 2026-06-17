@@ -1,42 +1,61 @@
 import { createPrefersDark } from '@solid-primitives/media';
 import { makePersisted } from '@solid-primitives/storage';
-import { type Accessor, createEffect, createRoot, createSignal } from 'solid-js';
-import { BASE_PALETTES, FONTS, SHADOWS } from '../theme-tokens';
-import type { BaseColor, ShadowLevel, ThemeFont } from '../theme-tokens';
+import { type Accessor, createEffect, createMemo, createRoot, createSignal } from 'solid-js';
+import { FONTS, SHADOWS } from '../theme-tokens';
+import type { ShadowLevel, ThemeFont } from '../theme-tokens';
 
-export type { BaseColor, ShadowLevel, ThemeFont };
+export type { ShadowLevel, ThemeFont };
+
+// ─── Theme types ──────────────────────────────────────────────────────────────
 
 export type Theme = {
   dark: boolean;
   /** Primary accent color (hex). */
   accent: string;
-  /** Named color palette. */
-  base: BaseColor;
-  /** Unified border radius for all elements. */
+  /** Application background. */
+  bg: string;
+  /** Panel / card / modal background. */
+  panel: string;
+  /** Subtle surface for hover states, secondary areas. */
+  surface: string;
+  /** Default border color. */
+  border: string;
+  /** Primary text / foreground color. */
+  fg: string;
+  /** Muted / secondary text color. */
+  muted: string;
+  /** Unified border radius. */
   radius: string;
-  /** UI font. */
+  /** Body text font. */
   font: ThemeFont;
-  /** Shadow level for panels and buttons. */
+  /** Heading / display font. */
+  headerFont: ThemeFont;
+  /** Shadow level for panels. */
   shadow: ShadowLevel;
+  /** Shadow level for buttons. */
+  btnShadow: ShadowLevel;
 };
 
-export type DualThemeConfig = { light: Partial<Theme>; dark: Partial<Theme> };
+export type DualThemeConfig = { light?: Partial<Theme>; dark?: Partial<Theme> };
 
 export type ThemeConfig = {
-  /** Whether dark mode is active. */
   isDark: Accessor<boolean>;
-  /** Primary accent color (hex). */
   accent: Accessor<string>;
-  /** Named color palette. */
-  base: Accessor<BaseColor>;
-  /** Unified border radius for all elements. */
+  bg: Accessor<string>;
+  panel: Accessor<string>;
+  surface: Accessor<string>;
+  border: Accessor<string>;
+  fg: Accessor<string>;
+  muted: Accessor<string>;
   radius: Accessor<string>;
-  /** UI font stack. */
   font: Accessor<ThemeFont>;
-  /** Shadow level for panels and buttons. */
+  headerFont: Accessor<ThemeFont>;
   shadow: Accessor<ShadowLevel>;
+  btnShadow: Accessor<ShadowLevel>;
+  /** Style preset name (spacing/density preset, not mode-specific). */
+  style: Accessor<string>;
 
-  /** Full theme object (for serialization / bulk reads). */
+  /** Full theme object (for serialisation / bulk reads). */
   theme: Accessor<Theme>;
 
   /** Merge a partial theme or apply a dual-theme config ({ light, dark }). */
@@ -45,134 +64,397 @@ export type ThemeConfig = {
   setLightTheme: (config: Partial<Theme>) => void;
   /** Apply overrides scoped to dark mode. */
   setDarkTheme: (config: Partial<Theme>) => void;
-  /** Toggle between dark and light mode. */
+  /** Toggle between dark, light, and system mode. */
   toggleTheme: () => void;
+  /** Updates the style preset name (spacing/density metadata). */
+  setStyle: (v: string) => void;
 };
 
-// ─── Defaults ────────────────────────────────────────────────────────────────
+// ─── Persisted shape ──────────────────────────────────────────────────────────
 
-const prefersDark = createPrefersDark();
+/** Theme style properties (everything except the `dark` mode flag). */
+type ThemeStyles = Omit<Theme, 'dark'>;
+
+interface PersistedTheme {
+  /** Schema version for forward-compat. Bump when shape changes. */
+  version: number;
+  /** Which mode is currently active. 'system' follows OS preference. */
+  mode: 'light' | 'dark' | 'system';
+  /** Light-mode style overrides. */
+  light: Partial<ThemeStyles>;
+  /** Dark-mode style overrides. */
+  dark: Partial<ThemeStyles>;
+  /** Style preset name (spacing/density metadata, not mode-specific). */
+  style?: string;
+}
+
+// ─── Defaults ─────────────────────────────────────────────────────────────────
+
+// Fix #2: Guard createPrefersDark() against SSR / no-DOM environments.
+// The signal is created lazily inside ensureReactives() instead of at module
+// evaluation time, so importing this file in Node/SSR never touches the DOM.
+let prefersDarkSignal: Accessor<boolean> | null = null;
+function getPrefersDark(): boolean {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+  if (!prefersDarkSignal) prefersDarkSignal = createPrefersDark();
+  return prefersDarkSignal();
+}
 
 const BUILTIN_DEFAULTS: Theme = {
-  dark: prefersDark(),
-  accent: '#c62828',
-  base: 'zinc',
-  radius: '0px',
+  dark: false,
+  accent: '#6366f1',
+  bg: '#ffffff',
+  panel: '#ffffff',
+  surface: '#f4f4f5',
+  border: '#e4e4e7',
+  fg: '#09090b',
+  muted: '#71717a',
+  radius: '12px',
   font: 'sans',
-  shadow: 'none',
+  headerFont: 'sans',
+  shadow: 'md',
+  btnShadow: 'md',
 };
 
-let defaultsApplied = false;
+/** Bump when the persisted shape changes (e.g. new required fields). */
+const THEME_VERSION = 1;
 
-// ─── Persistent singleton ─────────────────────────────────────────────────────
+const STORAGE_KEY = 'cdx_theme';
 
-const [theme, setThemeRaw] = makePersisted(createSignal<Theme>(BUILTIN_DEFAULTS), {
-  name: 'starling-theme',
-});
+const [persisted, setPersisted] = makePersisted(
+  createSignal<PersistedTheme>({
+    version: THEME_VERSION,
+    mode: 'system',
+    light: {},
+    dark: {},
+  }),
+  {
+    name: STORAGE_KEY,
+    deserialize: (raw: string): PersistedTheme => {
+      try {
+        const parsed = JSON.parse(raw);
+        if (parsed.version === THEME_VERSION) return parsed as PersistedTheme;
+      } catch {}
+      return { version: THEME_VERSION, mode: 'system', light: {}, dark: {} };
+    },
+  },
+);
+
+// ─── Color helpers ────────────────────────────────────────────────────────────
+
+const COLOR_FIELDS: ReadonlyArray<keyof ThemeStyles> = [
+  'bg',
+  'panel',
+  'surface',
+  'border',
+  'fg',
+  'muted',
+];
+
+// ─── HSL colour helpers ───────────────────────────────────────────────────────
+
+function hexToHsl(hex: string): [number, number, number] {
+  const r = Number.parseInt(hex.slice(1, 3), 16) / 255;
+  const g = Number.parseInt(hex.slice(3, 5), 16) / 255;
+  const b = Number.parseInt(hex.slice(5, 7), 16) / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h = 0;
+  let s = 0;
+  const l = (max + min) / 2;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r:
+        h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+        break;
+      case g:
+        h = ((b - r) / d + 2) / 6;
+        break;
+      case b:
+        h = ((r - g) / d + 4) / 6;
+        break;
+    }
+  }
+  return [h * 360, s * 100, l * 100];
+}
+
+function hslToHex(h: number, s: number, l: number): string {
+  const hi = h / 360;
+  const si = s / 100;
+  const li = l / 100;
+  const q = li < 0.5 ? li * (1 + si) : li + si - li * si;
+  const p = 2 * li - q;
+  const toC = (t: number) => {
+    const n = t < 0 ? t + 1 : t > 1 ? t - 1 : t;
+    if (n < 1 / 6) return p + (q - p) * 6 * n;
+    if (n < 1 / 2) return q;
+    if (n < 2 / 3) return p + (q - p) * (2 / 3 - n) * 6;
+    return p;
+  };
+  const r = Math.round(toC(hi + 1 / 3) * 255);
+  const g = Math.round(toC(hi) * 255);
+  const b = Math.round(toC(hi - 1 / 3) * 255);
+  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+}
+
+/**
+ * Derive a dark-mode counterpart for a light-mode hex colour.
+ *
+ * Maps lightness through a piecewise dark-mode curve while preserving hue
+ * and damping saturation by 45%.  Relative lightness ordering is preserved
+ * so layered surfaces (bg < panel < surface < border) remain correctly
+ * stratified in dark mode.
+ *
+ * Mapping:
+ *   L 70–100% → surfaces  → 6–20%  (bg=6, border≈11)
+ *   L 30–70%  → mid-tones → 20–50% (muted grays)
+ *   L 0–30%   → text      → 80–96% (near-black fg → near-white)
+ */
+export function toDark(hex: string): string {
+  const [h, s, l] = hexToHsl(hex);
+  let dl: number;
+  if (l >= 70)
+    dl = 6 + ((100 - l) / 30) * 14; // surfaces
+  else if (l >= 30)
+    dl = 20 + ((70 - l) / 40) * 30; // mid-tones
+  else dl = 80 + ((30 - l) / 30) * 16; // text → near-white
+  return hslToHex(h, s * 0.55, dl);
+}
+
+// ─── Compute active theme from persisted state ────────────────────────────────
+
+function computeTheme(p: PersistedTheme): Theme {
+  // Resolve 'system' mode against the OS preference at compute time.
+  const isDark = p.mode === 'system' ? getPrefersDark() : p.mode === 'dark';
+
+  // Start from the light-mode computed state (defaults + light overrides).
+  // Non-colour fields (radius, font, shadow, etc.) carry over to dark mode.
+  const lightComputed = { ...BUILTIN_DEFAULTS, ...p.light, dark: false };
+
+  if (isDark) {
+    // Auto-derive the 6 neutral colour fields from the light values.
+    const darkColors: Partial<Pick<Theme, (typeof COLOR_FIELDS)[number]>> = {};
+    for (const key of COLOR_FIELDS) darkColors[key] = toDark(lightComputed[key]) as any;
+    // Explicit dark overrides take precedence over auto-derived values.
+    return { ...lightComputed, ...darkColors, ...p.dark, dark: true };
+  }
+
+  return lightComputed;
+}
 
 // ─── Apply to <html> ──────────────────────────────────────────────────────────
 
 function applyTheme(t: Theme) {
+  if (typeof document === 'undefined') return;
   const root = document.documentElement;
-  const palette = BASE_PALETTES[t.base][t.dark ? 'dark' : 'light'];
   const fontVal = FONTS[t.font];
+  const headerFontVal = FONTS[t.headerFont];
   const shadowVal = SHADOWS[t.shadow];
+  const btnShadowVal = SHADOWS[t.btnShadow];
 
   root.classList.toggle('dark', t.dark);
   root.style.colorScheme = t.dark ? 'dark' : 'light';
   root.style.setProperty('--primary-color', t.accent);
-  root.style.setProperty('--bg-main', palette.bg);
-  root.style.setProperty('--bg-panel', palette.panel);
-  root.style.setProperty('--bg-surface', palette.surface);
-  root.style.setProperty('--border-main', palette.border);
-  root.style.setProperty('--stroke', palette.border);
-  root.style.setProperty('--fg-main', palette.fg);
-  root.style.setProperty('--text-muted', palette.muted);
+  root.style.setProperty('--bg-main', t.bg);
+  root.style.setProperty('--bg-panel', t.panel);
+  root.style.setProperty('--bg-surface', t.surface);
+  root.style.setProperty('--border-main', t.border);
+  root.style.setProperty('--stroke', t.border);
+  root.style.setProperty('--fg-main', t.fg);
+  root.style.setProperty('--text-muted', t.muted);
   root.style.setProperty('--radius-card', t.radius);
   root.style.setProperty('--radius-btn', t.radius);
   root.style.setProperty('--radius-input', t.radius);
   root.style.setProperty('--radius-badge', t.radius);
-  root.style.setProperty('--display-main', fontVal);
+  root.style.setProperty('--display-main', headerFontVal);
   root.style.setProperty('--sans-main', fontVal);
   root.style.setProperty('--shadow-main', shadowVal);
-  root.style.setProperty('--shadow-btn', shadowVal);
+  root.style.setProperty('--shadow-btn', btnShadowVal);
 }
 
-// ─── Root-level effect (HMR-safe) ──────────────────────────────────────────────
+// ─── Root-level effect (HMR-safe) ─────────────────────────────────────────────
 
+let themeMemo: Accessor<Theme>;
 let themeEffectRan = false;
-function ensureThemeEffect() {
+
+function ensureReactives() {
   if (themeEffectRan) return;
   themeEffectRan = true;
+
+  // Fix #2: initialise prefersDark inside a reactive root so the media-query
+  // listener is properly owned and cleaned up with the root.
   createRoot(() => {
-    createEffect(() => applyTheme(theme()));
+    // Eagerly create the prefersDark signal so 'system' mode is reactive.
+    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
+      prefersDarkSignal = createPrefersDark();
+    }
+    themeMemo = createMemo(() => computeTheme(persisted()));
+    createEffect(() => applyTheme(themeMemo()));
   });
+
+  // Fix #1: Cross-tab / cross-app sync via the storage event.
+  if (typeof window !== 'undefined') {
+    window.addEventListener('storage', (e) => {
+      if (e.key === STORAGE_KEY && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          if (parsed.version === THEME_VERSION) setPersisted(parsed);
+        } catch {}
+      }
+    });
+  }
 }
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
+let defaultsApplied = false;
+
 /**
- * Manages the full application theme via a single `Theme` object.
- * Call `setTheme` with your server response to apply it instantly.
- * The last applied theme is persisted to localStorage as a fallback.
+ * Reactive theme hook with persistent light/dark overrides and FOUC prevention.
  *
- * Use `useTheme.getScript()` as a blocking inline `<script>` in `<head>`
- * to prevent a flash of unstyled content (FOUC).
+ * The hook manages two independent style branches (`light` and `dark`) plus a
+ * `mode` toggle.  When dark mode is active, the six neutral colour fields (bg,
+ * panel, surface, border, fg, muted) are **auto-derived** from the light values
+ * via luminance inversion (`toDark`).  Non-colour fields (radius, font, shadow,
+ * headerFont, btnShadow) carry over from light mode unchanged.  Explicit dark
+ * overrides passed via `setDarkTheme` or `DualThemeConfig` take precedence over
+ * auto-derived values.
  *
- * @param defaults - Optional project-level theme defaults applied once on first
- *   call (lower priority than persisted localStorage values).
+ * Persisted to `localStorage` under `cdx_theme`.  Each persisted object carries
+ * a `version` number — if the stored schema ever changes the hook transparently
+ * discards stale data and falls back to fresh defaults.
+ *
+ * The default mode is `'system'`, which follows the OS preference reactively.
+ * `toggleTheme` cycles through `system → dark → light → system`.
+ *
+ * Use `useTheme.getScript()` as a blocking inline `<script>` in `<head>` to
+ * prevent a flash of unstyled content (FOUC).  The emitted script reads
+ * localStorage synchronously, auto-derives dark-mode colours, and sets CSS
+ * custom properties before the first paint.
+ *
+ * All colour values are hex strings (e.g. `"#6366f1"`).  The `dark` accessor
+ * is `true` when dark mode is active.
+ *
+ * @param defaults - Optional project-level theme defaults applied once on the
+ *   first call.  These are merged into the **light** branch only and have
+ *   **lower** priority than persisted localStorage values (and lower still
+ *   than explicit overrides via `setTheme`/`setDarkTheme`).
  *
  * @example
  * ```tsx
- * const { isDark, toggleTheme, setTheme } = useTheme();
+ * import { useTheme } from 'your-lib/hooks/useTheme';
  *
- * // Apply a full theme from server
- * setTheme(await fetchTheme());
+ * function App() {
+ *   const {
+ *     isDark, theme, bg, fg, accent, radius,
+ *     font, headerFont, shadow, btnShadow, style,
+ *     setTheme, setLightTheme, setDarkTheme,
+ *     toggleTheme, setStyle,
+ *   } = useTheme();
  *
- * // Or tweak a single value
- * setTheme({ accent: '#6366f1' });
+ *   // Toggle cycles: system → dark → light → system
+ *   <button onClick={toggleTheme}>
+ *     {isDark() ? 'Switch to Light' : 'Switch to Dark'}
+ *   </button>
+ * }
+ * ```
+ *
+ * @example
+ * ```html
+ * <!-- index.html — block FOUC before the first paint -->
+ * <head>
+ *   <script>${useTheme.getScript({ accent: '#ff4500' })}</script>
+ * </head>
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Project-level defaults (lowest priority, applied once)
+ * useTheme({ radius: '8px', font: 'modern', accent: '#6366f1' });
  * ```
  */
 export function useTheme(defaults?: Partial<Theme>): ThemeConfig {
-  ensureThemeEffect();
+  ensureReactives();
 
-  // Apply project defaults once (persisted localStorage already merged in signal)
+  // Fix #3: Apply project defaults once with lower priority than persisted values.
+  // - Only the light branch is set (not dark) so auto-derivation is not polluted.
+  // - Argument order is flipped: persisted values win over defaults.
   if (defaults && !defaultsApplied) {
     defaultsApplied = true;
-    setThemeRaw((prev) => ({ ...BUILTIN_DEFAULTS, ...defaults, ...prev }));
+    const { dark: _mode, ...styleDefaults } = defaults;
+    setPersisted((prev) => ({
+      ...prev,
+      light: { ...styleDefaults, ...prev.light }, // persisted wins
+    }));
   }
 
   return {
-    theme,
-    isDark: () => theme().dark,
-    accent: () => theme().accent,
-    base: () => theme().base,
-    radius: () => theme().radius,
-    font: () => theme().font,
-    shadow: () => theme().shadow,
+    theme: () => themeMemo!(),
+    isDark: () => themeMemo!().dark,
+    accent: () => themeMemo!().accent,
+    bg: () => themeMemo!().bg,
+    panel: () => themeMemo!().panel,
+    surface: () => themeMemo!().surface,
+    border: () => themeMemo!().border,
+    fg: () => themeMemo!().fg,
+    muted: () => themeMemo!().muted,
+    radius: () => themeMemo!().radius,
+    font: () => themeMemo!().font,
+    headerFont: () => themeMemo!().headerFont,
+    shadow: () => themeMemo!().shadow,
+    btnShadow: () => themeMemo!().btnShadow,
+    style: () => persisted().style ?? 'vega',
 
     setTheme: (config: Partial<Theme> | DualThemeConfig) => {
-      setThemeRaw((prev) => {
-        if ('light' in config || 'dark' in config) {
-          const mode: 'light' | 'dark' = prev.dark ? 'dark' : 'light';
-          const modeConfig = (config as DualThemeConfig)[mode];
-          return modeConfig ? { ...prev, ...modeConfig } : prev;
+      setPersisted((prev) => {
+        // DualThemeConfig: config has a `light` key OR config.dark is an object
+        if ('light' in config || typeof (config as any).dark === 'object') {
+          const { light: lCfg, dark: dCfg } = config as DualThemeConfig;
+          return {
+            ...prev,
+            light: lCfg ? { ...prev.light, ...lCfg } : prev.light,
+            dark: dCfg ? { ...prev.dark, ...dCfg } : prev.dark,
+          };
         }
-        return { ...prev, ...(config as Partial<Theme>) };
+        // Partial<Theme> — `dark` flag changes the active mode,
+        // style properties update the target mode's persisted overrides.
+        const { dark: modeFlag, ...styleChanges } = config as Partial<Theme>;
+        const targetMode: 'light' | 'dark' =
+          modeFlag !== undefined
+            ? modeFlag
+              ? 'dark'
+              : 'light'
+            : prev.mode === 'system'
+              ? getPrefersDark()
+                ? 'dark'
+                : 'light'
+              : prev.mode;
+        if (targetMode === 'dark') {
+          return { ...prev, mode: 'dark', dark: { ...prev.dark, ...styleChanges } };
+        }
+        return { ...prev, mode: 'light', light: { ...prev.light, ...styleChanges } };
       });
     },
 
     setLightTheme: (config: Partial<Theme>) => {
-      setThemeRaw((prev) => (prev.dark ? prev : { ...prev, ...config }));
+      setPersisted((prev) => ({ ...prev, light: { ...prev.light, ...config } }));
     },
 
     setDarkTheme: (config: Partial<Theme>) => {
-      setThemeRaw((prev) => (prev.dark ? { ...prev, ...config } : prev));
+      setPersisted((prev) => ({ ...prev, dark: { ...prev.dark, ...config } }));
     },
 
+    // Fix #5: Toggle cycles through system → dark → light → system.
     toggleTheme: () => {
-      setThemeRaw((prev) => ({ ...prev, dark: !prev.dark }));
+      setPersisted((prev) => ({
+        ...prev,
+        mode: prev.mode === 'system' ? 'dark' : prev.mode === 'dark' ? 'light' : 'system',
+      }));
     },
+
+    setStyle: (v: string) => setPersisted((prev) => ({ ...prev, style: v })),
   };
 }
 
@@ -180,39 +462,61 @@ export function useTheme(defaults?: Partial<Theme>): ThemeConfig {
  * Returns an inline script string that synchronously applies the persisted
  * theme before the first paint, preventing FOUC.
  *
- * ```html
- * <script><!-- paste output here --></script>
- * ```
- * Or in a meta-framework:
- * ```tsx
- * <script innerHTML={useTheme.getScript()} />
- * ```
- *
- * @param defaults - Optional project-level theme defaults to merge before
- *   reading persisted localStorage (same defaults passed to `useTheme`).
+ * Dark-mode colours are auto-derived from the light values via simple
+ * inversion.  Explicit dark overrides in the persisted data take precedence.
  */
 useTheme.getScript = (defaults?: Partial<Theme>): string => `(function(){
-  var d=Object.assign({},${JSON.stringify(BUILTIN_DEFAULTS)},${JSON.stringify(defaults || {})});
-  try{var s=localStorage.getItem('starling-theme');if(s)d=Object.assign(d,JSON.parse(s));}catch(e){}
-  var palettes=${JSON.stringify(BASE_PALETTES)};
+  var v=${THEME_VERSION};
+  var def=${JSON.stringify(BUILTIN_DEFAULTS)};
+  var user=${JSON.stringify(defaults || {})};
+  function toDark(hex){
+    var r=parseInt(hex.slice(1,3),16)/255,g=parseInt(hex.slice(3,5),16)/255,b=parseInt(hex.slice(5,7),16)/255;
+    var max=Math.max(r,g,b),min=Math.min(r,g,b),h=0,s=0,l=(max+min)/2;
+    if(max!==min){var d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);if(max===r)h=((g-b)/d+(g<b?6:0))/6;else if(max===g)h=((b-r)/d+2)/6;else h=((r-g)/d+4)/6;}
+    h*=360;s*=100;l*=100;
+    var dl=l>=70?6+(100-l)/30*14:l>=30?20+(70-l)/40*30:80+(30-l)/30*16;
+    var ds=s*0.55;
+    var hi=h/360,si=ds/100,li=dl/100;
+    var q=li<0.5?li*(1+si):li+si-li*si,p=2*li-q;
+    function toC(t){if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<0.5)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;}
+    var ro=Math.round(toC(hi+1/3)*255),go=Math.round(toC(hi)*255),bo=Math.round(toC(hi-1/3)*255);
+    return '#'+('00'+ro.toString(16)).slice(-2)+('00'+go.toString(16)).slice(-2)+('00'+bo.toString(16)).slice(-2);
+  }
+  var d=Object.assign({},def,user);
+  try{
+    var s=localStorage.getItem('${STORAGE_KEY}');
+    if(s){
+      var p=JSON.parse(s);
+      if(p.version===v && p.mode && p.light && p.dark){
+        Object.assign(d,p.light);
+        // Fix #5: resolve 'system' mode against matchMedia
+        var isDark=p.mode==='dark'||(p.mode==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if(isDark){
+          d.bg=toDark(d.bg);d.panel=toDark(d.panel);d.surface=toDark(d.surface);
+          d.border=toDark(d.border);d.fg=toDark(d.fg);d.muted=toDark(d.muted);
+          Object.assign(d,p.dark);
+        }
+        d.dark=isDark;
+      }
+    }
+  }catch(e){}
   var fonts=${JSON.stringify(FONTS)};
   var shadows=${JSON.stringify(SHADOWS)};
-  var p=(palettes[d.base]||palettes.pure)[d.dark?'dark':'light'];
   var r=document.documentElement;
   r.classList.toggle('dark',d.dark);
   r.style.colorScheme=d.dark?'dark':'light';
   r.style.setProperty('--primary-color',d.accent);
-  r.style.setProperty('--bg-main',p.bg);
-  r.style.setProperty('--bg-panel',p.panel);
-  r.style.setProperty('--bg-surface',p.surface);
-  r.style.setProperty('--border-main',p.border);
-  r.style.setProperty('--stroke',p.border);
-  r.style.setProperty('--fg-main',p.fg);
-  r.style.setProperty('--text-muted',p.muted);
-  var rv=d.radius,fv=fonts[d.font]||fonts.sans,sv=shadows[d.shadow]||'none';
+  r.style.setProperty('--bg-main',d.bg);
+  r.style.setProperty('--bg-panel',d.panel);
+  r.style.setProperty('--bg-surface',d.surface);
+  r.style.setProperty('--border-main',d.border);
+  r.style.setProperty('--stroke',d.border);
+  r.style.setProperty('--fg-main',d.fg);
+  r.style.setProperty('--text-muted',d.muted);
+  var rv=d.radius,fv=fonts[d.font]||fonts.sans,hfv=fonts[d.headerFont]||fonts.sans,sv=shadows[d.shadow]||'none',bsv=shadows[d.btnShadow]||'none';
   ['--radius-card','--radius-btn','--radius-input','--radius-badge'].forEach(function(k){r.style.setProperty(k,rv);});
-  r.style.setProperty('--display-main',fv);
+  r.style.setProperty('--display-main',hfv);
   r.style.setProperty('--sans-main',fv);
   r.style.setProperty('--shadow-main',sv);
-  r.style.setProperty('--shadow-btn',sv);
+  r.style.setProperty('--shadow-btn',bsv);
 })();`;

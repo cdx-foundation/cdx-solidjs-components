@@ -1,13 +1,13 @@
 import { createShortcut } from '@solid-primitives/keyboard';
 import { Check } from 'lucide-solid';
-import { For, Show, createSignal, splitProps } from 'solid-js';
+import { For, Show, createEffect, createSignal, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { clickOutside } from '../directives';
 
 // Suppress unused warning for directive
 false && clickOutside;
 
-const PRESET_COLORS = [
+export const PRESET_COLORS = [
   { label: 'Crimson', value: '#c62828' },
   { label: 'Rose', value: '#e11d48' },
   { label: 'Orange', value: '#ea580c' },
@@ -50,6 +50,11 @@ interface ColorPickerProps {
    * Custom CSS classes for the outer container element.
    */
   containerClass?: string;
+
+  /**
+   * Override the preset color swatches. Defaults to PRESET_COLORS.
+   */
+  presets?: { label: string; value: string }[];
 }
 
 /**
@@ -79,16 +84,41 @@ export const ColorPicker = (props: ColorPickerProps) => {
     'onChange',
     'class',
     'containerClass',
+    'presets',
   ]);
+
+  const presets = () => local.presets ?? PRESET_COLORS;
   const [isOpen, setIsOpen] = createSignal(false);
 
   const currentColor = () => local.value || '#c62828';
   const currentLabel = () =>
     PRESET_COLORS.find((c) => c.value === currentColor())?.label ?? currentColor().toUpperCase();
 
+  const [hexDraft, setHexDraft] = createSignal(currentColor());
+  // Sync hexDraft with the actual colour whenever the picker opens,
+  // so stale drafts from a previous editing session are discarded.
+  createEffect(() => {
+    if (isOpen()) setHexDraft(currentColor());
+  });
+
   const handleSelect = (color: string) => {
     local.onChange?.(color);
     setIsOpen(false);
+  };
+
+  const commitHex = () => {
+    const v = hexDraft().trim();
+    if (/^#[0-9a-fA-F]{6}$/.test(v) && v !== currentColor()) {
+      handleSelect(v.toLowerCase());
+    } else {
+      // Reset draft to current valid colour on blur if input is invalid
+      setHexDraft(currentColor());
+    }
+  };
+
+  const liveHex = (v: string) => {
+    setHexDraft(v);
+    if (/^#[0-9a-fA-F]{6}$/.test(v.trim())) local.onChange?.(v.trim().toLowerCase());
   };
 
   createShortcut(['Escape'], () => {
@@ -136,7 +166,7 @@ export const ColorPicker = (props: ColorPickerProps) => {
           <div class="absolute z-50 mt-1 w-full border border-stroke bg-panel rounded-card overflow-hidden animate-in fade-in duration-100">
             <div class="p-3">
               <div class="grid grid-cols-6 gap-2">
-                <For each={PRESET_COLORS}>
+                <For each={presets()}>
                   {(color) => {
                     const isSelected = () => currentColor() === color.value;
                     return (
@@ -169,12 +199,19 @@ export const ColorPicker = (props: ColorPickerProps) => {
                   type="color"
                   value={currentColor()}
                   onInput={(e) => handleSelect(e.currentTarget.value)}
-                  class="w-7 h-7 rounded-badge border border-stroke cursor-pointer p-0 bg-transparent"
+                  class="w-7 h-7 rounded-badge border border-stroke cursor-pointer p-0 bg-transparent shrink-0"
                 />
-                <span class="text-[11px] text-muted font-mono">Custom</span>
-                <span class="text-[11px] text-fg font-mono ml-auto">
-                  {currentColor().toUpperCase()}
-                </span>
+                <input
+                  type="text"
+                  value={hexDraft()}
+                  onInput={(e) => liveHex(e.currentTarget.value)}
+                  onBlur={commitHex}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') commitHex();
+                  }}
+                  placeholder="#000000"
+                  class="flex-1 text-[11px] text-fg font-mono bg-transparent border border-stroke rounded px-2 py-1 outline-none transition-colors focus:border-fg"
+                />
               </div>
             </div>
           </div>

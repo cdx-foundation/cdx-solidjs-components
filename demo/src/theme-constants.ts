@@ -1,6 +1,4 @@
 export type ThemeFont = 'sans' | 'mono' | 'display' | 'condensed' | 'system' | 'oxanium';
-export type BaseColor = 'zinc' | 'slate' | 'stone' | 'gray' | 'neutral';
-export type ShadowLevel = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'neo' | 'flat' | 'hard';
 
 export type StylePreset = 'vega' | 'nova' | 'maia' | 'lyra' | 'mira' | 'luma' | 'sera' | 'rhea';
 
@@ -10,7 +8,7 @@ export interface StylePresetConfig {
   headerFont: ThemeFont;
   bodyFont: ThemeFont;
   radius: string;
-  shadow: ShadowLevel;
+  shadow: string;
   cardPad: string;
   cardGap: string;
   btnPadY: string;
@@ -43,10 +41,10 @@ export const STYLE_PRESETS: Record<StylePreset, StylePresetConfig> = {
   nova: {
     label: 'Nova',
     description: 'Modern, tech-forward',
-    headerFont: 'sans',
+    headerFont: 'condensed',
     bodyFont: 'sans',
     radius: '0.75rem',
-    shadow: 'md',
+    shadow: 'lg',
     cardPad: '1.125rem',
     cardGap: '0.625rem',
     btnPadY: '0.5rem',
@@ -60,7 +58,7 @@ export const STYLE_PRESETS: Record<StylePreset, StylePresetConfig> = {
   maia: {
     label: 'Maia',
     description: 'Friendly, rounded',
-    headerFont: 'sans',
+    headerFont: 'display',
     bodyFont: 'sans',
     radius: '1.0rem',
     shadow: 'sm',
@@ -95,9 +93,9 @@ export const STYLE_PRESETS: Record<StylePreset, StylePresetConfig> = {
     label: 'Mira',
     description: 'Mini, compact',
     headerFont: 'sans',
-    bodyFont: 'sans',
+    bodyFont: 'system',
     radius: '0.3rem',
-    shadow: 'sm',
+    shadow: 'flat',
     cardPad: '0.75rem',
     cardGap: '0.375rem',
     btnPadY: '0.375rem',
@@ -112,9 +110,9 @@ export const STYLE_PRESETS: Record<StylePreset, StylePresetConfig> = {
     label: 'Luma',
     description: 'Soft, pill-like',
     headerFont: 'sans',
-    bodyFont: 'sans',
-    radius: '1.0rem',
-    shadow: 'lg',
+    bodyFont: 'oxanium',
+    radius: '0.75rem',
+    shadow: 'xl',
     cardPad: '1.5rem',
     cardGap: '1rem',
     btnPadY: '0.75rem',
@@ -128,10 +126,10 @@ export const STYLE_PRESETS: Record<StylePreset, StylePresetConfig> = {
   sera: {
     label: 'Sera',
     description: 'Editorial, typographic',
-    headerFont: 'display',
-    bodyFont: 'sans',
+    headerFont: 'sans',
+    bodyFont: 'condensed',
     radius: '0px',
-    shadow: 'none',
+    shadow: 'neo',
     cardPad: '1rem',
     cardGap: '0.5rem',
     btnPadY: '0.5rem',
@@ -145,10 +143,10 @@ export const STYLE_PRESETS: Record<StylePreset, StylePresetConfig> = {
   rhea: {
     label: 'Rhea',
     description: 'Compact Luma',
-    headerFont: 'sans',
-    bodyFont: 'sans',
-    radius: '0.75rem',
-    shadow: 'md',
+    headerFont: 'condensed',
+    bodyFont: 'oxanium',
+    radius: '1.0rem',
+    shadow: 'hard',
     cardPad: '1rem',
     cardGap: '0.5rem',
     btnPadY: '0.4375rem',
@@ -161,9 +159,36 @@ export const STYLE_PRESETS: Record<StylePreset, StylePresetConfig> = {
   },
 };
 
-export const BASE_PALETTES: Record<BaseColor, { light: any; dark: any }> = {
-  zinc: {
-    light: {
+// ─── Color presets ────────────────────────────────────────────────────────────
+// Named schemes that set all 6 neutral colours at once.
+// The user can override individual colours after picking a preset.
+
+export interface ColorPreset {
+  name: string;
+  label: string;
+  colors: {
+    bg: string;
+    panel: string;
+    surface: string;
+    border: string;
+    fg: string;
+    muted: string;
+  };
+  colorsDark: {
+    bg: string;
+    panel: string;
+    surface: string;
+    border: string;
+    fg: string;
+    muted: string;
+  };
+}
+
+export const COLOR_PRESETS: ColorPreset[] = [
+  {
+    name: 'zinc',
+    label: 'Zinc',
+    colors: {
       bg: '#ffffff',
       panel: '#ffffff',
       surface: '#f4f4f5',
@@ -171,7 +196,7 @@ export const BASE_PALETTES: Record<BaseColor, { light: any; dark: any }> = {
       fg: '#09090b',
       muted: '#71717a',
     },
-    dark: {
+    colorsDark: {
       bg: '#09090b',
       panel: '#09090b',
       surface: '#27272a',
@@ -180,8 +205,10 @@ export const BASE_PALETTES: Record<BaseColor, { light: any; dark: any }> = {
       muted: '#a1a1aa',
     },
   },
-  slate: {
-    light: {
+  {
+    name: 'slate',
+    label: 'Slate',
+    colors: {
       bg: '#ffffff',
       panel: '#ffffff',
       surface: '#f1f5f9',
@@ -189,7 +216,7 @@ export const BASE_PALETTES: Record<BaseColor, { light: any; dark: any }> = {
       fg: '#0f172a',
       muted: '#64748b',
     },
-    dark: {
+    colorsDark: {
       bg: '#020617',
       panel: '#020617',
       surface: '#1e293b',
@@ -198,8 +225,10 @@ export const BASE_PALETTES: Record<BaseColor, { light: any; dark: any }> = {
       muted: '#94a3b8',
     },
   },
-  stone: {
-    light: {
+  {
+    name: 'stone',
+    label: 'Stone',
+    colors: {
       bg: '#ffffff',
       panel: '#ffffff',
       surface: '#f5f5f4',
@@ -207,7 +236,7 @@ export const BASE_PALETTES: Record<BaseColor, { light: any; dark: any }> = {
       fg: '#1c1917',
       muted: '#78716c',
     },
-    dark: {
+    colorsDark: {
       bg: '#1c1917',
       panel: '#1c1917',
       surface: '#292524',
@@ -216,8 +245,10 @@ export const BASE_PALETTES: Record<BaseColor, { light: any; dark: any }> = {
       muted: '#a8a29e',
     },
   },
-  gray: {
-    light: {
+  {
+    name: 'gray',
+    label: 'Gray',
+    colors: {
       bg: '#ffffff',
       panel: '#ffffff',
       surface: '#f3f4f6',
@@ -225,7 +256,7 @@ export const BASE_PALETTES: Record<BaseColor, { light: any; dark: any }> = {
       fg: '#111827',
       muted: '#6b7280',
     },
-    dark: {
+    colorsDark: {
       bg: '#030712',
       panel: '#030712',
       surface: '#1f2937',
@@ -234,8 +265,10 @@ export const BASE_PALETTES: Record<BaseColor, { light: any; dark: any }> = {
       muted: '#9ca3af',
     },
   },
-  neutral: {
-    light: {
+  {
+    name: 'neutral',
+    label: 'Neutral',
+    colors: {
       bg: '#ffffff',
       panel: '#ffffff',
       surface: '#f5f5f5',
@@ -243,7 +276,7 @@ export const BASE_PALETTES: Record<BaseColor, { light: any; dark: any }> = {
       fg: '#0a0a0a',
       muted: '#737373',
     },
-    dark: {
+    colorsDark: {
       bg: '#0a0a0a',
       panel: '#0a0a0a',
       surface: '#262626',
@@ -252,28 +285,7 @@ export const BASE_PALETTES: Record<BaseColor, { light: any; dark: any }> = {
       muted: '#a3a3a3',
     },
   },
-};
-
-export const SHADOWS: Record<ShadowLevel, string> = {
-  none: 'none',
-  sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-  md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-  lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-  xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-  '2xl': '0 25px 50px -12px rgb(0 0 0 / 0.25)',
-  neo: '2px 2px 0px 0px var(--stroke)',
-  flat: '4px 4px 0px 0px var(--stroke)',
-  hard: '6px 6px 0px 0px var(--fg-main)',
-};
-
-export const FONTS = {
-  sans: '"Inter", system-ui, sans-serif',
-  mono: '"JetBrains Mono", ui-monospace, monospace',
-  display: '"Archivo Black", Impact, sans-serif',
-  condensed: '"Bebas Neue", sans-serif',
-  system: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-  oxanium: '"Oxanium", sans-serif',
-};
+];
 
 export function hexToRgb(hex: string) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
