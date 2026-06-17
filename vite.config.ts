@@ -31,7 +31,7 @@ const sharedConfig: any = {
 };
 
 export default defineConfig(({ command }) => {
-  const isDemo = process.env.BUILD_DEMO === 'true' || command === 'serve';
+  const isDemo = (process.env.BUILD_DEMO === 'true' || command === 'serve') && !process.env.VITEST;
 
   if (isDemo) {
     const demoPlugins: any[] = [tailwindcss(), solidPlugin()];
