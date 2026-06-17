@@ -1,3 +1,4 @@
+import { makePersisted } from '@solid-primitives/storage';
 import {
   Book,
   Cat,
@@ -15,11 +16,12 @@ import {
   Search,
   Wrench,
 } from 'lucide-solid';
-import { makePersisted } from '@solid-primitives/storage';
 import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
+import { useTheme } from '../../lib/hooks/useTheme';
+import { FONTS, SHADOWS } from '../../lib/theme-tokens';
 import { Button } from '../../lib/ui/Button';
 import { Command, CommandGroup, CommandItem } from '../../lib/ui/Command';
 import { Input } from '../../lib/ui/Input';
@@ -38,9 +40,7 @@ import { Sidebar, SidebarProvider } from '../../lib/ui/Sidebar';
 import { Slider } from '../../lib/ui/Slider';
 import { Switch } from '../../lib/ui/Switch';
 import { Toaster, type ToasterPosition, toast } from '../../lib/ui/Toast';
-import { useTheme } from '../../lib/hooks/useTheme';
 import { useAppTheme } from './hooks/useAppTheme';
-import { FONTS, SHADOWS } from '../../lib/theme-tokens';
 import { hexToRgb } from './theme-constants';
 
 import { DataSection } from './components/DataSection';
@@ -72,8 +72,19 @@ type Section =
   | 'utils';
 export default function App() {
   const {
-    isDark, accentColor, radius, headerFont, bodyFont,
-    bg, panel, surface, border, fg, muted, shadow, btnShadow, setIsDark,
+    isDark,
+    accentColor,
+    radius,
+    headerFont,
+    bodyFont,
+    bg,
+    panel,
+    surface,
+    border,
+    fg,
+    muted,
+    shadow,
+    btnShadow,
   } = useAppTheme();
   useTheme();
 
@@ -136,7 +147,9 @@ export default function App() {
     document.body.style.fontFamily = FONTS[bodyFont()];
   });
 
-  const [activeSection, setActiveSection] = makePersisted(createSignal<Section>('intro'), { name: 'sidebar:tab' });
+  const [activeSection, setActiveSection] = makePersisted(createSignal<Section>('intro'), {
+    name: 'sidebar:tab',
+  });
   const [commandOpen, setCommandOpen] = createSignal(false);
 
   // Toast settings
@@ -149,9 +162,6 @@ export default function App() {
   const [sheetOpen, setSheetOpen] = createSignal(false);
 
   onMount(() => {
-    // Reset sidebar to expanded state on each page load
-    localStorage.removeItem('sidebar:state');
-
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();

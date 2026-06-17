@@ -4,7 +4,7 @@ import { twMerge } from 'tailwind-merge';
 import { clickOutside } from '../directives';
 
 // Suppress unused warning for directive
-false && clickOutside;
+void clickOutside;
 
 // A Menubar works as a unified system where clicking one opens it, and hovering over others switches them.
 // For simplicity in a custom SolidJS impl, we treat each as an independent Dropdown that aligns horizontally.

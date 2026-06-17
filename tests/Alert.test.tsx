@@ -1,5 +1,5 @@
 import { render, screen } from '@solidjs/testing-library';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { Alert, AlertDescription, AlertTitle } from '../lib/ui/Alert';
 
 describe('Alert', () => {

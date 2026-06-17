@@ -28,8 +28,7 @@ const badgeVariants = cva(
  * Configuration and behavior properties for the Badge component.
  */
 export interface BadgeProps
-  extends JSX.HTMLAttributes<HTMLElement>,
-    VariantProps<typeof badgeVariants> {
+  extends JSX.HTMLAttributes<HTMLElement>, VariantProps<typeof badgeVariants> {
   /**
    * Polymorphic prop to change the underlying HTML element or component.
    * Allows using the badge styles on links ('a').

@@ -22,6 +22,7 @@ export default function ThemeControl() {
 ```
 
 ### Features
+
 - **System Sync:** Detects user OS preferences (e.g., `prefers-color-scheme`) on first load.
 - **Persistence:** Automatically saves the user preference to `localStorage`.
 - **DOM Integration:** Automatically toggles the `.dark` class on the `<html>` element and updates `color-scheme`.
@@ -47,9 +48,9 @@ function MyMenu() {
   return (
     <div class="relative">
       <Button onClick={() => setOpen(true)}>Open Menu</Button>
-      
+
       <Show when={open()}>
-        <div 
+        <div
           use:clickOutside={() => setOpen(false)}
           class="absolute top-full bg-panel shadow-md p-4"
         >
@@ -62,4 +63,5 @@ function MyMenu() {
 ```
 
 ### Integration Notes
+
 To use the directive, you must ensure it is imported in the file where it is used. It also includes global JSX type definitions for `use:clickOutside`.

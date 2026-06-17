@@ -7,24 +7,19 @@ import {
   type JSX,
   Show,
   createContext,
-  createEffect,
   createSignal,
-  mergeProps,
-  onCleanup,
   splitProps,
   useContext,
 } from 'solid-js';
-import { Dynamic, Portal } from 'solid-js/web';
+import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
-import { ScrollArea } from './ScrollArea';
 import { Separator } from './Separator';
 import { Sheet, SheetContent } from './Sheet';
 import { Skeleton } from './Skeleton';
-import { Tooltip, TooltipContent, TooltipTrigger } from './Tooltip';
+import { Tooltip } from './Tooltip';
 
 // --- Constants ---
 const SIDEBAR_COOKIE_NAME = 'sidebar:state';
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = '16rem';
 const SIDEBAR_WIDTH_MOBILE = '18rem';
 const SIDEBAR_WIDTH_ICON = '3rem';

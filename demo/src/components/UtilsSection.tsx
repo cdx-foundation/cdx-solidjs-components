@@ -6,12 +6,11 @@ import { Button } from '../../../lib/ui/Button';
 import { Code } from '../../../lib/ui/Code';
 import { Input } from '../../../lib/ui/Input';
 import { toast } from '../../../lib/ui/Toast';
-import { useAppTheme } from '../hooks/useAppTheme';
 
 // Directives registration
 const { autofocus, clipboard, hover } = directives;
 // @ts-ignore
-false && [autofocus, clipboard, hover];
+void [autofocus, clipboard, hover];
 
 export const UtilsSection = () => {
   // Local implementation of useClipboard for the demo

@@ -1,25 +1,44 @@
 import { join, resolve } from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'vite';
+import { defineConfig, lazyPlugins } from 'vite-plus';
 import solidPlugin from 'vite-plugin-solid';
 
-export default defineConfig(({ command, mode }) => {
-  const isDemo = process.env.BUILD_DEMO === 'true' || command === 'serve';
-
-  const commonConfig = {
-    base: process.env.VITE_BASE || '/',
-    resolve: {
-      alias: {
-        '@': resolve(__dirname, '.'),
-      },
+const sharedConfig: any = {
+  staged: {
+    '*': 'vp check --fix',
+  },
+  fmt: {
+    singleQuote: true,
+    semi: true,
+    printWidth: 100,
+  },
+  lint: {
+    jsPlugins: [{ name: 'vite-plus', specifier: 'vite-plus/oxlint-plugin' }],
+    rules: { 'vite-plus/prefer-vite-plus-imports': 'error' },
+    options: { typeAware: true, typeCheck: true },
+  },
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./vitest.setup.ts'],
+  },
+  resolve: {
+    conditions: ['development', 'browser'],
+    alias: {
+      '@': resolve(__dirname, '.'),
     },
-  };
+  },
+};
+
+export default defineConfig(({ command }) => {
+  const isDemo = process.env.BUILD_DEMO === 'true' || command === 'serve';
 
   if (isDemo) {
     return {
-      ...commonConfig,
+      ...sharedConfig,
+      base: process.env.VITE_BASE || '/',
       root: 'demo',
-      plugins: [tailwindcss(), solidPlugin()],
+      plugins: lazyPlugins(() => [tailwindcss(), solidPlugin()]),
       build: {
         outDir: '../dist-demo',
         emptyOutDir: true,
@@ -28,8 +47,9 @@ export default defineConfig(({ command, mode }) => {
   }
 
   return {
-    ...commonConfig,
-    plugins: [solidPlugin()],
+    ...sharedConfig,
+    base: process.env.VITE_BASE || '/',
+    plugins: lazyPlugins(() => [solidPlugin()]),
     build: {
       lib: {
         entry: {

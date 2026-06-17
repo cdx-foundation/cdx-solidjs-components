@@ -122,7 +122,7 @@ export const ResizablePanelGroup = (
       }}
     >
       <div
-        ref={groupRef}
+        ref={(el) => (groupRef = el)}
         class={twMerge(
           'flex h-full w-full',
           direction() === 'vertical' ? 'flex-col' : 'flex-row',

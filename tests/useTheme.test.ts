@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 import { FONTS, SHADOWS } from '../lib/theme-tokens';
 
 function hexToHsl(hex: string): [number, number, number] {
@@ -56,7 +56,7 @@ function toDark(hex: string): string {
   return hslToHex(h, s * 0.55, dl);
 }
 
-let useTheme: typeof import('../lib/hooks/useTheme')['useTheme'];
+let useTheme: (typeof import('../lib/hooks/useTheme'))['useTheme'];
 
 beforeEach(async () => {
   localStorage.clear();

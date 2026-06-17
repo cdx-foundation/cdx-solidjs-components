@@ -17,6 +17,7 @@ The `useTheme` hook manages the full application theme (dark mode, accent color,
 ### Scope
 
 Keep the same six theme dimensions:
+
 - `dark` — dark/light mode boolean
 - `accent` — primary accent color (hex)
 - `base` — named color palette (`zinc`, `slate`, `stone`, `pure`, etc.)
@@ -77,7 +78,11 @@ useTheme.getScript = (defaults?: Partial<Theme>): string;
 Each project inlines in `<head>`:
 
 ```html
-<script>{useTheme.getScript({ accent: '#2563eb', base: 'slate' })}</script>
+<script>
+  {
+    useTheme.getScript({ accent: '#2563eb', base: 'slate' });
+  }
+</script>
 ```
 
 ### Defaults cascade
@@ -100,13 +105,13 @@ Resolved Theme signal
 
 ### Behavior
 
-| Method | Effect |
-|---|---|
-| `setTheme({ accent: '#foo' })` | Merge overrides into current theme regardless of mode |
+| Method                                                        | Effect                                                |
+| ------------------------------------------------------------- | ----------------------------------------------------- |
+| `setTheme({ accent: '#foo' })`                                | Merge overrides into current theme regardless of mode |
 | `setTheme({ light: { accent: '#' }, dark: { accent: '#' } })` | Mode-aware: applies only the current mode's overrides |
-| `setLightTheme({ accent: '#foo' })` | Sugar for `setTheme({ light: { accent: '#foo' } })` |
-| `setDarkTheme({ base: 'oled' })` | Sugar for `setTheme({ dark: { base: 'oled' } })` |
-| `toggleTheme()` | Flips `dark` boolean, previously named `toggleDark` |
+| `setLightTheme({ accent: '#foo' })`                           | Sugar for `setTheme({ light: { accent: '#foo' } })`   |
+| `setDarkTheme({ base: 'oled' })`                              | Sugar for `setTheme({ dark: { base: 'oled' } })`      |
+| `toggleTheme()`                                               | Flips `dark` boolean, previously named `toggleDark`   |
 
 ### Backward compatibility
 

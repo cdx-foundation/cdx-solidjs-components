@@ -11,13 +11,12 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "./dist",
-    "baseUrl": ".",
-    "types": ["vite/client"],
+    "types": ["vite-plus/client", "vitest/globals", "@testing-library/jest-dom"],
     "ignoreDeprecations": "6.0",
     "paths": {
       "@/*": ["./*"]
     }
   },
-  "include": ["lib", "demo"],
+  "include": ["lib", "demo", "tests"],
   "exclude": ["node_modules", "dist", "dist-demo"]
 }

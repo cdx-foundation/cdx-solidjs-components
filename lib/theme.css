@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=JetBrains+Mono:wght@400..800&family=Archivo+Black&family=Bebas+Neue&family=Oxanium:wght@200..800&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=JetBrains+Mono:wght@400..800&family=Archivo+Black&family=Bebas+Neue&family=Oxanium:wght@200..800&display=swap');
 @plugin "tailwindcss-animate";
 @source "./ui/**/*.tsx";
 
@@ -18,9 +18,9 @@
   --color-positive: #10b981;
 
   /* Typography */
-  --font-display: var(--display-main, "Inter", system-ui, sans-serif);
-  --font-sans: var(--sans-main, "Inter", system-ui, sans-serif);
-  --font-mono: var(--mono-main, "JetBrains Mono", ui-monospace, monospace);
+  --font-display: var(--display-main, 'Inter', system-ui, sans-serif);
+  --font-sans: var(--sans-main, 'Inter', system-ui, sans-serif);
+  --font-mono: var(--mono-main, 'JetBrains Mono', ui-monospace, monospace);
 
   /* Radii */
   --radius-card: var(--radius-card, 0px);
@@ -89,7 +89,7 @@
     --radius-card: 0px;
     --radius-btn: 0px;
     --radius-input: 0px;
-    --font-display: "Bebas Neue", "Archivo Black", sans-serif;
+    --font-display: 'Bebas Neue', 'Archivo Black', sans-serif;
     --shadow-main: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 
     pointer-events: none; /* Default for HUD containers */

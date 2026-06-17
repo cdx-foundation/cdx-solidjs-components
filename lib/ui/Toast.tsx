@@ -69,7 +69,7 @@ export type ToasterPosition =
 const [toasterPosition, setToasterPosition] = createSignal<ToasterPosition>('bottom-right');
 
 // Global configuration for toast behavior, updated via Toaster component
-const [toastConfig, setToastConfig] = createSignal({
+const [toastConfig, _setToastConfig] = createSignal({
   duration: 4000,
   maxToasts: 5,
 });
@@ -306,7 +306,7 @@ export const Toaster = (props: ToasterProps & { class?: string }) => {
                 duration: 200,
                 easing: 'ease-out',
               });
-              a.finished.then(done);
+              void a.finished.then(done);
             }}
             onExit={(el, done) => {
               if (!el.animate) {
@@ -317,7 +317,7 @@ export const Toaster = (props: ToasterProps & { class?: string }) => {
                 duration: 200,
                 easing: 'ease-in',
               });
-              a.finished.then(done);
+              void a.finished.then(done);
             }}
           >
             <For each={toasts()}>

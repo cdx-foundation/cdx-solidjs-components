@@ -15,6 +15,7 @@ import { Button } from 'cdx-solidjs-components/ui/Button';
 ```
 
 ### Variants
+
 - `primary`: (Default) High-emphasis theme background.
 - `secondary`: Medium-emphasis with border.
 - `outline`: Low-emphasis with border and smaller text.
@@ -43,7 +44,7 @@ A multi-line text input for longer data.
 ```tsx
 import { Textarea } from 'cdx-solidjs-components/ui/Textarea';
 
-<Textarea label="Biography" placeholder="Tell us about yourself..." />
+<Textarea label="Biography" placeholder="Tell us about yourself..." />;
 ```
 
 ---
@@ -55,7 +56,7 @@ A boolean toggle for selecting one or more items.
 ```tsx
 import { Checkbox } from 'cdx-solidjs-components/ui/Checkbox';
 
-<Checkbox label="Accept terms and conditions" onCheckedChange={(v) => console.log(v)} />
+<Checkbox label="Accept terms and conditions" onCheckedChange={(v) => console.log(v)} />;
 ```
 
 ---
@@ -74,9 +75,9 @@ import { RadioGroup } from 'cdx-solidjs-components/ui/RadioGroup';
   onChange={setSelected}
   options={[
     { value: 'free', label: 'Free', description: 'Basic features' },
-    { value: 'pro', label: 'Pro', description: 'Advanced features' }
+    { value: 'pro', label: 'Pro', description: 'Advanced features' },
   ]}
-/>
+/>;
 ```
 
 ---
@@ -92,11 +93,11 @@ import { Select } from 'cdx-solidjs-components/ui/Select';
   label="Environment"
   options={[
     { label: 'Production', value: 'prod' },
-    { label: 'Staging', value: 'stage' }
+    { label: 'Staging', value: 'stage' },
   ]}
   value={env()}
   onChange={setEnv}
-/>
+/>;
 ```
 
 ---
@@ -108,7 +109,7 @@ A range input with a custom track and square thumb.
 ```tsx
 import { Slider } from 'cdx-solidjs-components/ui/Slider';
 
-<Slider label="Volume" min={0} max={100} value={vol()} onChange={setVol} />
+<Slider label="Volume" min={0} max={100} value={vol()} onChange={setVol} />;
 ```
 
 ---
@@ -120,7 +121,7 @@ A high-fidelity toggle control (On/Off).
 ```tsx
 import { Switch } from 'cdx-solidjs-components/ui/Switch';
 
-<Switch label="Auto-save" checked={enabled()} onCheckedChange={setEnabled} />
+<Switch label="Auto-save" checked={enabled()} onCheckedChange={setEnabled} />;
 ```
 
 ---
@@ -132,7 +133,7 @@ A color selection tool with curated presets and custom Hex input.
 ```tsx
 import { ColorPicker } from 'cdx-solidjs-components/ui/ColorPicker';
 
-<ColorPicker label="Accent Color" value={color()} onChange={setColor} />
+<ColorPicker label="Accent Color" value={color()} onChange={setColor} />;
 ```
 
 ---
@@ -144,7 +145,7 @@ A combination of Popover and Calendar for selecting specific dates.
 ```tsx
 import { DatePicker } from 'cdx-solidjs-components/ui/DatePicker';
 
-<DatePicker label="Start Date" value={date()} onChange={setDate} />
+<DatePicker label="Start Date" value={date()} onChange={setDate} />;
 ```
 
 ---
@@ -156,5 +157,5 @@ A semantic wrapper for form headings.
 ```tsx
 import { Label } from 'cdx-solidjs-components/ui/Label';
 
-<Label for="username">Username</Label>
+<Label for="username">Username</Label>;
 ```

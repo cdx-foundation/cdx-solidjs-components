@@ -15,6 +15,7 @@ import { Badge } from 'cdx-solidjs-components/ui/Badge';
 ```
 
 ### Variants
+
 - `default`: Subtle gray.
 - `primary`: High-visibility theme color.
 - `success`: Green (positive).
@@ -29,7 +30,14 @@ import { Badge } from 'cdx-solidjs-components/ui/Badge';
 A semantic and responsive system for displaying tabular data.
 
 ```tsx
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from 'cdx-solidjs-components/ui/Table';
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from 'cdx-solidjs-components/ui/Table';
 
 <Table>
   <TableHeader>
@@ -43,15 +51,19 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from 'c
     <TableRow>
       <TableCell class="font-mono text-xs">US-EAST-1</TableCell>
       <TableCell class="text-sm">99.9%</TableCell>
-      <TableCell class="text-right"><Badge variant="success">Healthy</Badge></TableCell>
+      <TableCell class="text-right">
+        <Badge variant="success">Healthy</Badge>
+      </TableCell>
     </TableRow>
     <TableRow>
       <TableCell class="font-mono text-xs">EU-WEST-1</TableCell>
       <TableCell class="text-sm">98.2%</TableCell>
-      <TableCell class="text-right"><Badge variant="warning">Degraded</Badge></TableCell>
+      <TableCell class="text-right">
+        <Badge variant="warning">Degraded</Badge>
+      </TableCell>
     </TableRow>
   </TableBody>
-</Table>
+</Table>;
 ```
 
 ---
@@ -66,7 +78,7 @@ import { Avatar, AvatarImage, AvatarFallback } from 'cdx-solidjs-components/ui/A
 <Avatar>
   <AvatarImage src="https://github.com/nutlope.png" alt="Yanis" />
   <AvatarFallback>YA</AvatarFallback>
-</Avatar>
+</Avatar>;
 ```
 
 ---
@@ -81,7 +93,7 @@ import { Kbd } from 'cdx-solidjs-components/ui/Kbd';
 <div class="flex gap-1">
   <Kbd>⌘</Kbd>
   <Kbd>K</Kbd>
-</div>
+</div>;
 ```
 
 ---
@@ -93,14 +105,19 @@ A grid-based date selection component supporting single, multiple, and range mod
 ```tsx
 import { Calendar } from 'cdx-solidjs-components/ui/Calendar';
 
-{/* Single Date */}
-<Calendar mode="single" selected={date()} onSelect={setDate} />
+{
+  /* Single Date */
+}
+<Calendar mode="single" selected={date()} onSelect={setDate} />;
 
-{/* Date Range */}
-<Calendar mode="range" selected={range()} onSelect={setRange} />
+{
+  /* Date Range */
+}
+<Calendar mode="range" selected={range()} onSelect={setRange} />;
 ```
 
 ### Props
+
 - `mode`: `"single" | "multiple" | "range"`.
 - `selected`: Current selection value.
 - `onSelect`: Change handler.

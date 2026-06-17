@@ -287,14 +287,6 @@ export const Calendar = (props: CalendarProps) => {
     }
   };
 
-  const handleTimeChange = (type: 'hours' | 'minutes', value: number) => {
-    if (!local.onChange) return;
-    const current = local.selected instanceof Date ? new Date(local.selected) : new Date();
-    if (type === 'hours') current.setHours(value);
-    else current.setMinutes(value);
-    local.onChange(current);
-  };
-
   const adjustTime = (type: 'hours' | 'minutes', delta: number) => {
     if (!local.onChange) return;
     const current = local.selected instanceof Date ? new Date(local.selected) : new Date();

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../lib/ui/Tabs';
 
 describe('Tabs', () => {

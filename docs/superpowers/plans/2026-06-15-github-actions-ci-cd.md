@@ -13,6 +13,7 @@
 ### Task 1: Add semantic-release devDependencies
 
 **Files:**
+
 - Modify: `package.json`
 
 - [ ] **Step 1: Install semantic-release and plugins**
@@ -35,6 +36,7 @@ git commit -m "chore: add semantic-release devDependencies"
 ### Task 2: Create `.releaserc.json`
 
 **Files:**
+
 - Create: `.releaserc.json`
 
 - [ ] **Step 1: Write `.releaserc.json`**
@@ -54,6 +56,7 @@ git commit -m "chore: add semantic-release devDependencies"
 ```
 
 Key config details:
+
 - `branches: ["master"]` — only release from the `master` branch (matches existing `deploy.yml` target)
 - `@semantic-release/changelog` generates/updates `CHANGELOG.md`
 - `@semantic-release/npm` publishes to the registry configured in `.npmrc` (GitHub Packages)
@@ -72,6 +75,7 @@ git commit -m "chore: add semantic-release config"
 ### Task 3: Create `.npmrc` for GitHub Packages
 
 **Files:**
+
 - Create: `.npmrc`
 
 - [ ] **Step 1: Write `.npmrc`**
@@ -82,6 +86,7 @@ git commit -m "chore: add semantic-release config"
 ```
 
 This tells npm/pnpm/bun to:
+
 - Resolve `@cdx-foundation/*` packages via GitHub Packages instead of public npm
 - Use the `NPM_TOKEN` environment variable (set in GitHub Actions as a secret) for authentication
 
@@ -99,6 +104,7 @@ git commit -m "chore: configure npm for GitHub Packages"
 ### Task 4: Create CI workflow
 
 **Files:**
+
 - Create: `.github/workflows/ci.yml`
 
 - [ ] **Step 1: Write `.github/workflows/ci.yml`**
@@ -144,6 +150,7 @@ jobs:
 ```
 
 Key details:
+
 - Runs on PRs to `master` and pushes to `master`
 - `concurrency` group cancels stale runs (new push to same PR/branch cancels the old run)
 - Uses `bun install --frozen-lockfile` for reproducible installs (matching existing `deploy.yml` pattern)
@@ -161,6 +168,7 @@ git commit -m "chore: add CI workflow"
 ### Task 5: Create Release workflow
 
 **Files:**
+
 - Create: `.github/workflows/release.yml`
 
 - [ ] **Step 1: Write `.github/workflows/release.yml`**
@@ -214,6 +222,7 @@ jobs:
 ```
 
 Key details:
+
 - Triggers on push to `master` only (not on PRs)
 - `permissions` block grants `contents: write`, `pull-requests: write`, `packages: write` — needed for semantic-release to create GitHub releases, push changelog commits, and publish packages
 - `fetch-depth: 0` is required for semantic-release to scan all commits for changelog
@@ -241,6 +250,7 @@ ls -la .releaserc.json .npmrc
 ```
 
 Expected:
+
 - `.github/workflows/ci.yml` exists
 - `.github/workflows/release.yml` exists
 - `.github/workflows/deploy.yml` exists (unchanged)

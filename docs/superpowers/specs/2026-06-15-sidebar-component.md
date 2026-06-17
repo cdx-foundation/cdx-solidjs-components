@@ -20,12 +20,12 @@ A composable, themeable, collapsible sidebar component for the CDX SolidJS libra
 
 Root context provider. MUST wrap all sidebar instances and the main content area.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `defaultOpen` | `boolean` | `true` | Initial open state (uncontrolled) |
-| `open` | `boolean` | — | Controlled open state |
-| `onOpenChange` | `(open: boolean) => void` | — | Callback when open state changes |
-| `style` | `JSX.CSSProperties` | — | CSS custom properties for width overrides |
+| Prop           | Type                      | Default | Description                               |
+| -------------- | ------------------------- | ------- | ----------------------------------------- |
+| `defaultOpen`  | `boolean`                 | `true`  | Initial open state (uncontrolled)         |
+| `open`         | `boolean`                 | —       | Controlled open state                     |
+| `onOpenChange` | `(open: boolean) => void` | —       | Callback when open state changes          |
+| `style`        | `JSX.CSSProperties`       | —       | CSS custom properties for width overrides |
 
 Provides context: `{ state, open, setOpen, openMobile, setOpenMobile, isMobile, toggle }`
 
@@ -35,14 +35,15 @@ On desktop: persists state via cookie. Keyboard shortcut Cmd+B toggles open.
 
 The sidebar `<aside>` element rendered either inline (desktop) or via Portal/Sheet (mobile).
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `side` | `'left' \| 'right'` | `'left'` | Which side the sidebar appears on |
-| `variant` | `'sidebar' \| 'floating' \| 'inset'` | `'sidebar'` | Layout variant |
-| `collapsible` | `'offcanvas' \| 'icon' \| 'none'` | `'icon'` | Collapsible behavior |
-| `class` | `string` | — | Additional classes |
+| Prop          | Type                                 | Default     | Description                       |
+| ------------- | ------------------------------------ | ----------- | --------------------------------- |
+| `side`        | `'left' \| 'right'`                  | `'left'`    | Which side the sidebar appears on |
+| `variant`     | `'sidebar' \| 'floating' \| 'inset'` | `'sidebar'` | Layout variant                    |
+| `collapsible` | `'offcanvas' \| 'icon' \| 'none'`    | `'icon'`    | Collapsible behavior              |
+| `class`       | `string`                             | —           | Additional classes                |
 
 **Desktop rendering:**
+
 - `sidebar` variant: uses `data-sidebar` attribute + CSS for margin-based layout
 - `floating` variant: positioned absolutely with shadow and border
 - `inset` variant: rendered inside `Sidebar.Inset` wrapper with border
@@ -99,12 +100,12 @@ Props: `class?: string`, `children: JSX.Element`
 
 The primary interactive element inside a `MenuItem`. Polymorphic — renders a `<button>` by default but uses `as` prop pattern (like `Button`'s `Dynamic`).
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `isActive` | `boolean` | `false` | Whether the item is currently active/selected |
-| `as` | `string` | `'button'` | Polymorphic component override |
-| `class` | `string` | — | Additional classes |
-| `tooltip` | `string` | — | Override tooltip text in icon mode (defaults to text content) |
+| Prop       | Type      | Default    | Description                                                   |
+| ---------- | --------- | ---------- | ------------------------------------------------------------- |
+| `isActive` | `boolean` | `false`    | Whether the item is currently active/selected                 |
+| `as`       | `string`  | `'button'` | Polymorphic component override                                |
+| `class`    | `string`  | —          | Additional classes                                            |
+| `tooltip`  | `string`  | —          | Override tooltip text in icon mode (defaults to text content) |
 
 In icon mode, the button's text content is hidden and a `Tooltip` is rendered instead.
 
@@ -165,11 +166,11 @@ Must be called inside a `Sidebar.Provider`.
 
 ### Width
 
-| Variable | Default |
-|---|---|
-| `--sidebar-width` | `16rem` |
+| Variable                 | Default |
+| ------------------------ | ------- |
+| `--sidebar-width`        | `16rem` |
 | `--sidebar-width-mobile` | `18rem` |
-| `--sidebar-width-icon` | `3rem` |
+| `--sidebar-width-icon`   | `3rem`  |
 
 ### Theme Colors (added to `theme.css`)
 

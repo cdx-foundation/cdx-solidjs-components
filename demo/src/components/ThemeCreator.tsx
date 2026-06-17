@@ -263,7 +263,7 @@ setr theme:dark:btnShadow "${btnShadow}"`;
       const label = exportTab() === 'css' ? 'CSS' : exportTab() === 'lua' ? 'Lua' : 'Theme object';
       toast.success(`${label} copied!`);
       setTimeout(() => setHasCopied(false), 2000);
-    } catch (err) {
+    } catch {
       toast.error('Failed to copy');
     }
   };

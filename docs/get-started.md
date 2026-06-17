@@ -28,8 +28,8 @@ Ensure you have the following dependencies installed in your project:
 Starling UI is built for Tailwind CSS v4. In your main CSS entry point, import the library's theme and components:
 
 ```css
-@import "tailwindcss";
-@import "cdx-solidjs-components/theme";
+@import 'tailwindcss';
+@import 'cdx-solidjs-components/theme';
 
 /* Optional: Source the components if you are using Tailwind's JIT scanner on the library */
 @source "../node_modules/cdx-solidjs-components/ui/**/*.tsx";

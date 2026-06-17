@@ -96,7 +96,7 @@ export const Textarea = (props: TextareaProps) => {
         </label>
       )}
       <textarea
-        ref={textareaRef}
+        ref={(el) => (textareaRef = el)}
         id={id}
         class={twMerge(
           'w-full min-h-[80px] border border-stroke bg-transparent rounded-input px-3 py-2.5 text-sm font-mono text-fg outline-none placeholder:text-muted/80 transition-colors duration-150 focus:border-fg resize-y',

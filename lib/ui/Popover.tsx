@@ -129,7 +129,7 @@ export const PopoverContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
       )}
       {...others}
     >
-      <div ref={containerRef}>{local.children}</div>
+      <div ref={(el) => (containerRef = el)}>{local.children}</div>
     </Floating.Content>
   );
 };

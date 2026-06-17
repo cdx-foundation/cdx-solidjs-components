@@ -8,7 +8,6 @@ import {
   splitProps,
   untrack,
 } from 'solid-js';
-import { twMerge } from 'tailwind-merge';
 
 /**
  * Configuration and properties for the Input component.

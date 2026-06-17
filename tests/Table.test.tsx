@@ -1,5 +1,5 @@
 import { render, screen } from '@solidjs/testing-library';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../lib/ui/Table';
 
 describe('Table', () => {

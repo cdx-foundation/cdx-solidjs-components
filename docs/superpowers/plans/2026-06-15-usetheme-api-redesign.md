@@ -50,6 +50,7 @@ export type ThemeConfig = {
 - [ ] **Step 2: Rename `DEFAULT_THEME` → `BUILTIN_DEFAULTS`, add `defaultsApplied` guard**
 
 Replace:
+
 ```ts
 const DEFAULT_THEME: Theme = {
   dark: prefersDark(),
@@ -62,6 +63,7 @@ const DEFAULT_THEME: Theme = {
 ```
 
 With (rename + keep same values):
+
 ```ts
 const BUILTIN_DEFAULTS: Theme = {
   dark: prefersDark(),
@@ -74,6 +76,7 @@ const BUILTIN_DEFAULTS: Theme = {
 ```
 
 Also update the `makePersisted` call on line 47:
+
 ```ts
 const [theme, setThemeRaw] = makePersisted(createSignal<Theme>(BUILTIN_DEFAULTS), {
   name: 'starling-theme',
@@ -81,6 +84,7 @@ const [theme, setThemeRaw] = makePersisted(createSignal<Theme>(BUILTIN_DEFAULTS)
 ```
 
 Add a module-level guard after `ensureThemeEffect()`:
+
 ```ts
 // ─── Track whether project defaults have been applied ────────────────────────
 
@@ -91,7 +95,7 @@ let defaultsApplied = false;
 
 Replace the entire `useTheme` function (lines 111-128):
 
-```ts
+````ts
 /**
  * Manages the full application theme via a single `Theme` object.
  * Call `setTheme` with your server response to apply it instantly.
@@ -157,13 +161,13 @@ export function useTheme(defaults?: Partial<Theme>): ThemeConfig {
     },
   };
 }
-```
+````
 
 - [ ] **Step 4: Update `useTheme.getScript` — add `defaults` parameter**
 
 Replace the entire `getScript` assignment (lines 142-166):
 
-```ts
+````ts
 /**
  * Returns an inline script string that synchronously applies the persisted
  * theme before the first paint, preventing FOUC.
@@ -203,16 +207,18 @@ useTheme.getScript = (defaults?: Partial<Theme>): string => `(function(){
   r.style.setProperty('--shadow-main',sv);
   r.style.setProperty('--shadow-btn',sv);
 })();`;
-```
+````
 
 Key changes from current: `d=DEFAULT_THEME=` becomes `d=Object.assign({},${JSON.stringify(BUILTIN_DEFAULTS)},${JSON.stringify(defaults || {})})` — the defaults are merged before localStorage is read.
 
 - [ ] **Step 5: Verify the file compiles**
 
 Run:
+
 ```bash
 npx tsc --noEmit lib/hooks/useTheme.ts
 ```
+
 Expected: no errors.
 
 ---
@@ -225,7 +231,7 @@ File: `docs/theming.md`
 
 Change the `useTheme` example block (lines 65-77) to match the new API:
 
-```markdown
+````markdown
 ### Via `useTheme` Hook
 
 Starling UI provides a built-in `useTheme` hook that manages the full application theme.
@@ -236,15 +242,13 @@ import { useTheme } from 'cdx-solidjs-components/hooks';
 function ThemeToggle() {
   const { isDark, toggleTheme } = useTheme();
 
-  return (
-    <Button onClick={toggleTheme}>
-      Switch to {isDark() ? 'Light' : 'Dark'} Mode
-    </Button>
-  );
+  return <Button onClick={toggleTheme}>Switch to {isDark() ? 'Light' : 'Dark'} Mode</Button>;
 }
 ```
+````
 
 For project-specific defaults:
+
 ```tsx
 import { useTheme } from 'cdx-solidjs-components/hooks';
 
@@ -252,7 +256,8 @@ const { accent, setLightTheme } = useTheme({ accent: '#6366f1', base: 'slate' })
 ```
 
 Other theme properties like primary color, radii, and fonts should be managed via CSS variables as shown in the [Global CSS](#via-global-css) section.
-```
+
+````
 
 - [ ] **Step 2: Update `docs/utilities.md`**
 
@@ -278,16 +283,18 @@ export default function ThemeControl() {
     </div>
   );
 }
-```
+````
 
 ### Features
+
 - **System Sync:** Detects user OS preferences (e.g., `prefers-color-scheme`) on first load.
 - **Persistence:** Automatically saves the user preference to `localStorage`.
 - **DOM Integration:** Automatically toggles the `.dark` class on the `<html>` element and updates `color-scheme`.
 - **Per-project defaults:** Pass a `Partial<Theme>` to `useTheme()` to set project-level base values.
 - **Mode-scoped overrides:** Use `setLightTheme()` and `setDarkTheme()` for mode-specific customization.
 - **Fine-grained reactivity:** Individual accessors (`accent()`, `base()`, `radius()`, `font()`, `shadow()`) for precise reactive dependencies.
-```
+
+````
 
 ---
 
@@ -305,14 +312,16 @@ const { isDark, toggleTheme } = useTheme();
 <Button onClick={toggleTheme}>
   Switch to {isDark() ? "Light" : "Dark"} Mode
 </Button>
-```
+````
 
 (The current code on lines 87-103 already uses `isDark` and `toggleTheme` from `useTheme()` — verify it matches and update if needed.)
 
 - [ ] **Step 2: Verify README is consistent**
 
 Run:
+
 ```bash
 grep -n "toggleDark\|setTheme\|\.dark\b" README.md
 ```
+
 Expected: no mentions of the old `toggleDark` name.

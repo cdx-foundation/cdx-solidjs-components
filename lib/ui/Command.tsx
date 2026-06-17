@@ -216,7 +216,7 @@ export const Command = (props: CommandProps) => {
               <div class="flex items-center border-b border-stroke px-4">
                 <Search class="mr-3 h-4 w-4 shrink-0 opacity-50" />
                 <input
-                  ref={inputRef}
+                  ref={(el) => (inputRef = el)}
                   class="flex h-14 w-full rounded-none bg-transparent py-4 text-base font-medium outline-none placeholder:text-muted disabled:cursor-not-allowed disabled:opacity-50"
                   placeholder={local.placeholder || 'Type a command or search...'}
                   value={search()}
@@ -331,7 +331,7 @@ export const CommandItem = (props: CommandItemProps) => {
   return (
     <Show when={isVisible()}>
       <div
-        ref={itemRef}
+        ref={(el) => (itemRef = el)}
         class={twMerge(
           'relative flex cursor-pointer select-none items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium outline-none transition-all duration-150',
           isActive()

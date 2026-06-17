@@ -5,7 +5,7 @@ import { twMerge } from 'tailwind-merge';
 import { clickOutside } from '../directives';
 
 // Suppress unused warning for directive
-false && clickOutside;
+void clickOutside;
 
 export const PRESET_COLORS = [
   { label: 'Crimson', value: '#c62828' },

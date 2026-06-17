@@ -56,7 +56,7 @@ export const Carousel = (props: CarouselProps) => {
   return (
     <div class={twMerge('relative group w-full', local.class)} {...others}>
       <div
-        ref={containerRef}
+        ref={(el) => (containerRef = el)}
         class="flex w-full gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide"
         style={{ 'scrollbar-width': 'none', '-ms-overflow-style': 'none' }}
       >

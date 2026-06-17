@@ -1,5 +1,4 @@
-import { Shield, Sparkles, Zap } from 'lucide-solid';
-import { Show, createSignal } from 'solid-js';
+import { createSignal } from 'solid-js';
 import { Button } from '../../../lib/ui/Button';
 import { Input } from '../../../lib/ui/Input';
 import { Label } from '../../../lib/ui/Label';
@@ -10,19 +9,14 @@ import { Switch } from '../../../lib/ui/Switch';
 import { Textarea } from '../../../lib/ui/Textarea';
 import { Preview } from './Preview';
 
-interface FormsSectionProps {
-  currentTheme: string;
-  onThemeChange: (theme: any) => void;
-  themes: any[];
-}
-
-export const FormsSection = (props: FormsSectionProps) => {
+export const FormsSection = () => {
   const [sliderVal, setSliderVal] = createSignal(65);
   const [selectVal, setSelectVal] = createSignal<string | number>('prod');
   const [numVal, setNumVal] = createSignal(10);
   const [textareaAutoResize, setTextareaAutoResize] = createSignal(true);
   const [inputPreventRegex, setInputPreventRegex] = createSignal(true);
   const [inputHideButtons, setInputHideButtons] = createSignal(false);
+  const [segVal, setSegVal] = createSignal('overview');
 
   return (
     <section class="space-y-12">
@@ -49,12 +43,15 @@ export const FormsSection = (props: FormsSectionProps) => {
       <Preview
         title="Segmented Control"
         description="A pill-styled toggle group for compact value switching."
-        code={`import { SegmentedControl } from 'cdx-solidjs-components/ui/SegmentedControl';\nimport { Shield, Zap, Sparkles } from 'lucide-solid';\n\nconst options = [\n  { value: 'pro', label: 'Pro', icon: Shield },\n  { value: 'brutal', label: 'Brutal', icon: Zap },\n  { value: 'midnight', label: 'Midnight', icon: Sparkles }\n];\n\n<SegmentedControl \n  value={val()} \n  onChange={setVal}\n  options={options} \n/>`}
+        code={`import { SegmentedControl } from 'cdx-solidjs-components/ui/SegmentedControl';\n\nconst options = [\n  { value: 'overview', label: 'Overview' },\n  { value: 'details', label: 'Details' },\n];\n\n<SegmentedControl \n  value={val()} \n  onChange={setVal}\n  options={options} \n/>`}
       >
         <SegmentedControl
-          value={props.currentTheme}
-          onChange={props.onThemeChange}
-          options={props.themes}
+          value={segVal()}
+          onChange={setSegVal}
+          options={[
+            { value: 'overview', label: 'Overview' },
+            { value: 'details', label: 'Details' },
+          ]}
         />
       </Preview>
 

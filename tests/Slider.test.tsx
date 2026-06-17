@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { Slider } from '../lib/ui/Slider';
 
 describe('Slider', () => {
@@ -11,7 +11,7 @@ describe('Slider', () => {
 
   it('calls onChange on input', () => {
     const onChange = vi.fn();
-    render(() => <Slider onChange={onChange} />);
+    render(() => <Slider value={50} onChange={onChange} />);
     const slider = screen.getByRole('slider');
 
     fireEvent.input(slider, { target: { value: '75' } });

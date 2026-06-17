@@ -7,7 +7,13 @@ Floating UI elements that appear over the main content, such as modals, tooltips
 A composable dialog window for focused interactions.
 
 ```tsx
-import { Modal, ModalHeader, ModalTitle, ModalDescription, ModalFooter } from 'cdx-solidjs-components/ui/Modal';
+import {
+  Modal,
+  ModalHeader,
+  ModalTitle,
+  ModalDescription,
+  ModalFooter,
+} from 'cdx-solidjs-components/ui/Modal';
 import { Button } from 'cdx-solidjs-components/ui/Button';
 
 <Modal isOpen={open()} onClose={() => setOpen(false)}>
@@ -17,10 +23,12 @@ import { Button } from 'cdx-solidjs-components/ui/Button';
   </ModalHeader>
   <p class="py-4 text-sm">Are you sure you want to delete this resource?</p>
   <ModalFooter>
-    <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+    <Button variant="outline" onClick={() => setOpen(false)}>
+      Cancel
+    </Button>
     <Button variant="destructive">Confirm Delete</Button>
   </ModalFooter>
-</Modal>
+</Modal>;
 ```
 
 ---
@@ -30,7 +38,14 @@ import { Button } from 'cdx-solidjs-components/ui/Button';
 A panel that slides in from the edge of the viewport.
 
 ```tsx
-import { Sheet, SheetHeader, SheetTitle, SheetDescription, SheetContent, SheetFooter } from 'cdx-solidjs-components/ui/Sheet';
+import {
+  Sheet,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetContent,
+  SheetFooter,
+} from 'cdx-solidjs-components/ui/Sheet';
 import { Button } from 'cdx-solidjs-components/ui/Button';
 
 <Sheet isOpen={open()} onClose={() => setOpen(false)} side="right">
@@ -39,15 +54,15 @@ import { Button } from 'cdx-solidjs-components/ui/Button';
     <SheetDescription>Update your workspace preferences.</SheetDescription>
   </SheetHeader>
   <SheetContent>
-     <div class="space-y-4">
-       {/* Settings form components */}
-     </div>
+    <div class="space-y-4">{/* Settings form components */}</div>
   </SheetContent>
   <SheetFooter>
-     <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-     <Button onClick={() => setOpen(false)}>Save Changes</Button>
+    <Button variant="outline" onClick={() => setOpen(false)}>
+      Cancel
+    </Button>
+    <Button onClick={() => setOpen(false)}>Save Changes</Button>
   </SheetFooter>
-</Sheet>
+</Sheet>;
 ```
 
 ---
@@ -60,15 +75,12 @@ A floating container for rich content, triggered by a click.
 import { Popover } from 'cdx-solidjs-components/ui/Popover';
 import { Button } from 'cdx-solidjs-components/ui/Button';
 
-<Popover
-  trigger={<Button variant="outline">Open Menu</Button>}
-  align="center"
->
+<Popover trigger={<Button variant="outline">Open Menu</Button>} align="center">
   <div class="p-4 w-64">
     <h4 class="font-bold mb-1">Detailed Info</h4>
     <p class="text-xs text-muted">Additional context that doesn't fit in a tooltip.</p>
   </div>
-</Popover>
+</Popover>;
 ```
 
 ---
@@ -85,7 +97,7 @@ import { Button } from 'cdx-solidjs-components/ui/Button';
   trigger={<Button variant="outline">Hover Me</Button>}
   content="Learn more about our pricing plans."
   align="top"
-/>
+/>;
 ```
 
 ---
@@ -98,7 +110,13 @@ A non-interactive preview that appears on hover with a slight delay.
 import { HoverCard } from 'cdx-solidjs-components/ui/HoverCard';
 import { Avatar, AvatarFallback } from 'cdx-solidjs-components/ui/Avatar';
 
-<HoverCard trigger={<a href="/user" class="underline">@yanis</a>}>
+<HoverCard
+  trigger={
+    <a href="/user" class="underline">
+      @yanis
+    </a>
+  }
+>
   <div class="flex gap-4 p-2">
     <Avatar>
       <AvatarFallback>YA</AvatarFallback>
@@ -108,7 +126,7 @@ import { Avatar, AvatarFallback } from 'cdx-solidjs-components/ui/Avatar';
       <p class="text-xs text-muted">Core Developer at Starling City.</p>
     </div>
   </div>
-</HoverCard>
+</HoverCard>;
 ```
 
 ---
@@ -133,7 +151,7 @@ import { ContextMenu } from 'cdx-solidjs-components/ui/ContextMenu';
   <div class="h-40 border border-dashed border-stroke rounded-xl flex items-center justify-center text-muted">
     Right click this area
   </div>
-</ContextMenu>
+</ContextMenu>;
 ```
 
 ---
@@ -143,15 +161,21 @@ import { ContextMenu } from 'cdx-solidjs-components/ui/ContextMenu';
 A standard menu for actions or selection.
 
 ```tsx
-import { DropdownMenu, DropdownMenuItem, DropdownMenuSeparator } from 'cdx-solidjs-components/ui/DropdownMenu';
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from 'cdx-solidjs-components/ui/DropdownMenu';
 import { Button } from 'cdx-solidjs-components/ui/Button';
 
 <DropdownMenu trigger={<Button>Actions</Button>}>
   <DropdownMenuItem onClick={onEdit}>Edit</DropdownMenuItem>
   <DropdownMenuItem onClick={onDuplicate}>Duplicate</DropdownMenuItem>
   <DropdownMenuSeparator />
-  <DropdownMenuItem variant="destructive" onClick={onDelete}>Delete</DropdownMenuItem>
-</DropdownMenu>
+  <DropdownMenuItem variant="destructive" onClick={onDelete}>
+    Delete
+  </DropdownMenuItem>
+</DropdownMenu>;
 ```
 
 ---
@@ -163,19 +187,22 @@ A high-performance command palette with fuzzy filtering and keyboard navigation.
 ```tsx
 import { Command, CommandGroup, CommandItem } from 'cdx-solidjs-components/ui/Command';
 
-<Command 
-  isOpen={open()} 
-  onClose={() => setOpen(false)} 
-  placeholder="Search actions..."
->
+<Command isOpen={open()} onClose={() => setOpen(false)} placeholder="Search actions...">
   <CommandGroup heading="General">
-    <CommandItem value="settings" onSelect={goToSettings}>Settings</CommandItem>
-    <CommandItem value="profile" onSelect={goToProfile}>Profile</CommandItem>
+    <CommandItem value="settings" onSelect={goToSettings}>
+      Settings
+    </CommandItem>
+    <CommandItem value="profile" onSelect={goToProfile}>
+      Profile
+    </CommandItem>
   </CommandGroup>
   <CommandGroup heading="System">
-    <CommandItem value="restart" onSelect={restartServer}>Restart Server</CommandItem>
-    <CommandItem value="logout" class="text-red-500">Logout</CommandItem>
+    <CommandItem value="restart" onSelect={restartServer}>
+      Restart Server
+    </CommandItem>
+    <CommandItem value="logout" class="text-red-500">
+      Logout
+    </CommandItem>
   </CommandGroup>
-</Command>
+</Command>;
 ```
-

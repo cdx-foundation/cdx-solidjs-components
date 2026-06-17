@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@solidjs/testing-library';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vite-plus/test';
 import { Label } from '../lib/ui/Label';
 import { RadioGroup, RadioGroupItem } from '../lib/ui/RadioGroup';
 

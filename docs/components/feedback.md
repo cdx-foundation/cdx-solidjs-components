@@ -12,10 +12,11 @@ import { Alert, AlertTitle, AlertDescription } from 'cdx-solidjs-components/ui/A
 <Alert variant="warning">
   <AlertTitle>Low Disk Space</AlertTitle>
   <AlertDescription>Your server has less than 10% disk space remaining.</AlertDescription>
-</Alert>
+</Alert>;
 ```
 
 ### Variants
+
 - `info`: (Default) Blue.
 - `warning`: Amber.
 - `error` / `destructive`: Red.
@@ -30,7 +31,7 @@ A visual indicator of task completion.
 ```tsx
 import { Progress } from 'cdx-solidjs-components/ui/Progress';
 
-<Progress value={45} max={100} />
+<Progress value={45} max={100} />;
 ```
 
 ---
@@ -48,7 +49,7 @@ import { Skeleton } from 'cdx-solidjs-components/ui/Skeleton';
     <Skeleton class="h-4 w-[250px]" />
     <Skeleton class="h-4 w-[200px]" />
   </div>
-</div>
+</div>;
 ```
 
 ---
@@ -76,6 +77,7 @@ const notify = () => {
 ```
 
 ### Options
+
 - `title`: Primary message heading.
 - `description`: (Optional) Smaller monospace detail.
 - `type`: `"default" | "success" | "error"`.

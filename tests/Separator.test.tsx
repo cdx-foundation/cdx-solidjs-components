@@ -1,5 +1,5 @@
 import { render } from '@solidjs/testing-library';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vite-plus/test';
 import { Separator } from '../lib/ui/Separator';
 
 describe('Separator', () => {

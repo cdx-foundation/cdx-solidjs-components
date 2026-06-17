@@ -13,6 +13,7 @@
 ### Task 1: Add sidebar CSS variables to theme.css
 
 **Files:**
+
 - Modify: `lib/theme.css`
 
 - [ ] **Step 1: Add sidebar theme tokens**
@@ -39,6 +40,7 @@ These are set via CSS custom properties at runtime on the Provider, not as theme
 ```bash
 grep -n "sidebar" lib/theme.css
 ```
+
 Expected: 8 color variable lines visible.
 
 ---
@@ -46,6 +48,7 @@ Expected: 8 color variable lines visible.
 ### Task 2: Create Sidebar.tsx — Constants and Context
 
 **Files:**
+
 - Create: `lib/ui/Sidebar.tsx`
 
 - [ ] **Step 1: Write imports and constants**
@@ -127,7 +130,13 @@ interface SidebarProviderProps {
 }
 
 export const SidebarProvider = (props: SidebarProviderProps) => {
-  const [local, others] = splitProps(props, ['defaultOpen', 'open', 'onOpenChange', 'style', 'children']);
+  const [local, others] = splitProps(props, [
+    'defaultOpen',
+    'open',
+    'onOpenChange',
+    'style',
+    'children',
+  ]);
 
   const isMobile = createMediaQuery('(max-width: 768px)');
 
@@ -140,7 +149,7 @@ export const SidebarProvider = (props: SidebarProviderProps) => {
   const [openMobile, setOpenMobile] = createSignal(false);
 
   // Controlled vs uncontrolled
-  const open = () => local.open !== undefined ? local.open : internalOpen();
+  const open = () => (local.open !== undefined ? local.open : internalOpen());
   const setOpen = (value: boolean) => {
     if (local.open !== undefined) {
       local.onOpenChange?.(value);
@@ -162,13 +171,24 @@ export const SidebarProvider = (props: SidebarProviderProps) => {
 
   // Keyboard shortcut
   createShortcut([SIDEBAR_KEYBOARD_SHORTCUT], (e) => {
-    if ((e.metaKey || e.ctrlKey) && !(e.target as HTMLElement).closest('input, textarea, [contenteditable]')) {
+    if (
+      (e.metaKey || e.ctrlKey) &&
+      !(e.target as HTMLElement).closest('input, textarea, [contenteditable]')
+    ) {
       e.preventDefault();
       toggle();
     }
   });
 
-  const value: SidebarContextValue = { state, open, setOpen, openMobile, setOpenMobile, isMobile, toggle };
+  const value: SidebarContextValue = {
+    state,
+    open,
+    setOpen,
+    openMobile,
+    setOpenMobile,
+    isMobile,
+    toggle,
+  };
 
   return (
     <SidebarContext.Provider value={value}>
@@ -198,6 +218,7 @@ Expected: No type errors.
 ### Task 3: Sidebar Root component
 
 **Files:**
+
 - Modify: `lib/ui/Sidebar.tsx`
 
 - [ ] **Step 1: Write SidebarRoot props interface and component**
@@ -212,7 +233,11 @@ interface SidebarProps extends JSX.HTMLAttributes<HTMLDivElement> {
 export const SidebarRoot = (props: SidebarProps) => {
   const context = useSidebar();
   const [local, others] = splitProps(props, [
-    'side', 'variant', 'collapsible', 'class', 'children',
+    'side',
+    'variant',
+    'collapsible',
+    'class',
+    'children',
   ]);
 
   const side = () => local.side ?? 'left';
@@ -255,7 +280,11 @@ interface MobileSidebarProps {
 const MobileSidebar = (props: MobileSidebarProps) => {
   const context = useSidebar();
   return (
-    <Sheet isOpen={context.openMobile()} onClose={() => context.setOpenMobile(false)} side={props.side}>
+    <Sheet
+      isOpen={context.openMobile()}
+      onClose={() => context.setOpenMobile(false)}
+      side={props.side}
+    >
       <SheetContent>
         <div
           class="flex h-full flex-col bg-sidebar text-sidebar-fg"
@@ -269,7 +298,7 @@ const MobileSidebar = (props: MobileSidebarProps) => {
 };
 ```
 
-*Note: We use Sheet's built-in scroll rather than nesting ScrollArea.*
+_Note: We use Sheet's built-in scroll rather than nesting ScrollArea._
 
 - [ ] **Step 3: Write DesktopSidebar internal component**
 
@@ -283,7 +312,13 @@ interface DesktopSidebarProps extends JSX.HTMLAttributes<HTMLDivElement> {
 
 const DesktopSidebar = (props: DesktopSidebarProps) => {
   const context = useSidebar();
-  const [local, others] = splitProps(props, ['side', 'variant', 'collapsible', 'class', 'children']);
+  const [local, others] = splitProps(props, [
+    'side',
+    'variant',
+    'collapsible',
+    'class',
+    'children',
+  ]);
 
   const state = context.state;
   const open = context.open;
@@ -331,6 +366,7 @@ Expected: No type errors.
 ### Task 4: Sidebar structure components — Header, Footer, Content, Inset, Separator
 
 **Files:**
+
 - Modify: `lib/ui/Sidebar.tsx`
 
 - [ ] **Step 1: Write SidebarHeader**
@@ -437,6 +473,7 @@ Expected: No type errors.
 ### Task 5: Sidebar Group components
 
 **Files:**
+
 - Modify: `lib/ui/Sidebar.tsx`
 
 - [ ] **Step 1: Write SidebarGroup context (for label/content pattern)**
@@ -487,11 +524,7 @@ export const SidebarGroupLabel = (props: JSX.HTMLAttributes<HTMLDivElement>) => 
 export const SidebarGroupContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
   const [local, others] = splitProps(props, ['class', 'children']);
   return (
-    <div
-      data-sidebar="group-content"
-      class={twMerge('w-full text-sm', local.class)}
-      {...others}
-    >
+    <div data-sidebar="group-content" class={twMerge('w-full text-sm', local.class)} {...others}>
       {local.children}
     </div>
   );
@@ -525,6 +558,7 @@ Expected: No type errors.
 ### Task 6: Sidebar Menu components — Menu, MenuItem, MenuButton, MenuAction, MenuBadge, MenuSkeleton
 
 **Files:**
+
 - Modify: `lib/ui/Sidebar.tsx`
 
 - [ ] **Step 1: Write Menu, MenuItem**
@@ -560,6 +594,7 @@ export const SidebarMenuItem = (props: JSX.HTMLAttributes<HTMLLIElement>) => {
 - [ ] **Step 2: Write MenuButton**
 
 MenuButton is the most complex menu component. It supports:
+
 - `isActive` prop for active state styling
 - Polymorphic rendering via `as` prop
 - Tooltip in icon mode
@@ -574,9 +609,7 @@ interface SidebarMenuButtonProps extends JSX.HTMLAttributes<HTMLButtonElement> {
 
 export const SidebarMenuButton = (props: SidebarMenuButtonProps) => {
   const context = useSidebar();
-  const [local, others] = splitProps(props, [
-    'isActive', 'as', 'tooltip', 'class', 'children',
-  ]);
+  const [local, others] = splitProps(props, ['isActive', 'as', 'tooltip', 'class', 'children']);
 
   const button = () => (
     <Dynamic
@@ -694,6 +727,7 @@ Expected: No type errors.
 ### Task 7: Sidebar SubMenu and sub-components
 
 **Files:**
+
 - Modify: `lib/ui/Sidebar.tsx`
 
 - [ ] **Step 1: Write MenuSub, MenuSubItem, MenuSubButton**
@@ -769,6 +803,7 @@ Expected: No type errors.
 ### Task 8: Sidebar Trigger and Rail
 
 **Files:**
+
 - Modify: `lib/ui/Sidebar.tsx`
 
 - [ ] **Step 1: Write SidebarTrigger**
@@ -853,6 +888,7 @@ Expected: No type errors.
 ### Task 9: Wire up compound exports and register in index.ts
 
 **Files:**
+
 - Modify: `lib/ui/Sidebar.tsx`
 - Modify: `lib/index.ts`
 
@@ -903,17 +939,20 @@ So the namespace is `Sidebar` with `.Provider`, `.Root`, `.Header`, etc.
 In our SolidJS pattern, looking at Breadcrumb, the exports are individual functions that can also be used as `Sidebar.Provider` etc.
 
 Let me use the following approach:
+
 - Export `SidebarProvider` as the Provider
 - Create a `Sidebar` namespace object that has all components as properties
 - Export the main `Sidebar` as the compound namespace
 
 Actually, looking at the pattern more carefully, shadcn-svelte does:
+
 ```js
-import * as Sidebar from "$lib/components/ui/sidebar/index.js";
+import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 // Use: <Sidebar.Provider>, <Sidebar.Root>, etc.
 ```
 
 And in this codebase, the same pattern is possible with `import * as Sidebar from './ui/Sidebar'`. But the typical direct import would be:
+
 ```tsx
 import { SidebarProvider, SidebarRoot, SidebarHeader } from './ui/Sidebar';
 ```
@@ -972,27 +1011,27 @@ Expected: No type errors.
 
 Review the spec doc `docs/superpowers/specs/2026-06-15-sidebar-component.md` against the plan:
 
-| Spec requirement | Covered by |
-|---|---|
-| Sidebar.Provider | Task 2 |
-| Sidebar.Root | Task 3 |
-| Sidebar.Header | Task 4 |
-| Sidebar.Footer | Task 4 |
-| Sidebar.Content | Task 4 |
-| Sidebar.Group / GroupLabel / GroupContent / GroupAction | Task 5 |
-| Sidebar.Menu / MenuItem | Task 6 |
-| Sidebar.MenuButton | Task 6 |
-| Sidebar.MenuAction | Task 6 |
-| Sidebar.MenuBadge | Task 6 |
-| Sidebar.MenuSkeleton | Task 6 |
-| Sidebar.MenuSub / MenuSubItem / MenuSubButton | Task 7 |
-| Sidebar.Separator | Task 4 |
-| Sidebar.Trigger | Task 8 |
-| Sidebar.Rail | Task 8 |
-| Sidebar.Inset | Task 4 |
-| useSidebar hook | Task 2 |
-| CSS variables in theme.css | Task 1 |
-| Index export | Task 9 |
+| Spec requirement                                        | Covered by |
+| ------------------------------------------------------- | ---------- |
+| Sidebar.Provider                                        | Task 2     |
+| Sidebar.Root                                            | Task 3     |
+| Sidebar.Header                                          | Task 4     |
+| Sidebar.Footer                                          | Task 4     |
+| Sidebar.Content                                         | Task 4     |
+| Sidebar.Group / GroupLabel / GroupContent / GroupAction | Task 5     |
+| Sidebar.Menu / MenuItem                                 | Task 6     |
+| Sidebar.MenuButton                                      | Task 6     |
+| Sidebar.MenuAction                                      | Task 6     |
+| Sidebar.MenuBadge                                       | Task 6     |
+| Sidebar.MenuSkeleton                                    | Task 6     |
+| Sidebar.MenuSub / MenuSubItem / MenuSubButton           | Task 7     |
+| Sidebar.Separator                                       | Task 4     |
+| Sidebar.Trigger                                         | Task 8     |
+| Sidebar.Rail                                            | Task 8     |
+| Sidebar.Inset                                           | Task 4     |
+| useSidebar hook                                         | Task 2     |
+| CSS variables in theme.css                              | Task 1     |
+| Index export                                            | Task 9     |
 
 All spec requirements covered.
 
@@ -1003,6 +1042,7 @@ Check: No TBD, TODO, or placeholder patterns. All props interfaces, method signa
 - [ ] **Step 3: Check composability with existing Collapsible**
 
 The spec says submenus and collapsible groups compose with `Collapsible.Root`. This is enabled by:
+
 - `SidebarGroupLabel` accepting arbitrary children (including `Collapsible.Trigger`)
 - `SidebarGroupContent` accepting arbitrary children (including `Collapsible.Content`)
 - `SidebarMenuItem` wrapping a `Collapsible.Root` > `Collapsible.Trigger` > `SidebarMenuButton` pattern with `SidebarMenuSub` inside `Collapsible.Content`

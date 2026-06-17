@@ -14,6 +14,7 @@ Set up GitHub Actions workflows to run CI checks on PRs and automatically publis
 Triggers: `pull_request` and `push` to `main`.
 
 Steps:
+
 1. **Checkout** — `actions/checkout@v4`
 2. **Setup Bun** — `oven-sh/setup-bun@v2`
 3. **Install** — `bun install --frozen-lockfile`
@@ -27,6 +28,7 @@ Steps:
 Triggers: `push` to `main`.
 
 Steps:
+
 1. Same checkout + setup + install as CI
 2. Run full CI checks (lint, typecheck, test, build)
 3. **semantic-release** — analyzes commits, bumps version, creates release, publishes
@@ -36,6 +38,7 @@ Steps:
 ### `.releaserc.json`
 
 Plugins:
+
 - `@semantic-release/commit-analyzer` — parses conventional commits
 - `@semantic-release/release-notes-generator` — generates changelog
 - `@semantic-release/npm` — publishes to GitHub Packages
@@ -54,10 +57,10 @@ Publish target: `@semantic-release/npm` configured with `.npmrc` pointing to Git
 
 The release workflow uses two tokens:
 
-| Token | Scope | Purpose |
-|-------|-------|---------|
-| `GITHUB_TOKEN` (built-in) | `contents: write`, `pull-requests: write` | Create GitHub release, push version commits |
-| `NPM_TOKEN` (secret) | `packages: write` (on the GITHUB_TOKEN, or a PAT with `packages:write` + `repo`) | Publish to GitHub Packages (`npm.pkg.github.com`) |
+| Token                     | Scope                                                                            | Purpose                                           |
+| ------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `GITHUB_TOKEN` (built-in) | `contents: write`, `pull-requests: write`                                        | Create GitHub release, push version commits       |
+| `NPM_TOKEN` (secret)      | `packages: write` (on the GITHUB_TOKEN, or a PAT with `packages:write` + `repo`) | Publish to GitHub Packages (`npm.pkg.github.com`) |
 
 `NPM_TOKEN` can be set to `${{ secrets.GITHUB_TOKEN }}` if the default token has sufficient permission for GitHub Packages in this repo. Otherwise, create a PAT with `packages:write` scope and store it as a repository secret.
 

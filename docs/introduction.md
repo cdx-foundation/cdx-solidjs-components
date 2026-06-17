@@ -7,12 +7,15 @@ Starling UI is designed for developers building complex, technical interfaces wh
 ## Philosophy
 
 ### Technical & Data-Driven
+
 We believe that professional tools should look like professional tools. Starling UI defaults to monospace fonts for data values, uses squircular or square radii, and prioritizes information density over white space.
 
 ### Built for SolidJS
+
 Every component is authored in SolidJS, leveraging its fine-grained reactivity for zero-overhead updates. We don't use virtual DOMs or heavy runtimes, ensuring your UI remains responsive even under heavy data loads.
 
 ### Tailwind v4 First
+
 Starling UI is built on top of the latest Tailwind CSS v4 engine. We use CSS variables for theming and design tokens, making customization as simple as updating a few variables in your CSS or `tailwind.config.js`.
 
 ## Key Features

@@ -26,8 +26,8 @@ bun add cdx-solidjs-components
 To ensure styles are computed correctly, import the library in your main CSS file. This automatically configures Tailwind to scan the library's components for utility classes and provides default design tokens.
 
 ```css
-@import "tailwindcss";
-@import "cdx-solidjs-components";
+@import 'tailwindcss';
+@import 'cdx-solidjs-components';
 ```
 
 ## Component List
@@ -79,9 +79,9 @@ The library includes 41 high-fidelity components:
 ## Usage Example
 
 ```tsx
-import { createSignal } from "solid-js";
-import { Button, Modal } from "cdx-solidjs-components";
-import { useTheme } from "cdx-solidjs-components/hooks";
+import { createSignal } from 'solid-js';
+import { Button, Modal } from 'cdx-solidjs-components';
+import { useTheme } from 'cdx-solidjs-components/hooks';
 
 export const MyComponent = () => {
   const [isOpen, setIsOpen] = createSignal(false);
@@ -91,16 +91,10 @@ export const MyComponent = () => {
     <div class="p-8">
       <Button onClick={() => setIsOpen(true)}>Open Modal</Button>
 
-      <Modal
-        isOpen={isOpen()}
-        onClose={() => setIsOpen(false)}
-        title="Settings"
-      >
+      <Modal isOpen={isOpen()} onClose={() => setIsOpen(false)} title="Settings">
         <div class="p-4 space-y-4">
           <p>Configure your application preferences here.</p>
-          <Button onClick={toggleTheme}>
-            Switch to {isDark() ? "Light" : "Dark"} Mode
-          </Button>
+          <Button onClick={toggleTheme}>Switch to {isDark() ? 'Light' : 'Dark'} Mode</Button>
         </div>
       </Modal>
     </div>

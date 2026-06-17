@@ -7,20 +7,32 @@ Components for building complex site navigation, pagination, and multi-layered m
 A high-level site navigation component with hover-activated dropdown panels.
 
 ```tsx
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink } from 'cdx-solidjs-components/ui/NavigationMenu';
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+} from 'cdx-solidjs-components/ui/NavigationMenu';
 
 <NavigationMenu>
   <NavigationMenuItem trigger="Documentation">
     <div class="p-6 w-[400px] grid grid-cols-2 gap-4">
       <div class="col-span-1 space-y-2">
-         <h4 class="font-bold text-sm">Getting Started</h4>
-         <NavigationMenuLink href="/docs/intro" class="text-xs">Introduction</NavigationMenuLink>
-         <NavigationMenuLink href="/docs/install" class="text-xs">Installation</NavigationMenuLink>
+        <h4 class="font-bold text-sm">Getting Started</h4>
+        <NavigationMenuLink href="/docs/intro" class="text-xs">
+          Introduction
+        </NavigationMenuLink>
+        <NavigationMenuLink href="/docs/install" class="text-xs">
+          Installation
+        </NavigationMenuLink>
       </div>
       <div class="col-span-1 space-y-2">
-         <h4 class="font-bold text-sm">Components</h4>
-         <NavigationMenuLink href="/docs/buttons" class="text-xs">Buttons</NavigationMenuLink>
-         <NavigationMenuLink href="/docs/forms" class="text-xs">Forms</NavigationMenuLink>
+        <h4 class="font-bold text-sm">Components</h4>
+        <NavigationMenuLink href="/docs/buttons" class="text-xs">
+          Buttons
+        </NavigationMenuLink>
+        <NavigationMenuLink href="/docs/forms" class="text-xs">
+          Forms
+        </NavigationMenuLink>
       </div>
     </div>
   </NavigationMenuItem>
@@ -30,7 +42,7 @@ import { NavigationMenu, NavigationMenuItem, NavigationMenuLink } from 'cdx-soli
       <NavigationMenuLink href="/changelog">Changelog</NavigationMenuLink>
     </div>
   </NavigationMenuItem>
-</NavigationMenu>
+</NavigationMenu>;
 ```
 
 ---
@@ -40,7 +52,12 @@ import { NavigationMenu, NavigationMenuItem, NavigationMenuLink } from 'cdx-soli
 A top-level horizontal bar for desktop-style application menus.
 
 ```tsx
-import { Menubar, MenubarMenu, MenubarItem, MenubarSeparator } from 'cdx-solidjs-components/ui/Menubar';
+import {
+  Menubar,
+  MenubarMenu,
+  MenubarItem,
+  MenubarSeparator,
+} from 'cdx-solidjs-components/ui/Menubar';
 
 <Menubar>
   <MenubarMenu trigger="File">
@@ -52,7 +69,7 @@ import { Menubar, MenubarMenu, MenubarItem, MenubarSeparator } from 'cdx-solidjs
     <MenubarItem>Zoom In</MenubarItem>
     <MenubarItem>Zoom Out</MenubarItem>
   </MenubarMenu>
-</Menubar>
+</Menubar>;
 ```
 
 ---
@@ -62,7 +79,13 @@ import { Menubar, MenubarMenu, MenubarItem, MenubarSeparator } from 'cdx-solidjs
 A trail of links showing the current location in the application hierarchy.
 
 ```tsx
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from 'cdx-solidjs-components/ui/Breadcrumb';
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+} from 'cdx-solidjs-components/ui/Breadcrumb';
 
 <Breadcrumb>
   <BreadcrumbList>
@@ -74,7 +97,7 @@ import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbS
       <BreadcrumbLink href="/docs">Docs</BreadcrumbLink>
     </BreadcrumbItem>
   </BreadcrumbList>
-</Breadcrumb>
+</Breadcrumb>;
 ```
 
 ---
@@ -86,11 +109,7 @@ A navigation element for traversing through paginated data sets.
 ```tsx
 import { Pagination } from 'cdx-solidjs-components/ui/Pagination';
 
-<Pagination
-  currentPage={page()}
-  totalPages={10}
-  onPageChange={setPage}
-/>
+<Pagination currentPage={page()} totalPages={10} onPageChange={setPage} />;
 ```
 
 ---
@@ -102,7 +121,9 @@ A set of layered sections of content displayed one at a time. Supports both comp
 ```tsx
 import { Tabs, TabsList, TabsTrigger, TabsContent } from 'cdx-solidjs-components/ui/Tabs';
 
-{/* Compound Pattern */}
+{
+  /* Compound Pattern */
+}
 <Tabs defaultValue="overview">
   <TabsList>
     <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -110,15 +131,17 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from 'cdx-solidjs-components
   </TabsList>
   <TabsContent value="overview">General info...</TabsContent>
   <TabsContent value="settings">User settings...</TabsContent>
-</Tabs>
+</Tabs>;
 
-{/* Shorthand Pattern */}
+{
+  /* Shorthand Pattern */
+}
 <Tabs
   items={[
     { id: 'logs', label: 'Logs' },
-    { id: 'metrics', label: 'Metrics' }
+    { id: 'metrics', label: 'Metrics' },
   ]}
   activeTab={active()}
   onTabChange={setActive}
-/>
+/>;
 ```

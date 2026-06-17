@@ -30,8 +30,7 @@ const alertVariants = cva(
  * Configuration and properties for the Alert component.
  */
 export interface AlertProps
-  extends JSX.HTMLAttributes<HTMLElement>,
-    VariantProps<typeof alertVariants> {
+  extends JSX.HTMLAttributes<HTMLElement>, VariantProps<typeof alertVariants> {
   /**
    * Polymorphic prop to change the underlying HTML element or component.
    * @default "div"

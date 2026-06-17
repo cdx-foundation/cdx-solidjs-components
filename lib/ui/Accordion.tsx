@@ -8,7 +8,6 @@ import {
   splitProps,
   useContext,
 } from 'solid-js';
-import { twMerge } from 'tailwind-merge';
 import { uid } from '../uid';
 
 interface AccordionContextValue {

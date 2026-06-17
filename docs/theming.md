@@ -1,86 +1,173 @@
 # Theming
 
-Starling UI uses a CSS variable-based design system, allowing for deep customization without leaving your CSS files.
+Starling UI uses a CSS variable-based design system with a reactive `useTheme` hook that persists light/dark mode styles independently.
 
-## Design Tokens
+## CSS Variables
 
-The library defines core tokens in the `@theme` block of Tailwind. You can override these by setting the corresponding CSS variables in your global CSS.
+The library reads these CSS custom properties from `:root`:
 
-### Core Colors
+### Colors
 
-| Variable | Description | Default |
-| :--- | :--- | :--- |
-| `--color-primary` | The main accent color used for actions and highlights. | `#c62828` |
-| `--color-bg` | The primary application background. | `#ffffff` |
-| `--color-fg` | The primary text color. | `#1a1a1a` |
-| `--color-stroke` | Default border color for inputs, cards, and separators. | `#e5e5e5` |
-| `--color-panel` | Background for floating elements (dropdowns, modals). | `#ffffff` |
-| `--color-surface` | Subtle background for hover states and secondary areas. | `#f7f7f7` |
+| Variable          | Source           |
+| :---------------- | :--------------- |
+| `--primary-color` | `accent`         |
+| `--bg-main`       | `bg`             |
+| `--bg-panel`      | `panel`          |
+| `--bg-surface`    | `surface`        |
+| `--border-main`   | `border`         |
+| `--stroke`        | `border` (alias) |
+| `--fg-main`       | `fg`             |
+| `--text-muted`    | `muted`          |
 
 ### Typography
 
-Starling UI defaults to high-legibility fonts with a strong preference for monospace in data-heavy areas.
+| Variable         | Source                  |
+| :--------------- | :---------------------- |
+| `--sans-main`    | `font` (body text)      |
+| `--display-main` | `headerFont` (headings) |
 
-| Variable | Default |
-| :--- | :--- |
-| `--font-display` | `"Inter", system-ui, sans-serif` |
-| `--font-sans` | `"Inter", system-ui, sans-serif` |
-| `--font-mono` | `"JetBrains Mono", ui-monospace, monospace` |
+### Radii
 
-### Border Radii
+All four radius vars are set to the same `radius` value:
 
-We use a "technical" radius system. By default, most radii are set to `0px` for a sharp, professional look.
+| Variable         |
+| :--------------- |
+| `--radius-card`  |
+| `--radius-btn`   |
+| `--radius-input` |
+| `--radius-badge` |
 
-| Variable | Default |
-| :--- | :--- |
-| `--radius-card` | `0px` |
-| `--radius-btn` | `0px` |
-| `--radius-input` | `0px` |
-| `--radius-badge` | `0px` |
+### Shadows
 
-## Customizing the Theme
+| Variable        | Source                |
+| :-------------- | :-------------------- |
+| `--shadow-main` | `shadow` (panels)     |
+| `--shadow-btn`  | `btnShadow` (buttons) |
 
-### Via Global CSS
-
-The most straightforward way to customize the theme is to define your own values for the variables:
-
-```css
-:root {
-  --primary-color: #0070f3; /* Custom blue accent */
-  --radius-card: 8px;       /* Softer corners */
-  --radius-btn: 4px;
-}
-
-.dark {
-  --bg-main: #000000;
-  --fg-main: #ffffff;
-  --border-main: #333333;
-}
-```
-
-### Via `useTheme` Hook
-
-Starling UI provides a built-in `useTheme` hook that manages the full application theme.
+## `useTheme` Hook
 
 ```tsx
 import { useTheme } from 'cdx-solidjs-components/hooks';
 
-function ThemeToggle() {
-  const { isDark, toggleTheme } = useTheme();
-
-  return (
-    <Button onClick={toggleTheme}>
-      Switch to {isDark() ? 'Light' : 'Dark'} Mode
-    </Button>
-  );
+function Component() {
+  const { isDark, toggleTheme, setTheme, accent, bg } = useTheme();
+  // ...
 }
 ```
 
-For project-specific defaults:
-```tsx
-import { useTheme } from 'cdx-solidjs-components/hooks';
+### Accessors
 
-const { accent, setLightTheme } = useTheme({ accent: '#6366f1', base: 'slate' });
+| Accessor       | Returns       | Description                                     |
+| :------------- | :------------ | :---------------------------------------------- |
+| `isDark()`     | `boolean`     | Whether dark mode is active                     |
+| `accent()`     | `string`      | Primary accent color (hex)                      |
+| `bg()`         | `string`      | Application background                          |
+| `panel()`      | `string`      | Card/modal background                           |
+| `surface()`    | `string`      | Subtle surface for hover/secondary areas        |
+| `border()`     | `string`      | Default border color                            |
+| `fg()`         | `string`      | Primary text color                              |
+| `muted()`      | `string`      | Muted/secondary text color                      |
+| `radius()`     | `string`      | Unified border radius                           |
+| `font()`       | `ThemeFont`   | Body font name                                  |
+| `headerFont()` | `ThemeFont`   | Heading/display font name                       |
+| `shadow()`     | `ShadowLevel` | Panel shadow level                              |
+| `btnShadow()`  | `ShadowLevel` | Button shadow level                             |
+| `style()`      | `string`      | Style preset name (metadata, not mode-specific) |
+| `theme()`      | `Theme`       | Full theme object                               |
+
+### Methods
+
+| Method          | Signature                                               | Description                              |
+| :-------------- | :------------------------------------------------------ | :--------------------------------------- |
+| `setTheme`      | `(config: Partial\<Theme\> \| DualThemeConfig) => void` | Update styles or toggle mode. See below. |
+| `setLightTheme` | `(config: Partial\<Theme\>) => void`                    | Apply overrides to light mode only       |
+| `setDarkTheme`  | `(config: Partial\<Theme\>) => void`                    | Apply overrides to dark mode only        |
+| `toggleTheme`   | `() => void`                                            | Switch between light and dark mode       |
+| `setStyle`      | `(v: string) => void`                                   | Update the style preset name             |
+
+### `setTheme` Behaviour
+
+**`Partial<Theme>`** — updates the current active mode's overrides. If `dark` is included, it also toggles the mode:
+
+```tsx
+// Update light-mode styles and stay in light mode
+setTheme({ accent: '#6366f1', radius: '8px' });
+
+// Toggle to dark mode
+setTheme({ dark: true });
+
+// Toggle to dark mode AND set dark-specific accent
+setTheme({ dark: true, accent: '#818cf8' });
 ```
 
-Other theme properties like primary color, radii, and fonts should be managed via CSS variables as shown in the [Global CSS](#via-global-css) section.
+**`DualThemeConfig`** — sets light and dark overrides independently:
+
+```tsx
+setTheme({
+  light: { bg: '#ffffff', accent: '#6366f1' },
+  dark: { bg: '#0a0a0a', accent: '#818cf8' },
+});
+```
+
+Dark mode toggle checks: `typeof (config as any).dark === 'object'` distinguishes `{ dark: true }` (mode toggle) from `{ dark: { accent: '...' } }` (DualThemeConfig).
+
+### Project Defaults
+
+Pass a partial `Theme` to `useTheme()` to set project-level defaults. These are applied once on the first call (lower priority than persisted localStorage):
+
+```tsx
+const theme = useTheme({ accent: '#6366f1', font: 'modern', radius: '8px' });
+```
+
+## Preventing FOUC
+
+Include `useTheme.getScript()` as a blocking inline `<script>` in `<head>` to apply the persisted theme before the first paint:
+
+```tsx
+// In your HTML template or SSR
+<script>{useTheme.getScript()}</script>
+```
+
+You can also pass project defaults that match the JS-side defaults:
+
+```tsx
+<script>{useTheme.getScript({ accent: '#6366f1' })}</script>
+```
+
+## ThemeFont
+
+```tsx
+type ThemeFont =
+  | 'sans'
+  | 'mono'
+  | 'serif'
+  | 'display'
+  | 'system'
+  | 'modern'
+  | 'reading'
+  | 'geometric'
+  | 'condensed'
+  | 'soft-serif'
+  | 'oxanium';
+```
+
+## ShadowLevel
+
+```tsx
+type ShadowLevel = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'neo' | 'flat' | 'hard';
+```
+
+## Persisted Shape
+
+The theme is serialised to `localStorage` (`cdx_theme` key) as:
+
+```json
+{
+  "mode": "light",
+  "light": { "accent": "#6366f1", "bg": "#ffffff", ... },
+  "dark": { "accent": "#818cf8", "bg": "#0a0a0a", ... },
+  "style": "vega"
+}
+```
+
+Light and dark mode overrides are stored independently, so toggling never loses customizations.
