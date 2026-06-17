@@ -7,7 +7,7 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "npm version ${nextRelease.version} --no-git-tag-version && bun run fmt",
+        "prepareCmd": "(npm version ${nextRelease.version} --no-git-tag-version || true) && bun run fmt",
         "publishCmd": "npm publish"
       }
     ],
