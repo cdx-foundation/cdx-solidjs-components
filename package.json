@@ -41,6 +41,7 @@
     "./theme": "./lib/theme.css"
   },
   "publishConfig": {
+    "access": "public",
     "registry": "https://registry.npmjs.org"
   },
   "scripts": {
