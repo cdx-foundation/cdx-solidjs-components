@@ -1,3 +1,11 @@
+## [1.0.1](https://github.com/cdx-foundation/cdx-solidjs-components/compare/v1.0.0...v1.0.1) (2026-06-18)
+
+### Bug Fixes
+
+- configure semantic-release for npm OIDC trusted publishing ([56cc113](https://github.com/cdx-foundation/cdx-solidjs-components/commit/56cc1138925b2967878b6ba053cc3e6da669ea37))
+- disable solid-refresh HMR during vitest to prevent file URL error on Windows ([12187c5](https://github.com/cdx-foundation/cdx-solidjs-components/commit/12187c5b6c35331441d890aa40fe57d73125cc26))
+- resolve scoped package publish failure and refactor release config ([279ee58](https://github.com/cdx-foundation/cdx-solidjs-components/commit/279ee58d9dae5b1f25cbbe9a69cb442feea1f207))
+
 # 1.0.0 (2026-06-17)
 
 - feat!: architectural refactor to composable components and new docs system ([8b62c87](https://github.com/cdx-foundation/cdx-solidjs-components/commit/8b62c8708b1bb09ff4b8a8639a0323ebd7d2a1c9))
