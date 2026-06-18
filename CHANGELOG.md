@@ -1,3 +1,9 @@
+# [1.1.0](https://github.com/cdx-foundation/cdx-solidjs-components/compare/v1.0.1...v1.1.0) (2026-06-18)
+
+### Features
+
+- **useTheme:** accept config arg to set theme directly ([63ec6e1](https://github.com/cdx-foundation/cdx-solidjs-components/commit/63ec6e18a87c96f2f982665d3d8250d1a83f5b60))
+
 ## [1.0.1](https://github.com/cdx-foundation/cdx-solidjs-components/compare/v1.0.0...v1.0.1) (2026-06-18)
 
 ### Bug Fixes
