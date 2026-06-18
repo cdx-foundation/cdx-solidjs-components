@@ -309,8 +309,6 @@ function ensureReactives() {
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
-let defaultsApplied = false;
-
 /**
  * Reactive theme hook with persistent light/dark overrides and FOUC prevention.
  *
@@ -337,10 +335,10 @@ let defaultsApplied = false;
  * All colour values are hex strings (e.g. `"#6366f1"`).  The `dark` accessor
  * is `true` when dark mode is active.
  *
- * @param defaults - Optional project-level theme defaults applied once on the
- *   first call.  These are merged into the **light** branch only and have
- *   **lower** priority than persisted localStorage values (and lower still
- *   than explicit overrides via `setTheme`/`setDarkTheme`).
+ * @param config - Optional theme config. When provided, calls `setTheme` to
+ *   apply changes directly (equivalent to `useTheme().setTheme(config)`).
+ *   Accepts `Partial<Theme>` for flat overrides or `DualThemeConfig` for
+ *   scoped light/dark overrides.
  *
  * @example
  * ```tsx
@@ -362,32 +360,54 @@ let defaultsApplied = false;
  * ```
  *
  * @example
+ * ```tsx
+ * // Set theme directly without a separate setTheme call
+ * const theme = useTheme({ accent: '#ff4500', radius: '8px' });
+ * ```
+ *
+ * @example
  * ```html
  * <!-- index.html — block FOUC before the first paint -->
  * <head>
  *   <script>${useTheme.getScript({ accent: '#ff4500' })}</script>
  * </head>
  * ```
- *
- * @example
- * ```tsx
- * // Project-level defaults (lowest priority, applied once)
- * useTheme({ radius: '8px', font: 'modern', accent: '#6366f1' });
- * ```
  */
-export function useTheme(defaults?: Partial<Theme>): ThemeConfig {
+/** Shared set-theme logic used by both the hook arg and setTheme(). */
+function applyThemeConfig(
+  prev: PersistedTheme,
+  config: Partial<Theme> | DualThemeConfig,
+): PersistedTheme {
+  if ('light' in config || typeof (config as any).dark === 'object') {
+    const { light: lCfg, dark: dCfg } = config as DualThemeConfig;
+    return {
+      ...prev,
+      light: lCfg ? { ...prev.light, ...lCfg } : prev.light,
+      dark: dCfg ? { ...prev.dark, ...dCfg } : prev.dark,
+    };
+  }
+  const { dark: modeFlag, ...styleChanges } = config as Partial<Theme>;
+  const targetMode: 'light' | 'dark' =
+    modeFlag !== undefined
+      ? modeFlag
+        ? 'dark'
+        : 'light'
+      : prev.mode === 'system'
+        ? getPrefersDark()
+          ? 'dark'
+          : 'light'
+        : prev.mode;
+  if (targetMode === 'dark') {
+    return { ...prev, mode: 'dark', dark: { ...prev.dark, ...styleChanges } };
+  }
+  return { ...prev, mode: 'light', light: { ...prev.light, ...styleChanges } };
+}
+
+export function useTheme(config?: Partial<Theme> | DualThemeConfig): ThemeConfig {
   ensureReactives();
 
-  // Fix #3: Apply project defaults once with lower priority than persisted values.
-  // - Only the light branch is set (not dark) so auto-derivation is not polluted.
-  // - Argument order is flipped: persisted values win over defaults.
-  if (defaults && !defaultsApplied) {
-    defaultsApplied = true;
-    const { dark: _mode, ...styleDefaults } = defaults;
-    setPersisted((prev) => ({
-      ...prev,
-      light: { ...styleDefaults, ...prev.light }, // persisted wins
-    }));
+  if (config) {
+    setPersisted((prev) => applyThemeConfig(prev, config));
   }
 
   return {
@@ -408,34 +428,7 @@ export function useTheme(defaults?: Partial<Theme>): ThemeConfig {
     style: () => persisted().style ?? 'vega',
 
     setTheme: (config: Partial<Theme> | DualThemeConfig) => {
-      setPersisted((prev) => {
-        // DualThemeConfig: config has a `light` key OR config.dark is an object
-        if ('light' in config || typeof (config as any).dark === 'object') {
-          const { light: lCfg, dark: dCfg } = config as DualThemeConfig;
-          return {
-            ...prev,
-            light: lCfg ? { ...prev.light, ...lCfg } : prev.light,
-            dark: dCfg ? { ...prev.dark, ...dCfg } : prev.dark,
-          };
-        }
-        // Partial<Theme> — `dark` flag changes the active mode,
-        // style properties update the target mode's persisted overrides.
-        const { dark: modeFlag, ...styleChanges } = config as Partial<Theme>;
-        const targetMode: 'light' | 'dark' =
-          modeFlag !== undefined
-            ? modeFlag
-              ? 'dark'
-              : 'light'
-            : prev.mode === 'system'
-              ? getPrefersDark()
-                ? 'dark'
-                : 'light'
-              : prev.mode;
-        if (targetMode === 'dark') {
-          return { ...prev, mode: 'dark', dark: { ...prev.dark, ...styleChanges } };
-        }
-        return { ...prev, mode: 'light', light: { ...prev.light, ...styleChanges } };
-      });
+      setPersisted((prev) => applyThemeConfig(prev, config));
     },
 
     setLightTheme: (config: Partial<Theme>) => {

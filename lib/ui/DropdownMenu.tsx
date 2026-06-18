@@ -1,6 +1,8 @@
 import { createShortcut } from '@solid-primitives/keyboard';
 import { type JSX, Show, createSignal, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
+import { clickOutside } from '../directives';
+void clickOutside; // prevent tree-shaking of SolidJS directive
 
 /**
  * Configuration properties for the Root DropdownMenu container.

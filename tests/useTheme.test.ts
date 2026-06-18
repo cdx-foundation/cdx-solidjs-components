@@ -70,11 +70,16 @@ describe('useTheme', () => {
     localStorage.clear();
   });
 
-  it('defaults parameter applies project-level overrides on first call', () => {
-    const theme = useTheme({ accent: '#project', radius: '4px', headerFont: 'oxanium' });
-    expect(theme.accent()).toBe('#project');
-    expect(theme.radius()).toBe('4px');
-    expect(theme.headerFont()).toBe('oxanium');
+  it('calling useTheme with a config applies setTheme directly', () => {
+    const theme = useTheme({ accent: '#direct', radius: '6px' });
+    expect(theme.accent()).toBe('#direct');
+    expect(theme.radius()).toBe('6px');
+
+    // DualThemeConfig also works
+    const theme2 = useTheme({ light: { accent: '#dual' }, dark: { accent: '#darkacc' } });
+    expect(theme2.accent()).toBe('#dual');
+    theme2.setTheme({ dark: true });
+    expect(theme2.accent()).toBe('#darkacc');
   });
 
   it('setTheme with Partial<Theme> updates accessors', () => {
