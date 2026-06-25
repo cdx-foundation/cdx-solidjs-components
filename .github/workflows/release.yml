@@ -4,6 +4,7 @@ on:
   push:
     branches: [master]
     tags: ['v*']
+  workflow_dispatch:
 
 concurrency:
   group: release-${{ github.ref }}
@@ -29,7 +30,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: false
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
