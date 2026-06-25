@@ -21,7 +21,23 @@ bun add @cdx-foundation/cdx-solidjs-components
 
 ## Setup
 
-### 1. Tailwind CSS v4 Configuration
+### 1. Fonts
+
+This library's default design uses Google Fonts (Inter, JetBrains Mono, Archivo Black, Bebas Neue, Oxanium). You must load them in your app — the library no longer includes a CSS `@import` to avoid bundler warnings.
+
+```html
+<!-- index.html -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&family=JetBrains+Mono:wght@400..800&family=Archivo+Black&family=Bebas+Neue&family=Oxanium:wght@200..800&display=swap"
+  rel="stylesheet"
+/>
+```
+
+Or load them however you prefer — Vite's `@font-face` inlining, self-hosting, etc. If you only use a subset of fonts via the theme API, load only what you need.
+
+### 2. Tailwind CSS v4 Configuration
 
 To ensure styles are computed correctly, import the library in your main CSS file. This automatically configures Tailwind to scan the library's components for utility classes and provides default design tokens.
 
@@ -29,6 +45,116 @@ To ensure styles are computed correctly, import the library in your main CSS fil
 @import 'tailwindcss';
 @import '@cdx-foundation/cdx-solidjs-components';
 ```
+
+## Theme
+
+The `useTheme` hook provides reactive theming with persistent light/dark overrides, FOUC prevention, and CSS custom property injection.
+
+### Primary pattern: server-fetched theme → client apply
+
+The intended use is to **fetch the theme configuration from your server** (e.g. a Lua backend) and apply it to the client app on startup. This allows the backend to control branding, accent colors, radii, fonts, and shadow levels dynamically per request or per tenant.
+
+```tsx
+import { useTheme } from '@cdx-foundation/cdx-solidjs-components/hooks';
+
+function App() {
+  // On mount, fetch theme config from server and apply it.
+  const { isDark, toggleTheme } = useTheme();
+
+  createEffect(async () => {
+    const res = await fetch('/api/theme');
+    const serverTheme = await res.json();
+    // serverTheme shape: Partial<Theme> or { light: ..., dark: ... }
+    theme.setTheme(serverTheme);
+  });
+
+  return <button onClick={toggleTheme}>{isDark() ? '☀️ Light' : '🌙 Dark'}</button>;
+}
+```
+
+**Server (Lua) endpoint example:** return a JSON object that mirrors `Partial<Theme>` fields. Only include the values you want to override — everything else falls back to built-in defaults.
+
+```lua
+-- themes.lua
+local theme = {
+  accent = "#c62828",
+  bg     = "#ffffff",
+  fg     = "#1a1a1a",
+  radius = "0px",
+  font   = "sans",
+  shadow = "neo"
+}
+return theme
+```
+
+The JSON returned to the client is passed directly to `setTheme()`:
+
+```ts
+useTheme().setTheme({
+  accent: '#c62828',
+  bg: '#ffffff',
+  fg: '#1a1a1a',
+  radius: '0px',
+  font: 'sans',
+  shadow: 'neo',
+});
+```
+
+### Light/dark dual config
+
+When your server wants to supply separate overrides for light and dark mode, return a `{ light, dark }` object:
+
+```ts
+useTheme().setTheme({
+  light: { bg: '#ffffff', fg: '#1a1a1a', accent: '#c62828' },
+  dark: { bg: '#0a0a0a', fg: '#f5f5f5', accent: '#ef5350' },
+});
+```
+
+### FOUC prevention
+
+Block the first paint with a synchronously-evaluated inline script that reads the persisted theme from `localStorage` and applies CSS custom properties before any rendering:
+
+```html
+<script>
+  ${useTheme.getScript({ accent: '#c62828' })}
+</script>
+```
+
+Pass optional defaults as the argument — these are applied before any persisted overrides.
+
+### Available fields
+
+| Field        | Type                     | Description                              |
+| ------------ | ------------------------ | ---------------------------------------- |
+| `accent`     | `string` (hex)           | Primary accent color                     |
+| `bg`         | `string` (hex)           | Application background                   |
+| `panel`      | `string` (hex)           | Card / modal background                  |
+| `surface`    | `string` (hex)           | Subtle hover / secondary surface         |
+| `border`     | `string` (hex)           | Default border color                     |
+| `fg`         | `string` (hex)           | Primary text color                       |
+| `muted`      | `string` (hex)           | Secondary / muted text color             |
+| `radius`     | `string` (e.g. `"12px"`) | Unified border radius for all components |
+| `font`       | `ThemeFont`              | Body font family                         |
+| `headerFont` | `ThemeFont`              | Heading font family                      |
+| `shadow`     | `ShadowLevel`            | Panel shadow level                       |
+| `btnShadow`  | `ShadowLevel`            | Button shadow level                      |
+
+`ThemeFont` values: `sans`, `mono`, `serif`, `display`, `system`, `modern`, `reading`, `geometric`, `condensed`, `soft-serif`, `oxanium`.
+
+`ShadowLevel` values: `none`, `sm`, `md`, `lg`, `xl`, `2xl`, `neo`, `flat`, `hard`.
+
+### Dark mode auto-derivation
+
+When you only configure light-mode values, dark-mode neutral colors (bg, panel, surface, border, fg, muted) are **auto-derived** via luminance inversion. Non-color fields (radius, font, shadow) carry over unchanged. Explicit dark overrides take precedence over auto-derived values.
+
+Toggle cycles: `system` (follows OS) → `dark` → `light` → `system`.
+
+### Persistence
+
+Theme is persisted to `localStorage` under the `cdx_theme` key. Each entry carries a `version` number for forward-compatible schema migration. Cross-tab sync is handled automatically via the `storage` event.
+
+---
 
 ## Component List
 
@@ -79,13 +205,20 @@ The library includes 41 high-fidelity components:
 ## Usage Example
 
 ```tsx
-import { createSignal } from 'solid-js';
+import { createSignal, createEffect } from 'solid-js';
 import { Button, Modal } from '@cdx-foundation/cdx-solidjs-components';
 import { useTheme } from '@cdx-foundation/cdx-solidjs-components/hooks';
 
 export const MyComponent = () => {
   const [isOpen, setIsOpen] = createSignal(false);
-  const { isDark, toggleTheme } = useTheme();
+  const theme = useTheme();
+
+  // Fetch theme from server (Lua backend) on mount
+  createEffect(async () => {
+    const res = await fetch('/api/theme');
+    const serverTheme = await res.json();
+    theme.setTheme(serverTheme);
+  });
 
   return (
     <div class="p-8">
@@ -94,7 +227,9 @@ export const MyComponent = () => {
       <Modal isOpen={isOpen()} onClose={() => setIsOpen(false)} title="Settings">
         <div class="p-4 space-y-4">
           <p>Configure your application preferences here.</p>
-          <Button onClick={toggleTheme}>Switch to {isDark() ? 'Light' : 'Dark'} Mode</Button>
+          <Button onClick={theme.toggleTheme}>
+            Switch to {theme.isDark() ? 'Light' : 'Dark'} Mode
+          </Button>
         </div>
       </Modal>
     </div>
