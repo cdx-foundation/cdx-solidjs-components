@@ -1,3 +1,9 @@
+## [1.1.1](https://github.com/cdx-foundation/cdx-solidjs-components/compare/v1.1.0...v1.1.1) (2026-06-25)
+
+### Bug Fixes
+
+- remove CSS [@import](https://github.com/import) for Google Fonts from theme.css to prevent bundler warning ([9094513](https://github.com/cdx-foundation/cdx-solidjs-components/commit/9094513335ba0d54f793c7cbcd7d470aa53ccb45))
+
 # [1.1.0](https://github.com/cdx-foundation/cdx-solidjs-components/compare/v1.0.1...v1.1.0) (2026-06-18)
 
 ### Features
