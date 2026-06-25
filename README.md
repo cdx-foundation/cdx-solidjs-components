@@ -1,5 +1,7 @@
 # CDX Solid.js Components
 
+[![npm](https://img.shields.io/npm/v/@cdx-foundation/cdx-solidjs-components)](https://www.npmjs.com/package/@cdx-foundation/cdx-solidjs-components)
+
 An elegant and feature-rich UI component library for Solid.js, meticulously crafted for the CDX ecosystem. It provides a set of highly accessible, performant, and customizable primitives built with Tailwind CSS and Solid primitives.
 
 ## Features
