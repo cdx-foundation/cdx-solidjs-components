@@ -34,7 +34,12 @@ const AvatarContext = createContext<AvatarContextValue>();
  * ```
  * @param props - Customization options including `as`.
  */
-export const Avatar = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any; href?: string }) => {
+export const Avatar = (
+  props: JSX.HTMLAttributes<HTMLElement> & {
+    as?: keyof JSX.IntrinsicElements | ((props: any) => JSX.Element);
+    href?: string;
+  },
+) => {
   const [local, others] = splitProps(props, ['class', 'children', 'as']);
   const [status, setStatus] = createSignal<AvatarStatus>('idle');
 
@@ -67,7 +72,9 @@ export const AvatarImage = (props: JSX.ImgHTMLAttributes<HTMLImageElement> & { a
 
   const [local, others] = splitProps(props, ['class', 'onLoad', 'onError', 'alt']);
 
+  // M4: Track props.src so changing the image source resets the status
   createEffect(() => {
+    void props.src;
     ctx.setStatus('loading');
   });
 
@@ -100,7 +107,11 @@ export const AvatarImage = (props: JSX.ImgHTMLAttributes<HTMLImageElement> & { a
  *
  * @param props - Customization options including `as`.
  */
-export const AvatarFallback = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any }) => {
+export const AvatarFallback = (
+  props: JSX.HTMLAttributes<HTMLElement> & {
+    as?: keyof JSX.IntrinsicElements | ((props: any) => JSX.Element);
+  },
+) => {
   const ctx = useContext(AvatarContext);
   if (!ctx) throw new Error('AvatarFallback must be used within an Avatar');
 

@@ -1,5 +1,18 @@
+import { cva } from 'class-variance-authority';
 import { type JSX, splitProps } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
+
+const separatorVariants = cva('shrink-0 bg-stroke', {
+  variants: {
+    orientation: {
+      horizontal: 'h-px w-full',
+      vertical: 'h-full w-px',
+    },
+  },
+  defaultVariants: {
+    orientation: 'horizontal',
+  },
+});
 
 /**
  * Configuration and properties for the Separator component.
@@ -45,15 +58,10 @@ interface SeparatorProps extends JSX.HTMLAttributes<HTMLDivElement> {
  */
 export const Separator = (props: SeparatorProps) => {
   const [local, others] = splitProps(props, ['orientation', 'class']);
-  const isVertical = () => local.orientation === 'vertical';
 
   return (
     <div
-      class={twMerge(
-        'shrink-0 bg-stroke',
-        isVertical() ? 'h-full w-px' : 'h-px w-full',
-        local.class,
-      )}
+      class={twMerge(separatorVariants({ orientation: local.orientation }), local.class)}
       {...others}
     />
   );

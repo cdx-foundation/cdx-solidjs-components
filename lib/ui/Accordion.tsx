@@ -9,6 +9,7 @@ import {
   useContext,
 } from 'solid-js';
 import { uid } from '../uid';
+import { twMerge } from 'tailwind-merge';
 
 interface AccordionContextValue {
   isExpanded: (id: string) => boolean;
@@ -89,7 +90,7 @@ export const Accordion = (props: AccordionProps) => {
 
   return (
     <AccordionContext.Provider value={{ isExpanded, toggleItem, collapsible: local.collapsible }}>
-      <div class={`w-full border-t border-stroke ${local.class || ''}`} {...others}>
+      <div class={twMerge('w-full border-t border-stroke', local.class)} {...others}>
         {local.children}
       </div>
     </AccordionContext.Provider>
@@ -117,7 +118,7 @@ export const AccordionItem = (props: AccordionItemProps) => {
 
   return (
     <AccordionItemContext.Provider value={{ id }}>
-      <div class={`border-b border-stroke ${local.class || ''}`} {...others}>
+      <div class={twMerge('border-b border-stroke', local.class)} {...others}>
         {local.children}
       </div>
     </AccordionItemContext.Provider>
@@ -154,7 +155,10 @@ export const AccordionTrigger = (props: JSX.HTMLAttributes<HTMLButtonElement>) =
           (local.onClick[0] as any)(local.onClick[1], e);
         }
       }}
-      class={`flex w-full flex-1 items-center justify-between py-4 text-sm font-semibold text-fg outline-none transition-all hover:underline [&[data-state=open]>svg]:rotate-180 ${local.class || ''}`}
+      class={twMerge(
+        'flex w-full flex-1 items-center justify-between py-4 text-sm font-semibold text-fg outline-none transition-all hover:underline [&[data-state=open]>svg]:rotate-180',
+        local.class,
+      )}
       {...others}
     >
       {local.children}
@@ -185,7 +189,10 @@ export const AccordionContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
         role="region"
         aria-labelledby={`${item.id}-trigger`}
         data-state={isOpen() ? 'open' : 'closed'}
-        class={`overflow-hidden text-sm transition-all animate-in fade-in slide-in-from-top-2 text-muted ${local.class || ''}`}
+        class={twMerge(
+          'overflow-hidden text-sm transition-all animate-in fade-in slide-in-from-top-2 text-muted',
+          local.class,
+        )}
         {...others}
       >
         <div class="pb-4 pt-0">{local.children}</div>

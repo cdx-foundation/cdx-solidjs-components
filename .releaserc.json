@@ -8,7 +8,7 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "bun run fmt",
+        "prepareCmd": "npm run fmt",
         "publishCmd": "npm publish --provenance"
       }
     ],

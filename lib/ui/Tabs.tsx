@@ -138,15 +138,56 @@ export const Tabs = (props: TabsProps) => {
  * A horizontal or vertical list of `TabsTrigger` components.
  */
 export const TabsList = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
+  const context = useContext(TabsContext);
   const [local, others] = splitProps(props, ['class', 'children']);
+  let tabListRef: HTMLDivElement | undefined;
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    const tabs: HTMLElement[] = Array.from(tabListRef?.querySelectorAll('[role="tab"]') ?? []);
+    if (tabs.length === 0) return;
+
+    const currentIndex = tabs.findIndex((tab) => tab.getAttribute('aria-selected') === 'true');
+    let nextIndex = currentIndex;
+
+    switch (e.key) {
+      case 'ArrowRight':
+        e.preventDefault();
+        nextIndex = (currentIndex + 1) % tabs.length;
+        break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+        break;
+      case 'Home':
+        e.preventDefault();
+        nextIndex = 0;
+        break;
+      case 'End':
+        e.preventDefault();
+        nextIndex = tabs.length - 1;
+        break;
+      default:
+        return;
+    }
+
+    const targetTab = tabs[nextIndex];
+    const targetValue = targetTab.id.replace('tab-', '');
+    context?.setValue(targetValue);
+    targetTab.focus();
+  };
+
   return (
     <div
+      ref={(el) => {
+        tabListRef = el;
+      }}
       role="tablist"
       aria-orientation="horizontal"
       class={twMerge(
         'inline-flex h-10 items-center justify-center rounded-md bg-surface p-1 text-muted',
         local.class,
       )}
+      onKeyDown={handleKeyDown}
       {...others}
     >
       {local.children}
@@ -183,6 +224,7 @@ export const TabsTrigger = (props: TabsTriggerProps) => {
       aria-selected={isActive()}
       aria-controls={`panel-${local.value}`}
       id={`tab-${local.value}`}
+      tabIndex={isActive() ? 0 : -1}
       onClick={() => context.setValue(local.value)}
       class={twMerge(
         'inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-bg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',

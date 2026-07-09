@@ -1,6 +1,14 @@
 import { createPrefersDark } from '@solid-primitives/media';
 import { makePersisted } from '@solid-primitives/storage';
-import { type Accessor, createEffect, createMemo, createRoot, createSignal } from 'solid-js';
+import {
+  type Accessor,
+  createEffect,
+  createMemo,
+  createRoot,
+  createSignal,
+  onCleanup,
+  type Setter,
+} from 'solid-js';
 import { FONTS, SHADOWS } from '../theme-tokens';
 import type { ShadowLevel, ThemeFont } from '../theme-tokens';
 
@@ -121,24 +129,10 @@ const THEME_VERSION = 1;
 
 const STORAGE_KEY = 'cdx_theme';
 
-const [persisted, setPersisted] = makePersisted(
-  createSignal<PersistedTheme>({
-    version: THEME_VERSION,
-    mode: 'system',
-    light: {},
-    dark: {},
-  }),
-  {
-    name: STORAGE_KEY,
-    deserialize: (raw: string): PersistedTheme => {
-      try {
-        const parsed = JSON.parse(raw);
-        if (parsed.version === THEME_VERSION) return parsed as PersistedTheme;
-      } catch {}
-      return { version: THEME_VERSION, mode: 'system', light: {}, dark: {} };
-    },
-  },
-);
+// C2: Signal + makePersisted are created lazily inside ensureReactives() to
+// avoid SSR hazards (makePersisted accesses localStorage at creation time).
+let persisted!: Accessor<PersistedTheme>;
+let setPersisted!: Setter<PersistedTheme>;
 
 // ─── Color helpers ────────────────────────────────────────────────────────────
 
@@ -290,21 +284,60 @@ function ensureReactives() {
     if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
       prefersDarkSignal = createPrefersDark();
     }
+
+    // C2: Create persisted signal lazily, guarded against SSR.
+    // makePersisted accesses localStorage which throws during SSR.
+    if (typeof window !== 'undefined') {
+      const [p, sp] = makePersisted(
+        createSignal<PersistedTheme>({
+          version: THEME_VERSION,
+          mode: 'system',
+          light: {},
+          dark: {},
+        }),
+        {
+          name: STORAGE_KEY,
+          deserialize: (raw: string): PersistedTheme => {
+            try {
+              const parsed = JSON.parse(raw);
+              if (parsed.version === THEME_VERSION) return parsed as PersistedTheme;
+            } catch {}
+            return { version: THEME_VERSION, mode: 'system', light: {}, dark: {} };
+          },
+        },
+      );
+      persisted = p;
+      setPersisted = sp;
+    } else {
+      // SSR fallback: no localStorage available
+      const [p, sp] = createSignal<PersistedTheme>({
+        version: THEME_VERSION,
+        mode: 'system',
+        light: {},
+        dark: {},
+      });
+      persisted = p;
+      setPersisted = sp;
+    }
+
     themeMemo = createMemo(() => computeTheme(persisted()));
     createEffect(() => applyTheme(themeMemo()));
-  });
 
-  // Fix #1: Cross-tab / cross-app sync via the storage event.
-  if (typeof window !== 'undefined') {
-    window.addEventListener('storage', (e) => {
-      if (e.key === STORAGE_KEY && e.newValue) {
-        try {
-          const parsed = JSON.parse(e.newValue);
-          if (parsed.version === THEME_VERSION) setPersisted(parsed);
-        } catch {}
-      }
-    });
-  }
+    // M6: Cross-tab / cross-app sync via the storage event.
+    // Moved inside createRoot so cleanup is properly disposed on HMR/unmount.
+    if (typeof window !== 'undefined') {
+      const handler = (e: StorageEvent) => {
+        if (e.key === STORAGE_KEY && e.newValue) {
+          try {
+            const parsed = JSON.parse(e.newValue);
+            if (parsed.version === THEME_VERSION) setPersisted(parsed);
+          } catch {}
+        }
+      };
+      window.addEventListener('storage', handler);
+      onCleanup(() => window.removeEventListener('storage', handler));
+    }
+  });
 }
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
@@ -457,24 +490,20 @@ export function useTheme(config?: Partial<Theme> | DualThemeConfig): ThemeConfig
  *
  * Dark-mode colours are auto-derived from the light values via simple
  * inversion.  Explicit dark overrides in the persisted data take precedence.
+ *
+ * M10: The colour-helpers JS is generated from the actual TS implementations
+ * (hexToHsl, hslToHex, toDark) via .toString() so they cannot diverge.
  */
+useTheme.hexToHsl = hexToHsl;
+useTheme.hslToHex = hslToHex;
+useTheme.toDark = toDark;
 useTheme.getScript = (defaults?: Partial<Theme>): string => `(function(){
   var v=${THEME_VERSION};
   var def=${JSON.stringify(BUILTIN_DEFAULTS)};
   var user=${JSON.stringify(defaults || {})};
-  function toDark(hex){
-    var r=parseInt(hex.slice(1,3),16)/255,g=parseInt(hex.slice(3,5),16)/255,b=parseInt(hex.slice(5,7),16)/255;
-    var max=Math.max(r,g,b),min=Math.min(r,g,b),h=0,s=0,l=(max+min)/2;
-    if(max!==min){var d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);if(max===r)h=((g-b)/d+(g<b?6:0))/6;else if(max===g)h=((b-r)/d+2)/6;else h=((r-g)/d+4)/6;}
-    h*=360;s*=100;l*=100;
-    var dl=l>=70?6+(100-l)/30*14:l>=30?20+(70-l)/40*30:80+(30-l)/30*16;
-    var ds=s*0.55;
-    var hi=h/360,si=ds/100,li=dl/100;
-    var q=li<0.5?li*(1+si):li+si-li*si,p=2*li-q;
-    function toC(t){if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<0.5)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;}
-    var ro=Math.round(toC(hi+1/3)*255),go=Math.round(toC(hi)*255),bo=Math.round(toC(hi-1/3)*255);
-    return '#'+('00'+ro.toString(16)).slice(-2)+('00'+go.toString(16)).slice(-2)+('00'+bo.toString(16)).slice(-2);
-  }
+  ${useTheme.hexToHsl!.toString()}
+  ${useTheme.hslToHex!.toString()}
+  ${useTheme.toDark!.toString()}
   var d=Object.assign({},def,user);
   try{
     var s=localStorage.getItem('${STORAGE_KEY}');

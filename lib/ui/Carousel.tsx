@@ -68,6 +68,7 @@ export const Carousel = (props: CarouselProps) => {
       <button
         type="button"
         disabled={!canScrollLeft()}
+        aria-label="Previous slide"
         onClick={() => scroll('left')}
         class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-panel border border-stroke text-fg opacity-0 group-hover:opacity-100 transition-opacity disabled:hidden"
       >
@@ -76,6 +77,7 @@ export const Carousel = (props: CarouselProps) => {
       <button
         type="button"
         disabled={!canScrollRight()}
+        aria-label="Next slide"
         onClick={() => scroll('right')}
         class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-panel border border-stroke text-fg opacity-0 group-hover:opacity-100 transition-opacity disabled:hidden"
       >

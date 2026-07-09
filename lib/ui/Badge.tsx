@@ -1,5 +1,5 @@
 import { type VariantProps, cva } from 'class-variance-authority';
-import { type JSX, splitProps } from 'solid-js';
+import { type Component, type JSX, splitProps } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
@@ -34,7 +34,7 @@ export interface BadgeProps
    * Allows using the badge styles on links ('a').
    * @default "span"
    */
-  as?: any;
+  as?: keyof JSX.IntrinsicElements | Component<Record<string, unknown>>;
 }
 
 /**

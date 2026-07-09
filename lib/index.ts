@@ -30,6 +30,7 @@ export * from './ui/Pagination';
 export * from './ui/Popover';
 export * from './ui/Progress';
 export * from './ui/RadioGroup';
+/** @experimental Resizable is incomplete and may change. */
 export * from './ui/Resizable';
 export * from './ui/ScrollArea';
 export * from './ui/SegmentedControl';

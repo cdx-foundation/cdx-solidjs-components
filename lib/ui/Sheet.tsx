@@ -2,6 +2,7 @@ import { X } from 'lucide-solid';
 import { type JSX, Show, createEffect, onCleanup, splitProps } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
+import { createFocusTrap } from './_focusTrap';
 
 /**
  * Configuration and behavior properties for the Sheet component.
@@ -78,6 +79,24 @@ export const Sheet = (props: SheetProps) => {
     }
   });
 
+  // Escape key handler — mirrors Modal's pattern
+  const onKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') local.onClose();
+  };
+
+  createEffect(() => {
+    if (local.isOpen) {
+      window.addEventListener('keydown', onKeyDown);
+      onCleanup(() => window.removeEventListener('keydown', onKeyDown));
+    }
+  });
+
+  let panelRef: HTMLDivElement | undefined;
+  createFocusTrap(
+    () => panelRef,
+    () => local.isOpen,
+  );
+
   return (
     <Show when={local.isOpen}>
       <Portal>
@@ -97,6 +116,7 @@ export const Sheet = (props: SheetProps) => {
           <div
             role="dialog"
             aria-modal="true"
+            ref={(el) => (panelRef = el)}
             class={twMerge(
               'clean-panel fixed z-50 h-full w-full sm:max-w-md border-stroke bg-panel shadow-lg transition ease-in-out duration-300 animate-in flex flex-col focus:outline-none',
               side() === 'right'

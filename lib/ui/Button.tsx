@@ -1,5 +1,5 @@
 import { type VariantProps, cva } from 'class-variance-authority';
-import { splitProps } from 'solid-js';
+import { type JSX, splitProps } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
@@ -10,7 +10,7 @@ const buttonVariants = cva(
       variant: {
         primary: 'bg-primary text-white hover:bg-primary-hover border-none',
         secondary: 'bg-transparent text-fg border border-stroke hover:bg-surface',
-        outline: 'bg-transparent text-fg border border-stroke hover:bg-surface',
+        outline: 'bg-transparent text-fg border-2 border-stroke hover:bg-surface/50',
         ghost: 'bg-surface text-fg hover:bg-surface/80 border-none',
         destructive: 'bg-red-600 text-white hover:bg-red-700 border-none',
       },
@@ -53,7 +53,7 @@ export interface ButtonProps extends VariantProps<typeof buttonVariants> {
   /**
    * The children content inside the button.
    */
-  children?: any;
+  children?: JSX.Element;
   /**
    * Whether the button is disabled.
    */

@@ -165,7 +165,7 @@ export const ResizablePanel = (
         'flex-basis': `${size()}%`,
         'flex-grow': 0,
         'flex-shrink': 0,
-        ...(local.style as object),
+        ...(local.style as JSX.CSSProperties),
       }}
       {...others}
     />

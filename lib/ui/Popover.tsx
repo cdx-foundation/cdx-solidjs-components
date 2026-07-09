@@ -5,6 +5,7 @@ import {
   createContext,
   createSignal,
   onCleanup,
+  onMount,
   splitProps,
   useContext,
 } from 'solid-js';
@@ -111,8 +112,10 @@ export const PopoverContent = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
     }
   };
 
-  document.addEventListener('mousedown', onClickOutside);
-  onCleanup(() => document.removeEventListener('mousedown', onClickOutside));
+  onMount(() => {
+    document.addEventListener('mousedown', onClickOutside);
+    onCleanup(() => document.removeEventListener('mousedown', onClickOutside));
+  });
 
   createShortcut(['Escape'], () => {
     if (context.isOpen()) context.setIsOpen(false);

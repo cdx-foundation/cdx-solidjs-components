@@ -16,6 +16,7 @@ import {
 import { Portal } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 import { uid } from '../uid';
+import { createFocusTrap } from './_focusTrap';
 
 // --- Context & Types ---
 
@@ -154,6 +155,12 @@ export const Command = (props: CommandProps) => {
     }
   });
 
+  let wrapperRef: HTMLDivElement | undefined;
+  createFocusTrap(
+    () => wrapperRef,
+    () => local.isOpen,
+  );
+
   const handleKeyDown = (e: KeyboardEvent) => {
     const vItems = visibleItems();
     if (vItems.length === 0) {
@@ -187,6 +194,7 @@ export const Command = (props: CommandProps) => {
     <Show when={local.isOpen}>
       <Portal>
         <div
+          ref={(el) => (wrapperRef = el)}
           class="fixed inset-0 z-100 flex items-start justify-center pt-[15vh] px-4"
           onKeyDown={handleKeyDown}
         >

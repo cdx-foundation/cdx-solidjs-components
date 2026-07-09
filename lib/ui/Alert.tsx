@@ -1,6 +1,6 @@
 import { type VariantProps, cva } from 'class-variance-authority';
 import { CircleCheck, CircleX, Info, TriangleAlert } from 'lucide-solid';
-import { type JSX, splitProps } from 'solid-js';
+import { type Component, type JSX, splitProps } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
@@ -35,7 +35,7 @@ export interface AlertProps
    * Polymorphic prop to change the underlying HTML element or component.
    * @default "div"
    */
-  as?: any;
+  as?: keyof JSX.IntrinsicElements | Component<Record<string, unknown>>;
 }
 
 /**
@@ -82,7 +82,11 @@ export const Alert = (props: AlertProps) => {
  *
  * @param props - Customization options including `as`.
  */
-export const AlertTitle = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any }) => {
+export const AlertTitle = (
+  props: JSX.HTMLAttributes<HTMLElement> & {
+    as?: keyof JSX.IntrinsicElements | Component<Record<string, unknown>>;
+  },
+) => {
   const [local, others] = splitProps(props, ['class', 'children', 'as']);
   return (
     <Dynamic
@@ -107,7 +111,11 @@ export const AlertTitle = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any }
  *
  * @param props - Customization options including `as`.
  */
-export const AlertDescription = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any }) => {
+export const AlertDescription = (
+  props: JSX.HTMLAttributes<HTMLElement> & {
+    as?: keyof JSX.IntrinsicElements | Component<Record<string, unknown>>;
+  },
+) => {
   const [local, others] = splitProps(props, ['class', 'children', 'as']);
   return (
     <Dynamic

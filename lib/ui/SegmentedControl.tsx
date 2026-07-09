@@ -1,4 +1,4 @@
-import { For, Show, splitProps } from 'solid-js';
+import { type Component, For, Show, splitProps } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
@@ -11,7 +11,7 @@ export interface SegmentedControlOption {
   /** The text label displayed to the user. */
   label: string;
   /** An optional icon component to render alongside the label. */
-  icon?: any;
+  icon?: Component<{ class?: string; size?: number }>;
 }
 
 /**

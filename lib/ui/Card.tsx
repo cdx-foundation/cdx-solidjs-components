@@ -1,4 +1,4 @@
-import { type JSX, splitProps } from 'solid-js';
+import { type Component, type JSX, splitProps } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
 
@@ -24,7 +24,12 @@ import { twMerge } from 'tailwind-merge';
  *
  * @param props - Customization options including `as`.
  */
-export const Card = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any; href?: string }) => {
+export const Card = (
+  props: JSX.HTMLAttributes<HTMLElement> & {
+    as?: keyof JSX.IntrinsicElements | Component<Record<string, unknown>>;
+    href?: string;
+  },
+) => {
   const [local, others] = splitProps(props, ['class', 'children', 'as']);
   return (
     <Dynamic
@@ -62,7 +67,11 @@ export const CardHeader = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
  *
  * @param props - Customization options including `as`.
  */
-export const CardTitle = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any }) => {
+export const CardTitle = (
+  props: JSX.HTMLAttributes<HTMLElement> & {
+    as?: keyof JSX.IntrinsicElements | Component<Record<string, unknown>>;
+  },
+) => {
   const [local, others] = splitProps(props, ['class', 'children', 'as']);
   return (
     <Dynamic
@@ -82,7 +91,11 @@ export const CardTitle = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any })
  *
  * @param props - Customization options including `as`.
  */
-export const CardDescription = (props: JSX.HTMLAttributes<HTMLElement> & { as?: any }) => {
+export const CardDescription = (
+  props: JSX.HTMLAttributes<HTMLElement> & {
+    as?: keyof JSX.IntrinsicElements | Component<Record<string, unknown>>;
+  },
+) => {
   const [local, others] = splitProps(props, ['class', 'children', 'as']);
   return (
     <Dynamic

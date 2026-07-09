@@ -1,9 +1,9 @@
 import { join, resolve } from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'vite-plus';
+import { defineConfig, type UserConfig } from 'vite-plus';
 import solidPlugin from 'vite-plugin-solid';
 
-const sharedConfig: any = {
+const sharedConfig: UserConfig = {
   staged: {
     '*': 'vp check --fix',
   },

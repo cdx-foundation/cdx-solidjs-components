@@ -1,6 +1,14 @@
 import { makeEventListener } from '@solid-primitives/event-listener';
 import { Check, ChevronDown } from 'lucide-solid';
-import { For, Show, createEffect, createSelector, createSignal, splitProps } from 'solid-js';
+import {
+  For,
+  Show,
+  createEffect,
+  createSelector,
+  createSignal,
+  onCleanup,
+  splitProps,
+} from 'solid-js';
 import { twMerge } from 'tailwind-merge';
 import { uid } from '../uid';
 import { Floating } from './Floating';
@@ -141,15 +149,18 @@ export const Select = (props: SelectProps) => {
     }
   });
 
-  // Close on outside click
-  makeEventListener(document, 'mousedown', (e) => {
-    if (isOpen() && triggerRef && !triggerRef.contains(e.target as Node)) {
-      // Check if click is also not on the dropdown content (which is in a Portal)
-      const listbox = document.getElementById(`${id}-listbox`);
-      if (listbox && !listbox.contains(e.target as Node)) {
-        setIsOpen(false);
+  // M2: Gate the document listener on isOpen() — only add when open, clean up when closed.
+  createEffect(() => {
+    if (!isOpen()) return;
+    const dispose = makeEventListener(document, 'mousedown', (e) => {
+      if (triggerRef && !triggerRef.contains(e.target as Node)) {
+        const listbox = document.getElementById(`${id}-listbox`);
+        if (listbox && !listbox.contains(e.target as Node)) {
+          setIsOpen(false);
+        }
       }
-    }
+    });
+    onCleanup(dispose);
   });
 
   // Keyboard navigation

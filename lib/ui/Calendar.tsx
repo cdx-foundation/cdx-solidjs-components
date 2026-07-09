@@ -108,12 +108,13 @@ interface CalendarProps extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChan
    * - In `multiple` mode: `Date[]`
    * - In `range` mode: `DateRange`
    */
-  selected?: any;
+  selected?: Date | Date[] | DateRange;
 
   /**
    * Event handler called whenever a date interaction occurs.
    * Receives the updated selection value corresponding to the current `mode`.
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChange?: (val: any) => void;
 
   /**
@@ -189,13 +190,13 @@ export const Calendar = (props: CalendarProps) => {
     'align',
   ]);
 
-  const [viewDate, setViewDate] = createSignal(
+  const [viewDate, setViewDate] = createSignal<Date>(
     local.initialFocus instanceof Date
       ? local.initialFocus
       : local.mode === 'single' && local.selected instanceof Date
         ? local.selected
-        : local.mode === 'range' && local.selected?.from instanceof Date
-          ? local.selected.from
+        : local.mode === 'range' && (local.selected as DateRange)?.from instanceof Date
+          ? (local.selected as DateRange).from!
           : new Date(),
   );
 
@@ -250,7 +251,7 @@ export const Calendar = (props: CalendarProps) => {
     const clickedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
     if (local.mode === 'range') {
-      const s = local.selected || {};
+      const s = (local.selected as DateRange | undefined) || {};
       const { from, to } = s;
 
       if (!from || (from && to)) {
@@ -346,19 +347,27 @@ export const Calendar = (props: CalendarProps) => {
             <div role="row" class="contents" tabIndex={-1}>
               <For each={row}>
                 {({ day, date, isCurrentMonth }) => {
-                  const s = local.selected;
+                  // M9: Use local.selected directly (not destructured into `s`)
+                  // to preserve reactivity — destructured props lose reactive tracking.
                   const selected = createMemo(() => {
-                    if (!s) return false;
-                    if (local.mode === 'range')
-                      return isSameDay(date, s.from) || isSameDay(date, s.to);
-                    if (local.mode === 'multiple')
-                      return Array.isArray(s) && s.some((d) => isSameDay(d, date));
-                    return isSameDay(date, s);
+                    if (!local.selected) return false;
+                    if (local.mode === 'range') {
+                      const r = local.selected as DateRange;
+                      return isSameDay(date, r.from) || isSameDay(date, r.to);
+                    }
+                    if (local.mode === 'multiple') {
+                      const arr = local.selected as Date[];
+                      return Array.isArray(arr) && arr.some((d) => isSameDay(d, date));
+                    }
+                    return isSameDay(date, local.selected as Date);
                   });
 
                   const inRange = createMemo(() => {
-                    if (local.mode === 'range' && s?.from && s?.to) {
-                      return isWithinRange(date, s.from, s.to);
+                    if (local.mode === 'range') {
+                      const r = local.selected as DateRange | undefined;
+                      if (r?.from && r?.to) {
+                        return isWithinRange(date, r.from, r.to);
+                      }
                     }
                     return false;
                   });

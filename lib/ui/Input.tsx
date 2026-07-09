@@ -8,6 +8,7 @@ import {
   splitProps,
   untrack,
 } from 'solid-js';
+import { twMerge } from 'tailwind-merge';
 
 /**
  * Configuration and properties for the Input component.
@@ -110,10 +111,11 @@ export const Input = (props: InputProps) => {
       }
     }
 
-    if (typeof local.onInput === 'function') {
-      (local.onInput as any)(e);
-    } else if (Array.isArray(local.onInput)) {
-      (local.onInput[0] as any)(local.onInput[1], e);
+    const onInput = local.onInput;
+    if (typeof onInput === 'function') {
+      (onInput as (e: InputEvent) => void)(e);
+    } else if (Array.isArray(onInput)) {
+      (onInput[0] as (data: unknown, e: InputEvent) => void)(onInput[1], e);
     }
   };
 
@@ -121,7 +123,7 @@ export const Input = (props: InputProps) => {
     <Show
       when={local.type === 'number'}
       fallback={
-        <div class={`flex flex-col gap-1.5 w-full text-left ${local.containerClass || ''}`}>
+        <div class={twMerge('flex flex-col gap-1.5 w-full text-left', local.containerClass)}>
           <Show when={local.label}>
             <label for={id} class="text-xs font-semibold text-fg">
               {local.label}
@@ -140,7 +142,11 @@ export const Input = (props: InputProps) => {
                   .join(' ') || undefined
               }
               onInput={handleInput}
-              class={`w-full border border-stroke bg-transparent rounded-input px-3 py-2.5 text-sm font-mono text-fg outline-none placeholder:text-muted/80 transition-colors duration-150 focus:border-fg disabled:opacity-50 disabled:cursor-not-allowed ${local.error ? 'border-primary text-primary focus:border-primary ' : ''}${local.class || ''}`}
+              class={twMerge(
+                'w-full border border-stroke bg-transparent rounded-input px-3 py-2.5 text-sm font-mono text-fg outline-none placeholder:text-muted/80 transition-colors duration-150 focus:border-fg disabled:opacity-50 disabled:cursor-not-allowed',
+                local.error ? 'border-primary text-primary focus:border-primary' : '',
+                local.class,
+              )}
             />
           </div>
           <Show when={local.description}>
@@ -157,7 +163,7 @@ export const Input = (props: InputProps) => {
       }
     >
       <NumberInputInternal
-        {...(others as any)}
+        {...others}
         id={id}
         label={local.label}
         description={local.description}
@@ -174,7 +180,23 @@ export const Input = (props: InputProps) => {
   );
 };
 
-const NumberInputInternal = (props: any) => {
+interface NumberInputInternalProps {
+  label?: string;
+  description?: string;
+  error?: string;
+  value?: number;
+  onChange?: (value: number) => void;
+  step?: number | string;
+  min?: number | string;
+  max?: number | string;
+  class?: string;
+  id?: string;
+  containerClass?: string;
+  hideButtons?: boolean;
+  [key: string]: unknown;
+}
+
+const NumberInputInternal = (props: NumberInputInternalProps) => {
   const [local, others] = splitProps(props, [
     'label',
     'description',
@@ -190,7 +212,7 @@ const NumberInputInternal = (props: any) => {
     'hideButtons',
   ]);
 
-  const step = () => local.step ?? 1;
+  const step = () => Number(local.step ?? 1);
   const [internalValue, setInternalValue] = createSignal<number>(local.value ?? 0);
 
   createEffect(() => {
@@ -202,8 +224,8 @@ const NumberInputInternal = (props: any) => {
 
   const updateValue = (val: number) => {
     let next = val;
-    if (local.min !== undefined) next = Math.max(local.min, next);
-    if (local.max !== undefined) next = Math.min(local.max, next);
+    if (local.min !== undefined) next = Math.max(Number(local.min), next);
+    if (local.max !== undefined) next = Math.min(Number(local.max), next);
 
     const precision = step().toString().split('.')[1]?.length || 0;
     next = Number.parseFloat(next.toFixed(precision));
@@ -227,7 +249,7 @@ const NumberInputInternal = (props: any) => {
 
     const val = Number.parseFloat(rawValue);
     if (!Number.isNaN(val)) {
-      if (local.max !== undefined && val > local.max) {
+      if (local.max !== undefined && val > Number(local.max)) {
         e.currentTarget.value = internalValue().toString();
         return;
       }
@@ -236,7 +258,7 @@ const NumberInputInternal = (props: any) => {
   };
 
   return (
-    <div class={`flex flex-col gap-1.5 w-full text-left ${local.containerClass || ''}`}>
+    <div class={twMerge('flex flex-col gap-1.5 w-full text-left', local.containerClass)}>
       <Show when={local.label}>
         <label for={local.id} class="text-xs font-semibold text-fg">
           {local.label}
@@ -263,7 +285,13 @@ const NumberInputInternal = (props: any) => {
           step={local.step}
           min={local.min}
           max={local.max}
-          class={`w-full border border-stroke bg-transparent rounded-input py-2.5 text-sm font-mono text-fg outline-none placeholder:text-muted/80 transition-colors duration-150 focus:border-fg text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${!local.hideButtons ? 'px-10 ' : ''}${local.hideButtons ? 'px-3 text-left ' : ''}${local.error ? 'border-primary text-primary ' : ''}${local.class || ''}`}
+          class={twMerge(
+            'w-full border border-stroke bg-transparent rounded-input py-2.5 text-sm font-mono text-fg outline-none placeholder:text-muted/80 transition-colors duration-150 focus:border-fg text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
+            !local.hideButtons ? 'px-10' : '',
+            local.hideButtons ? 'px-3 text-left' : '',
+            local.error ? 'border-primary text-primary' : '',
+            local.class,
+          )}
           {...others}
         />
 

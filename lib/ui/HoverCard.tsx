@@ -46,7 +46,7 @@ export const HoverCardTrigger = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
 
   let timeoutId: number | undefined;
 
-  const handleMouseEnter = (e: any) => {
+  const handleMouseEnter: JSX.EventHandler<HTMLDivElement, MouseEvent> = (e) => {
     clearTimeout(timeoutId);
     context.setIsOpen(true);
     if (typeof local.onMouseEnter === 'function') {
@@ -56,7 +56,7 @@ export const HoverCardTrigger = (props: JSX.HTMLAttributes<HTMLDivElement>) => {
     }
   };
 
-  const handleMouseLeave = (e: any) => {
+  const handleMouseLeave: JSX.EventHandler<HTMLDivElement, MouseEvent> = (e) => {
     timeoutId = window.setTimeout(() => context.setIsOpen(false), 200);
     if (typeof local.onMouseLeave === 'function') {
       local.onMouseLeave(e);

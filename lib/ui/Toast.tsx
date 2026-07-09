@@ -52,9 +52,6 @@ export interface ToastData {
   type?: 'default' | 'info' | 'success' | 'warning' | 'error';
 }
 
-// Global state for toast management
-const [toasts, setToasts] = createSignal<ToastData[]>([]);
-
 /**
  * Possible positions for the Toaster to appear on the screen.
  */
@@ -66,53 +63,149 @@ export type ToasterPosition =
   | 'bottom-center'
   | 'bottom-right';
 
-const [toasterPosition, setToasterPosition] = createSignal<ToasterPosition>('bottom-right');
-
-// Global configuration for toast behavior, updated via Toaster component
-const [toastConfig, _setToastConfig] = createSignal({
-  duration: 4000,
-  maxToasts: 5,
-});
-
-// Toaster instance management to prevent duplicates
-const [activeToasters, setActiveToasters] = createSignal<string[]>([]);
-
-// Track auto-dismiss timeouts for cleanup on manual dismiss
-const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
-
 /**
  * Arguments that can be passed to the toast functions.
  */
 export type ToastArgs = string | Omit<ToastData, 'id'>;
 
-/**
- * Programmatic helper to trigger notifications.
- */
-const createToast = (data: ToastArgs) => {
-  const payload: Omit<ToastData, 'id'> = typeof data === 'string' ? { title: data } : data;
-  const id = Math.random().toString(36).substring(2, 9);
-  const config = toastConfig();
-  const duration = payload.duration ?? config.duration;
+// --- Toast function type ---
+interface ToastFunction {
+  (data: ToastArgs): string;
+  setPosition: (pos: ToasterPosition) => void;
+  info: (data: ToastArgs) => string;
+  success: (data: ToastArgs) => string;
+  warning: (data: ToastArgs) => string;
+  error: (data: ToastArgs) => string;
+}
 
-  setToasts((prev) => {
-    const item: ToastData = { type: 'default', ...payload, id };
-    const next = [...prev, item];
-    if (next.length > config.maxToasts) {
-      return next.slice(next.length - config.maxToasts);
-    }
-    return next;
+/**
+ * Creates an isolated toaster instance with its own signals and state.
+ *
+ * Use this for advanced scenarios where you need multiple independent
+ * toast queues or want to scope toast state to a specific part of the UI.
+ *
+ * The default `toast()` function and `<Toaster />` component are backed
+ * by a singleton instance created on first use in the browser.
+ *
+ * @example
+ * ```tsx
+ * const myToaster = createToaster();
+ *
+ * // Use it programmatically
+ * myToaster.toast.success('Done!');
+ *
+ * // Render a dedicated Toaster for this instance
+ * <myToaster.Toaster />
+ * ```
+ */
+export function createToaster() {
+  const [toasts, setToasts] = createSignal<ToastData[]>([]);
+
+  const [toasterPosition, setToasterPosition] = createSignal<ToasterPosition>('bottom-right');
+
+  const [toastConfig, _setToastConfig] = createSignal({
+    duration: 4000,
+    maxToasts: 5,
   });
 
-  // Auto-dismiss logic
-  if (duration > 0) {
-    const tid = setTimeout(() => {
-      toastTimeouts.delete(id);
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, duration);
-    toastTimeouts.set(id, tid);
-  }
+  const [activeToasters, setActiveToasters] = createSignal<string[]>([]);
 
-  return id;
+  // Track auto-dismiss timeouts for cleanup on manual dismiss
+  const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
+
+  const createToast = (data: ToastArgs): string => {
+    const payload: Omit<ToastData, 'id'> = typeof data === 'string' ? { title: data } : data;
+    const id = Math.random().toString(36).substring(2, 9);
+    const config = toastConfig();
+    const duration = payload.duration ?? config.duration;
+
+    setToasts((prev) => {
+      const item: ToastData = { type: 'default', ...payload, id };
+      const next = [...prev, item];
+      if (next.length > config.maxToasts) {
+        return next.slice(next.length - config.maxToasts);
+      }
+      return next;
+    });
+
+    // Auto-dismiss logic
+    if (duration > 0) {
+      const tid = setTimeout(() => {
+        toastTimeouts.delete(id);
+        setToasts((prev) => prev.filter((t) => t.id !== id));
+      }, duration);
+      toastTimeouts.set(id, tid);
+    }
+
+    return id;
+  };
+
+  const toast: ToastFunction = Object.assign(createToast, {
+    /**
+     * Dynamically updates the global spawn position of the Toaster.
+     */
+    setPosition: (pos: ToasterPosition) => setToasterPosition(pos),
+
+    /**
+     * Trigger an info notification.
+     */
+    info: (data: ToastArgs) => {
+      const payload = typeof data === 'string' ? { title: data } : data;
+      return createToast({ ...payload, type: 'info' });
+    },
+
+    /**
+     * Trigger a success notification.
+     */
+    success: (data: ToastArgs) => {
+      const payload = typeof data === 'string' ? { title: data } : data;
+      return createToast({ ...payload, type: 'success' });
+    },
+
+    /**
+     * Trigger a warning notification.
+     */
+    warning: (data: ToastArgs) => {
+      const payload = typeof data === 'string' ? { title: data } : data;
+      return createToast({ ...payload, type: 'warning' });
+    },
+
+    /**
+     * Trigger an error notification.
+     */
+    error: (data: ToastArgs) => {
+      const payload = typeof data === 'string' ? { title: data } : data;
+      return createToast({ ...payload, type: 'error' });
+    },
+  });
+
+  return {
+    toasts,
+    setToasts,
+    toasterPosition,
+    setToasterPosition,
+    toastConfig,
+    _setToastConfig,
+    activeToasters,
+    setActiveToasters,
+    toast,
+    toastTimeouts,
+  };
+}
+
+// ─── Default singleton (lazy, client-side only) ────────────────────────────
+
+let _defaultInstance: ReturnType<typeof createToaster> | undefined;
+
+function getDefaultInstance(): ReturnType<typeof createToaster> {
+  if (typeof window !== 'undefined' && !_defaultInstance) {
+    _defaultInstance = createToaster();
+  }
+  return _defaultInstance!;
+}
+
+const _defaultToastCall = (data: ToastArgs): string => {
+  return getDefaultInstance().toast(data);
 };
 
 /**
@@ -143,43 +236,31 @@ const createToast = (data: ToastArgs) => {
  * toast.error("An unexpected error occurred.");
  * ```
  */
-export const toast = Object.assign(createToast, {
+export const toast: ToastFunction = Object.assign(_defaultToastCall, {
   /**
    * Dynamically updates the global spawn position of the Toaster.
    */
-  setPosition: (pos: ToasterPosition) => setToasterPosition(pos),
+  setPosition: (pos: ToasterPosition) => getDefaultInstance().toast.setPosition(pos),
 
   /**
    * Trigger an info notification.
    */
-  info: (data: ToastArgs) => {
-    const payload = typeof data === 'string' ? { title: data } : data;
-    return createToast({ ...payload, type: 'info' });
-  },
+  info: (data: ToastArgs) => getDefaultInstance().toast.info(data),
 
   /**
    * Trigger a success notification.
    */
-  success: (data: ToastArgs) => {
-    const payload = typeof data === 'string' ? { title: data } : data;
-    return createToast({ ...payload, type: 'success' });
-  },
+  success: (data: ToastArgs) => getDefaultInstance().toast.success(data),
 
   /**
    * Trigger a warning notification.
    */
-  warning: (data: ToastArgs) => {
-    const payload = typeof data === 'string' ? { title: data } : data;
-    return createToast({ ...payload, type: 'warning' });
-  },
+  warning: (data: ToastArgs) => getDefaultInstance().toast.warning(data),
 
   /**
    * Trigger an error notification.
    */
-  error: (data: ToastArgs) => {
-    const payload = typeof data === 'string' ? { title: data } : data;
-    return createToast({ ...payload, type: 'error' });
-  },
+  error: (data: ToastArgs) => getDefaultInstance().toast.error(data),
 });
 
 /**
@@ -234,6 +315,19 @@ export interface ToasterProps {
  * - **Capacity Control:** Limit the number of concurrent notifications via `maxToasts`.
  */
 export const Toaster = (props: ToasterProps & { class?: string }) => {
+  const inst = getDefaultInstance();
+  if (!inst) return null; // SSR — render nothing
+
+  const {
+    toasts,
+    setToasts,
+    toasterPosition,
+    setToasterPosition,
+    activeToasters,
+    setActiveToasters,
+    toastTimeouts,
+  } = inst;
+
   const id = Math.random().toString(36).substring(2, 9);
   const [local, others] = splitProps(props, ['position', 'duration', 'maxToasts', 'class']);
   const position = () => local.position || toasterPosition();

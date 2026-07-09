@@ -2,6 +2,7 @@ import { X } from 'lucide-solid';
 import { type JSX, Show, createEffect, onCleanup, splitProps } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { twMerge } from 'tailwind-merge';
+import { createFocusTrap } from './_focusTrap';
 
 /**
  * Configuration and behavior properties for the Modal component.
@@ -83,6 +84,12 @@ export const Modal = (props: ModalProps) => {
     }
   });
 
+  let dialogRef: HTMLDivElement | undefined;
+  createFocusTrap(
+    () => dialogRef,
+    () => local.isOpen,
+  );
+
   return (
     <Portal>
       <Show when={local.isOpen}>
@@ -99,6 +106,7 @@ export const Modal = (props: ModalProps) => {
           <div
             role="dialog"
             aria-modal="true"
+            ref={(el) => (dialogRef = el)}
             class={twMerge(
               'clean-panel relative z-10 w-full max-w-md p-6 animate-in fade-in duration-200 focus:outline-none',
               local.class,
