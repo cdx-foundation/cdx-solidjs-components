@@ -1,37 +1,52 @@
-# Starling UI Demo
+# Starling Components Demo
 
-> Interactive demo app for the cdx-solidjs-components (Starling UI) component library. Built with SolidJS, TypeScript, and Tailwind CSS.
+> Live interactive showcase for Starling UI, the SolidJS component library published on npm as `@cdx-foundation/cdx-solidjs-components`. Built with SolidJS, TypeScript, and Tailwind CSS.
 
-## Quick Start
+## About
 
-```bash
-cd apps/cdx-solidjs-components
-vp install
-vp dev            # starts demo at http://localhost:5173
-```
+This is a single-page demo app for the Starling UI component library. Every section shows live, interactive component examples alongside their source code, and an interactive theme builder lets you tweak the design tokens and preview the result instantly.
 
-## Key Files
+Navigation is client-side only: switch sections from the sidebar, or press Ctrl+K for the command palette. There are no per-section URLs.
 
-- [App.tsx](src/App.tsx): Main demo app with sidebar navigation, command palette, and section routing
-- [index.html](index.html): HTML entry with inline theme persistence script
-- [style.css](src/style.css): Demo-specific styles, CSS variable mappings, and style presets
-- [Preview](src/components/Preview.tsx): Reusable component preview wrapper (live demo + code snippet)
+## What's on this page
 
-## Demo Sections
-
-- [IntroSection](src/components/IntroSection.tsx): Landing / hero
-- [GetStartedSection](src/components/GetStartedSection.tsx): Installation guide
-- [ThemingSection](src/components/ThemingSection.tsx): Theme system overview
-- [ThemeCreator](src/components/ThemeCreator.tsx): Interactive theme builder
-- [LayoutSection](src/components/LayoutSection.tsx): Card, ScrollArea, AspectRatio
-- [FormsSection](src/components/FormsSection.tsx): Buttons, inputs, selects, sliders, switches
-- [NavSection](src/components/NavSection.tsx): Tabs, Breadcrumb, Sidebar
-- [DataSection](src/components/DataSection.tsx): Badge, Table, Avatar, Kbd, Calendar
-- [FeedbackSection](src/components/FeedbackSection.tsx): Alert, Progress, Skeleton, Toast
-- [OverlaysSection](src/components/OverlaysSection.tsx): Modal, Sheet, Popover, Tooltip, Command
-- [DisclosureSection](src/components/DisclosureSection.tsx): Accordion, Collapsible, Carousel
-- [UtilsSection](src/components/UtilsSection.tsx): Hooks and directives
+- **Intro**: Landing hero for the library.
+- **Get Started**: Installation and usage guide for the npm package.
+- **Theming**: Design-token overview, CSS variables, and theme customization docs.
+- **Theme Creator**: Interactive theme builder with live preview — edit background, panel, surface, border, foreground, and muted colors, then copy the generated token overrides. Also serves as a kitchen-sink preview of most components (Avatar, Badge, Breadcrumb, Button, Card, Checkbox, Collapsible, ColorPicker, DatePicker, HoverCard, Kbd, Modal, Popover, Progress, RadioGroup, SegmentedControl, Separator, Skeleton, Slider, Switch, Table, Tooltip, and more).
+- **Layout**: Card, ScrollArea, AspectRatio.
+- **Forms**: Button, Input, Label, SegmentedControl, Select, Slider, Switch, Textarea.
+- **Navigation**: Tabs, Breadcrumb. The app shell itself uses the Sidebar component and a Command palette.
+- **Data**: Badge, Table, Calendar (single/range/multiple with time picker), DatePicker, Code, Select, Switch.
+- **Feedback**: Alert, Progress, Skeleton, Toast.
+- **Overlays**: Modal, Sheet, Popover, Tooltip, HoverCard.
+- **Disclosure**: Accordion.
+- **Utils**: Hooks (`useTheme`, `useDisclosure`) and directives (`autofocus`, `clipboard`, `hover`).
 
 ## Library
 
-The component source lives under `lib/` at the workspace root. Published as `cdx-solidjs-components` on npm.
+The `@cdx-foundation/cdx-solidjs-components` package (Solid.js, published as ESM + CJS) includes the components shown above plus: DropdownMenu, Menubar, NavigationMenu, ContextMenu, Pagination, Carousel, Floating, Resizable, ColorPicker, Sidebar, Command, and more. It ships with a design-token `theme.css` available under the `@cdx-foundation/cdx-solidjs-components/theme` export.
+
+## Useful links
+
+- Demo site: <https://cdx-foundation.github.io/cdx-solidjs-components/>
+- GitHub repository: <https://github.com/cdx-foundation/cdx-solidjs-components>
+- npm package: <https://www.npmjs.com/package/@cdx-foundation/cdx-solidjs-components>
+- README: <https://raw.githubusercontent.com/cdx-foundation/cdx-solidjs-components/master/README.md>
+- Docs — introduction: <https://raw.githubusercontent.com/cdx-foundation/cdx-solidjs-components/master/docs/introduction.md>
+- Docs — get started: <https://raw.githubusercontent.com/cdx-foundation/cdx-solidjs-components/master/docs/get-started.md>
+- Docs — theming: <https://raw.githubusercontent.com/cdx-foundation/cdx-solidjs-components/master/docs/theming.md>
+- Docs — utilities: <https://raw.githubusercontent.com/cdx-foundation/cdx-solidjs-components/master/docs/utilities.md>
+
+## Local development
+
+The repository root is the library itself; the demo lives in `demo/`. The project uses the Vite+ toolchain (`vp`).
+
+```bash
+git clone https://github.com/cdx-foundation/cdx-solidjs-components.git
+cd cdx-solidjs-components
+vp install
+vp dev        # starts the demo at http://localhost:5173
+```
+
+Run `vp check` for lint/format/typecheck and `vp test` for the test suite. The demo is deployed to GitHub Pages from the `master` branch by the `Deploy Demo` workflow.
