@@ -22,12 +22,12 @@ export const LayoutSection = () => {
       <Preview
         title="Card"
         description="A fundamental layout container for grouping related content."
-        code={`import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'cdx-solidjs-components/ui/Card';\nimport { Button } from 'cdx-solidjs-components/ui/Button';\n\n<Card class="max-w-sm">\n  <CardHeader>\n    <CardTitle>Instance Overview</CardTitle>\n    <CardDescription>Managed by Starling Cloud</CardDescription>\n  </CardHeader>\n  <CardContent>\n    <p class="text-sm text-muted">All systems in us-east-1 are operational.</p>\n  </CardContent>\n  <CardFooter>\n    <Button variant="outline" class="w-full">View Cluster Metrics</Button>\n  </CardFooter>\n</Card>`}
+        code={`import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from 'cdx-solidjs-components/ui/Card';\nimport { Button } from 'cdx-solidjs-components/ui/Button';\n\n<Card class="max-w-sm">\n  <CardHeader>\n    <CardTitle>Instance Overview</CardTitle>\n    <CardDescription>Managed by CDX Cloud</CardDescription>\n  </CardHeader>\n  <CardContent>\n    <p class="text-sm text-muted">All systems in us-east-1 are operational.</p>\n  </CardContent>\n  <CardFooter>\n    <Button variant="outline" class="w-full">View Cluster Metrics</Button>\n  </CardFooter>\n</Card>`}
       >
         <Card class="max-w-sm">
           <CardHeader>
             <CardTitle>Instance Overview</CardTitle>
-            <CardDescription>Managed by Starling Cloud</CardDescription>
+            <CardDescription>Managed by CDX Cloud</CardDescription>
           </CardHeader>
           <CardContent>
             <p class="text-sm text-muted">

@@ -32,7 +32,8 @@ export const UtilsSection = () => {
     <section class="space-y-10">
       <h1 class="text-4xl font-extrabold tracking-tight">Utilities</h1>
       <p class="text-muted leading-relaxed max-w-2xl">
-        Shared hooks and directives that power Starling UI's interactive features.
+        Shared hooks and directives that power the cdx-solidjs-components library's interactive
+        features.
       </p>
 
       <div class="space-y-4">
@@ -88,10 +89,14 @@ export const UtilsSection = () => {
               const { hasCopied, onCopy } = useClipboardLocal();
               return (
                 <div class="flex gap-2 w-full">
-                  <Input value="npm install starling-ui" readonly class="flex-1" />
+                  <Input
+                    value="npm install @cdx-foundation/cdx-solidjs-components"
+                    readonly
+                    class="flex-1"
+                  />
                   <Button
                     variant={hasCopied() ? 'secondary' : 'primary'}
-                    onClick={() => onCopy('npm install starling-ui')}
+                    onClick={() => onCopy('npm install @cdx-foundation/cdx-solidjs-components')}
                   >
                     <Show when={hasCopied()} fallback="Copy">
                       Copied
@@ -113,7 +118,7 @@ export const UtilsSection = () => {
           <div class="p-6 clean-panel flex flex-col items-center justify-center gap-4">
             <Button
               variant="outline"
-              use:clipboard={() => 'Hello from Starling Directive!'}
+              use:clipboard={() => 'Hello from cdx-solidjs-components directive!'}
               onClick={() => toast.success('Copied to clipboard via directive!')}
             >
               Click to Copy

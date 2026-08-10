@@ -1,10 +1,10 @@
-# Starling Components Demo
+# cdx-solidjs-components Demo
 
-> Live interactive showcase for Starling UI, the SolidJS component library published on npm as `@cdx-foundation/cdx-solidjs-components`. Built with SolidJS, TypeScript, and Tailwind CSS.
+> Live interactive showcase for the cdx-solidjs-components SolidJS component library, published on npm as `@cdx-foundation/cdx-solidjs-components`. Built with SolidJS, TypeScript, and Tailwind CSS.
 
 ## About
 
-This is a single-page demo app for the Starling UI component library. Every section shows live, interactive component examples alongside their source code, and an interactive theme builder lets you tweak the design tokens and preview the result instantly.
+This is a single-page demo app for the cdx-solidjs-components library. Every section shows live, interactive component examples alongside their source code, and an interactive theme builder lets you tweak the design tokens and preview the result instantly.
 
 Navigation is client-side only: switch sections from the sidebar, or press Ctrl+K for the command palette. There are no per-section URLs.
 

@@ -309,7 +309,7 @@ export default function App() {
                     <span class="text-white font-black text-xl">S</span>
                   </div>
                 </span>
-                <span class="text-xl font-bold tracking-tight">Starling UI</span>
+                <span class="text-xl font-bold tracking-tight">cdx-solidjs-components</span>
               </Sidebar.MenuButton>
             </Sidebar.MenuItem>
           </Sidebar.Menu>
@@ -350,7 +350,7 @@ export default function App() {
             <Sidebar.MenuItem>
               <Sidebar.MenuButton
                 as="a"
-                href="https://github.com/StarlingCityDevelopment/cdx-solidjs-components"
+                href="https://github.com/cdx-foundation/cdx-solidjs-components"
                 target="_blank"
                 tooltip="GitHub"
               >

@@ -213,7 +213,7 @@ export const ThemeCreator = () => {
     const shadow = theme.shadow();
     const headerFont = theme.headerFont();
     const btnShadow = theme.btnShadow();
-    return `-- Starling UI Theme Configuration
+    return `-- cdx-solidjs-components Theme Configuration
 -- Paste into server.cfg or your resource's config.lua
 --
 -- On the client, read these convars and apply with setTheme():
@@ -597,7 +597,7 @@ setr theme:dark:btnShadow "${btnShadow}"`;
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <span class="font-bold">starling-production-01</span>
+                  <span class="font-bold">cdx-production-01</span>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
@@ -937,7 +937,7 @@ setr theme:dark:btnShadow "${btnShadow}"`;
                       </HoverCard>
                     </Label>
                     <Input
-                      value="starling-production-01"
+                      value="cdx-production-01"
                       class="border-2 border-stroke rounded-none font-mono"
                     />
                   </div>

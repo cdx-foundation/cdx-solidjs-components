@@ -13,8 +13,8 @@ export const ThemingSection = () => {
     <section class="space-y-8">
       <h1 class="text-4xl font-extrabold tracking-tight">Theming</h1>
       <p class="text-muted leading-relaxed max-w-2xl">
-        Starling UI uses a CSS variable-based design system. You can override these variables in
-        your global CSS to customize the entire library.
+        cdx-solidjs-components uses a CSS variable-based design system. You can override these
+        variables in your global CSS to customize the entire library.
       </p>
 
       <div class="space-y-10">

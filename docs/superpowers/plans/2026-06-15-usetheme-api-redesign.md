@@ -234,7 +234,7 @@ Change the `useTheme` example block (lines 65-77) to match the new API:
 ````markdown
 ### Via `useTheme` Hook
 
-Starling UI provides a built-in `useTheme` hook that manages the full application theme.
+cdx-solidjs-components provides a built-in `useTheme` hook that manages the full application theme.
 
 ```tsx
 import { useTheme } from 'cdx-solidjs-components/hooks';

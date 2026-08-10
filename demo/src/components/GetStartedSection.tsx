@@ -6,7 +6,7 @@ export const GetStartedSection = () => {
     <section class="space-y-10">
       <div>
         <h1 class="text-4xl font-extrabold tracking-tight mb-4">Installation</h1>
-        <p class="text-muted">Set up Starling UI in your project in seconds.</p>
+        <p class="text-muted">Set up cdx-solidjs-components in your project in seconds.</p>
       </div>
 
       <div class="space-y-4">

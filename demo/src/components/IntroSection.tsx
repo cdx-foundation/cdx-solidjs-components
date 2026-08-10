@@ -17,9 +17,9 @@ export const IntroSection = (props: IntroSectionProps) => {
         Precision components for <span class="gradient-text">technical teams</span>.
       </h1>
       <p class="text-xl text-muted leading-relaxed max-w-2xl">
-        Starling UI is a meticulously crafted component library for SolidJS, optimized for
-        data-heavy interfaces. It emphasizes precision, accessibility, and professional aesthetics.
-        Heavily inspired by{' '}
+        cdx-solidjs-components is a meticulously crafted component library for SolidJS, optimized
+        for data-heavy interfaces. It emphasizes precision, accessibility, and professional
+        aesthetics. Heavily inspired by{' '}
         <a href="https://shadcn-svelte.com/" class="text-primary hover:underline font-semibold">
           shadcn-svelte
         </a>
@@ -53,7 +53,7 @@ export const IntroSection = (props: IntroSectionProps) => {
         <Button
           variant="secondary"
           as="a"
-          href="https://github.com/StarlingCityDevelopment/cdx-solidjs-components"
+          href="https://github.com/cdx-foundation/cdx-solidjs-components"
         >
           GitHub Repository
         </Button>
