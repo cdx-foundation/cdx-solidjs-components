@@ -1,3 +1,9 @@
+## [1.1.2](https://github.com/cdx-foundation/cdx-solidjs-components/compare/v1.1.1...v1.1.2) (2026-08-10)
+
+### Bug Fixes
+
+- comprehensive codebase review fixes (a11y, SSR, package config, types, tests) ([736e867](https://github.com/cdx-foundation/cdx-solidjs-components/commit/736e867dab0f9559b861abdb08fb4b2e39882554))
+
 ## [1.1.1](https://github.com/cdx-foundation/cdx-solidjs-components/compare/v1.1.0...v1.1.1) (2026-06-25)
 
 ### Bug Fixes
