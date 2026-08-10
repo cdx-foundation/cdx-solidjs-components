@@ -80,7 +80,7 @@ export default defineConfig(({ command }) => {
           chunkFileNames: '[name]-[hash].[format].js',
         },
       },
-      minify: 'esbuild',
+      minify: 'oxc',
       target: 'esnext',
     },
   };
