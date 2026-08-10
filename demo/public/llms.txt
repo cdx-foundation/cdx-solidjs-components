@@ -1,0 +1,37 @@
+# Starling UI Demo
+
+> Interactive demo app for the cdx-solidjs-components (Starling UI) component library. Built with SolidJS, TypeScript, and Tailwind CSS.
+
+## Quick Start
+
+```bash
+cd apps/cdx-solidjs-components
+vp install
+vp dev            # starts demo at http://localhost:5173
+```
+
+## Key Files
+
+- [App.tsx](src/App.tsx): Main demo app with sidebar navigation, command palette, and section routing
+- [index.html](index.html): HTML entry with inline theme persistence script
+- [style.css](src/style.css): Demo-specific styles, CSS variable mappings, and style presets
+- [Preview](src/components/Preview.tsx): Reusable component preview wrapper (live demo + code snippet)
+
+## Demo Sections
+
+- [IntroSection](src/components/IntroSection.tsx): Landing / hero
+- [GetStartedSection](src/components/GetStartedSection.tsx): Installation guide
+- [ThemingSection](src/components/ThemingSection.tsx): Theme system overview
+- [ThemeCreator](src/components/ThemeCreator.tsx): Interactive theme builder
+- [LayoutSection](src/components/LayoutSection.tsx): Card, ScrollArea, AspectRatio
+- [FormsSection](src/components/FormsSection.tsx): Buttons, inputs, selects, sliders, switches
+- [NavSection](src/components/NavSection.tsx): Tabs, Breadcrumb, Sidebar
+- [DataSection](src/components/DataSection.tsx): Badge, Table, Avatar, Kbd, Calendar
+- [FeedbackSection](src/components/FeedbackSection.tsx): Alert, Progress, Skeleton, Toast
+- [OverlaysSection](src/components/OverlaysSection.tsx): Modal, Sheet, Popover, Tooltip, Command
+- [DisclosureSection](src/components/DisclosureSection.tsx): Accordion, Collapsible, Carousel
+- [UtilsSection](src/components/UtilsSection.tsx): Hooks and directives
+
+## Library
+
+The component source lives under `lib/` at the workspace root. Published as `cdx-solidjs-components` on npm.
