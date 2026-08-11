@@ -292,6 +292,42 @@ describe('useTheme', () => {
     expect(full).toHaveProperty('dark');
   });
 
+  it('lightTheme and darkTheme return full themes for each mode independently', () => {
+    const theme = useTheme();
+    theme.setTheme({
+      light: { bg: '#fefefe', fg: '#101010', accent: '#123456' },
+      dark: { bg: '#010101', accent: '#654321' },
+    });
+
+    // Light branch = defaults + light overrides, dark flag false.
+    expect(theme.lightTheme().dark).toBe(false);
+    expect(theme.lightTheme().bg).toBe('#fefefe');
+    expect(theme.lightTheme().fg).toBe('#101010');
+    expect(theme.lightTheme().accent).toBe('#123456');
+
+    // Dark branch = auto-derived colours + explicit dark overrides, dark flag true.
+    expect(theme.darkTheme().dark).toBe(true);
+    expect(theme.darkTheme().bg).toBe('#010101');
+    expect(theme.darkTheme().fg).toBe(toDark('#101010'));
+    expect(theme.darkTheme().accent).toBe('#654321');
+  });
+
+  it('lightTheme and darkTheme are stable regardless of the active mode', () => {
+    const theme = useTheme();
+    theme.setTheme({ light: { bg: '#eeeeee' }, dark: { bg: '#111111' } });
+
+    const lightBefore = theme.lightTheme().bg;
+    const darkBefore = theme.darkTheme().bg;
+
+    theme.setTheme({ dark: true });
+    expect(theme.lightTheme().bg).toBe(lightBefore);
+    expect(theme.darkTheme().bg).toBe(darkBefore);
+
+    theme.setTheme({ dark: false });
+    expect(theme.lightTheme().bg).toBe(lightBefore);
+    expect(theme.darkTheme().bg).toBe(darkBefore);
+  });
+
   it('accessor functions all return string values except isDark/theme', () => {
     const theme = useTheme();
     expect(typeof theme.isDark()).toBe('boolean');

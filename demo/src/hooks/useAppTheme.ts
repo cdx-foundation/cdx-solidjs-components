@@ -18,6 +18,8 @@ export function useAppTheme() {
   const {
     isDark,
     accent,
+    lightTheme,
+    darkTheme,
     bg,
     panel,
     surface,
@@ -43,6 +45,10 @@ export function useAppTheme() {
   return {
     isDark,
     accentColor: accent,
+    /** Full computed light theme (defaults + light overrides). */
+    lightTheme,
+    /** Full computed dark theme (auto-derived colours + explicit overrides). */
+    darkTheme,
     bg,
     panel,
     surface,

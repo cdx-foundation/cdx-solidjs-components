@@ -65,6 +65,10 @@ export type ThemeConfig = {
 
   /** Full theme object (for serialisation / bulk reads). */
   theme: Accessor<Theme>;
+  /** Full light-mode theme (defaults + light overrides). */
+  lightTheme: Accessor<Theme>;
+  /** Full dark-mode theme (auto-derived colours + explicit dark overrides). */
+  darkTheme: Accessor<Theme>;
 
   /** Merge a partial theme or apply a dual-theme config ({ light, dark }). */
   setTheme: (config: Partial<Theme> | DualThemeConfig) => void;
@@ -445,6 +449,11 @@ export function useTheme(config?: Partial<Theme> | DualThemeConfig): ThemeConfig
 
   return {
     theme: () => themeMemo!(),
+    // Compute each mode's full theme independent of the active mode, so
+    // consumers (e.g. export/serialisation) get true light and dark values
+    // instead of whatever mode is currently active.
+    lightTheme: () => computeTheme({ ...persisted(), mode: 'light' }),
+    darkTheme: () => computeTheme({ ...persisted(), mode: 'dark' }),
     isDark: () => themeMemo!().dark,
     accent: () => themeMemo!().accent,
     bg: () => themeMemo!().bg,

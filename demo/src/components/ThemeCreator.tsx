@@ -12,7 +12,7 @@ import {
 } from 'lucide-solid';
 import { For, Show, createSignal } from 'solid-js';
 import { twMerge } from 'tailwind-merge';
-import { toDark } from '../../../lib/hooks/useTheme';
+import { type Theme, toDark } from '../../../lib/hooks/useTheme';
 import { FONTS, SHADOWS } from '../../../lib/theme-tokens';
 import {
   Accordion,
@@ -140,23 +140,27 @@ export const ThemeCreator = () => {
 
   // ── Export generators ───────────────────────────────────────────────────────
 
+  /** Pick the exportable style fields from a computed theme. */
+  const pickThemeFields = (t: Theme) => ({
+    accent: t.accent,
+    bg: t.bg,
+    panel: t.panel,
+    surface: t.surface,
+    border: t.border,
+    fg: t.fg,
+    muted: t.muted,
+    radius: t.radius,
+    font: t.font,
+    headerFont: t.headerFont,
+    shadow: t.shadow,
+    btnShadow: t.btnShadow,
+  });
+
   const generateObject = () => {
-    const common = {
-      accent: theme.accentColor(),
-      bg: theme.bg(),
-      panel: theme.panel(),
-      surface: theme.surface(),
-      border: theme.border(),
-      fg: theme.fg(),
-      muted: theme.muted(),
-      radius: theme.radius(),
-      font: theme.bodyFont(),
-      headerFont: theme.headerFont(),
-      shadow: theme.shadow(),
-      btnShadow: theme.btnShadow(),
-    };
+    const light = pickThemeFields(theme.lightTheme());
+    const dark = pickThemeFields(theme.darkTheme());
     return JSON.stringify(
-      { light: { ...common, dark: false }, dark: { ...common, dark: true } },
+      { light: { ...light, dark: false }, dark: { ...dark, dark: true } },
       null,
       2,
     );
@@ -166,16 +170,18 @@ export const ThemeCreator = () => {
     const primaryColor = theme.accentColor();
     const primaryRgb = hexToRgb(primaryColor);
     const r = theme.radius();
+    const light = theme.lightTheme();
+    const dark = theme.darkTheme();
     return `:root {
     --primary-color: ${primaryColor};
     --primary-rgb: ${primaryRgb};
-    --bg-main: ${theme.bg()};
-    --bg-panel: ${theme.panel()};
-    --bg-surface: ${theme.surface()};
-    --fg-main: ${theme.fg()};
-    --text-muted: ${theme.muted()};
-    --border-main: ${theme.border()};
-    --stroke: ${theme.border()};
+    --bg-main: ${light.bg};
+    --bg-panel: ${light.panel};
+    --bg-surface: ${light.surface};
+    --fg-main: ${light.fg};
+    --text-muted: ${light.muted};
+    --border-main: ${light.border};
+    --stroke: ${light.border};
     --ring-main: rgba(0, 0, 0, 0.05);
     --glass-border: rgba(0, 0, 0, 0.06);
     --radius-card: ${r};
@@ -193,13 +199,13 @@ export const ThemeCreator = () => {
 
   .dark {
     --primary-rgb: ${primaryRgb};
-    --bg-main: ${theme.bg()};
-    --bg-panel: ${theme.panel()};
-    --bg-surface: ${theme.surface()};
-    --fg-main: ${theme.fg()};
-    --text-muted: ${theme.muted()};
-    --border-main: ${theme.border()};
-    --stroke: ${theme.border()};
+    --bg-main: ${dark.bg};
+    --bg-panel: ${dark.panel};
+    --bg-surface: ${dark.surface};
+    --fg-main: ${dark.fg};
+    --text-muted: ${dark.muted};
+    --border-main: ${dark.border};
+    --stroke: ${dark.border};
     --ring-main: rgba(255, 255, 255, 0.1);
     --glass-border: rgba(255, 255, 255, 0.05);
     color-scheme: dark;
@@ -207,47 +213,45 @@ export const ThemeCreator = () => {
   };
 
   const generateLua = () => {
-    const accent = theme.accentColor();
-    const radius = theme.radius();
-    const font = theme.bodyFont();
-    const shadow = theme.shadow();
-    const headerFont = theme.headerFont();
-    const btnShadow = theme.btnShadow();
+    const light = theme.lightTheme();
+    const dark = theme.darkTheme();
+    const lightLua = (key: keyof Theme) => `GetConvar("theme:light:${key}", "${light[key]}")`;
+    const darkLua = (key: keyof Theme) => `GetConvar("theme:dark:${key}", "${dark[key]}")`;
     return `-- cdx-solidjs-components Theme Configuration
 -- Paste into server.cfg or your resource's config.lua
 --
 -- On the client, read these convars and apply with setTheme():
 --
---   local light = { accent = GetConvar("theme:light:accent", "${accent}"), bg = GetConvar("theme:light:bg", "${theme.bg()}"), panel = GetConvar("theme:light:panel", "${theme.panel()}"), surface = GetConvar("theme:light:surface", "${theme.surface()}"), border = GetConvar("theme:light:border", "${theme.border()}"), fg = GetConvar("theme:light:fg", "${theme.fg()}"), muted = GetConvar("theme:light:muted", "${theme.muted()}"), radius = GetConvar("theme:light:radius", "${radius}"), font = GetConvar("theme:light:font", "${font}"), headerFont = GetConvar("theme:light:headerFont", "${headerFont}"), shadow = GetConvar("theme:light:shadow", "${shadow}"), btnShadow = GetConvar("theme:light:btnShadow", "${btnShadow}") }
---   local dark  = { accent = GetConvar("theme:dark:accent", "${accent}"), bg = GetConvar("theme:dark:bg", "${theme.bg()}"), panel = GetConvar("theme:dark:panel", "${theme.panel()}"), surface = GetConvar("theme:dark:surface", "${theme.surface()}"), border = GetConvar("theme:dark:border", "${theme.border()}"), fg = GetConvar("theme:dark:fg", "${theme.fg()}"), muted = GetConvar("theme:dark:muted", "${theme.muted()}"), radius = GetConvar("theme:dark:radius", "${radius}"), font = GetConvar("theme:dark:font", "${font}"), headerFont = GetConvar("theme:dark:headerFont", "${headerFont}"), shadow = GetConvar("theme:dark:shadow", "${shadow}"), btnShadow = GetConvar("theme:dark:btnShadow", "${btnShadow}") }
+--   local light = { accent = ${lightLua('accent')}, bg = ${lightLua('bg')}, panel = ${lightLua('panel')}, surface = ${lightLua('surface')}, border = ${lightLua('border')}, fg = ${lightLua('fg')}, muted = ${lightLua('muted')}, radius = ${lightLua('radius')}, font = ${lightLua('font')}, headerFont = ${lightLua('headerFont')}, shadow = ${lightLua('shadow')}, btnShadow = ${lightLua('btnShadow')} }
+--   local dark  = { accent = ${darkLua('accent')}, bg = ${darkLua('bg')}, panel = ${darkLua('panel')}, surface = ${darkLua('surface')}, border = ${darkLua('border')}, fg = ${darkLua('fg')}, muted = ${darkLua('muted')}, radius = ${darkLua('radius')}, font = ${darkLua('font')}, headerFont = ${darkLua('headerFont')}, shadow = ${darkLua('shadow')}, btnShadow = ${darkLua('btnShadow')} }
 --   SendNUIMessage({ type = "setTheme", payload = { light = light, dark = dark } })
 -- Light Mode
-setr theme:light:accent "${accent}"
-setr theme:light:bg "${theme.bg()}"
-setr theme:light:panel "${theme.panel()}"
-setr theme:light:surface "${theme.surface()}"
-setr theme:light:border "${theme.border()}"
-setr theme:light:fg "${theme.fg()}"
-setr theme:light:muted "${theme.muted()}"
-setr theme:light:radius "${radius}"
-setr theme:light:font "${font}"
-setr theme:light:headerFont "${headerFont}"
-setr theme:light:shadow "${shadow}"
-setr theme:light:btnShadow "${btnShadow}"
+setr theme:light:accent "${light.accent}"
+setr theme:light:bg "${light.bg}"
+setr theme:light:panel "${light.panel}"
+setr theme:light:surface "${light.surface}"
+setr theme:light:border "${light.border}"
+setr theme:light:fg "${light.fg}"
+setr theme:light:muted "${light.muted}"
+setr theme:light:radius "${light.radius}"
+setr theme:light:font "${light.font}"
+setr theme:light:headerFont "${light.headerFont}"
+setr theme:light:shadow "${light.shadow}"
+setr theme:light:btnShadow "${light.btnShadow}"
 
 -- Dark Mode
-setr theme:dark:accent "${accent}"
-setr theme:dark:bg "${theme.bg()}"
-setr theme:dark:panel "${theme.panel()}"
-setr theme:dark:surface "${theme.surface()}"
-setr theme:dark:border "${theme.border()}"
-setr theme:dark:fg "${theme.fg()}"
-setr theme:dark:muted "${theme.muted()}"
-setr theme:dark:radius "${radius}"
-setr theme:dark:font "${font}"
-setr theme:dark:headerFont "${headerFont}"
-setr theme:dark:shadow "${shadow}"
-setr theme:dark:btnShadow "${btnShadow}"`;
+setr theme:dark:accent "${dark.accent}"
+setr theme:dark:bg "${dark.bg}"
+setr theme:dark:panel "${dark.panel}"
+setr theme:dark:surface "${dark.surface}"
+setr theme:dark:border "${dark.border}"
+setr theme:dark:fg "${dark.fg}"
+setr theme:dark:muted "${dark.muted}"
+setr theme:dark:radius "${dark.radius}"
+setr theme:dark:font "${dark.font}"
+setr theme:dark:headerFont "${dark.headerFont}"
+setr theme:dark:shadow "${dark.shadow}"
+setr theme:dark:btnShadow "${dark.btnShadow}"`;
   };
 
   const copyToClipboard = async () => {
