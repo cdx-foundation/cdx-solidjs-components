@@ -1,3 +1,9 @@
+## [1.1.3](https://github.com/cdx-foundation/cdx-solidjs-components/compare/v1.1.2...v1.1.3) (2026-08-11)
+
+### Bug Fixes
+
+- **theme:** export true light/dark values from theme creator ([c7bfc12](https://github.com/cdx-foundation/cdx-solidjs-components/commit/c7bfc122250029a5ce96f872e743b051391931ce))
+
 ## [1.1.2](https://github.com/cdx-foundation/cdx-solidjs-components/compare/v1.1.1...v1.1.2) (2026-08-10)
 
 ### Bug Fixes
